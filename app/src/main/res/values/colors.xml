@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="text_pressed">#FFAA00</color>
+    <!--<color name="text_pressed">#f65c00</color>-->
+    <color name="text_def">#313433</color>
+    <color name="unit_short_text_def">#5e5f69</color>
+    <color name="unit_convert_bg">#f1f3f2</color>
+
+    <color name="function_choose_text">#7f7a74</color>
+
+
+    <color name="darker_gray">#aaa</color>
+    <color name="white">#ffffffff</color>
+    <color name="gridview_bg">#5e5653</color>
+
+    <color name="picker_center_text">#FFAA00</color>
+    <!--<color name="picker_center_text">#3aa8fc</color>-->
+    <color name="picker_other_parts">#989898</color>
+    <!--<color name="picker_line_color">#cecece</color>-->
+    <color name="picker_line_color">#cccccc</color>
+    <color name="picker_bg_color">#f7f7f7</color>
+
+    <color name="picker_line">#cccccc</color>
+
+    <!--贷款计算-->
+    <color name="black">#000000</color>
+    <color name="defult">#F5F5F5</color>
+       
+</resources>

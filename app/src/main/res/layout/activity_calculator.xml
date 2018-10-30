@@ -1,0 +1,556 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/defult"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/rl_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/gridview_bg">
+
+        <ImageView
+            android:id="@+id/ib_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/switch_btn_marginLeft"
+            android:src="@drawable/ic_action_back" />
+
+        <TextView
+            android:id="@+id/title_jc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:layout_toRightOf="@id/ib_back"
+            android:text="基础"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/convert_title_tv_size"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/title_kx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:layout_toRightOf="@id/title_jc"
+            android:text="科学"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="@dimen/convert_title_tv_size"
+            android:textStyle="bold" />
+
+
+        <ImageView
+            android:id="@+id/music_icon"
+            android:layout_width="23dp"
+            android:layout_height="23dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/music_icon" />
+
+        <ImageView
+            android:id="@+id/shake_icon"
+            android:layout_width="23dp"
+            android:layout_height="23dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/music_icon"
+            android:src="@drawable/shake_icon" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/picker_line" />
+
+    <LinearLayout
+        android:id="@+id/jichu_result_menu"
+        android:layout_width="match_parent"
+        android:layout_height="216dp"
+        android:gravity="right"
+        android:orientation="vertical"
+        android:padding="12dip">
+
+        <TextView
+            android:id="@+id/show_result_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical|right"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/show_input_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical|right"
+            android:textColor="#000000"
+            android:textSize="36sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/jichu_menu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="0.1dip"
+            android:layout_weight="2"
+            android:orientation="vertical">
+
+            <LinearLayout
+                style="@style/Col2Style"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/c_btn"
+                    style="@style/Button3Style"
+                    android:text="C"
+                    android:textColor="#FFAA00" />
+
+                <RelativeLayout
+                    style="@style/Button3Style"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/del_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/back" />
+
+                </RelativeLayout>
+
+
+                <Button
+                    android:id="@+id/divide_btn"
+                    style="@style/Button3Style"
+                    android:text="@string/divide" />
+
+                <Button
+                    android:id="@+id/multiply_btn"
+                    style="@style/Button3Style"
+                    android:text="@string/multply" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/Col2Style"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/seven_btn"
+                    style="@style/Button3Style"
+                    android:text="@string/seven" />
+
+                <Button
+                    android:id="@+id/eight_btn"
+                    style="@style/Button3Style"
+                    android:text="@string/eight" />
+
+                <Button
+                    android:id="@+id/nine_btn"
+                    style="@style/Button3Style"
+                    android:text="@string/nine" />
+
+                <Button
+                    android:id="@+id/sub_btn"
+                    style="@style/Button3Style"
+                    android:text="@string/sub" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/Col2Style"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/four_btn"
+                    style="@style/Button3Style"
+                    android:text="@string/four" />
+
+                <Button
+                    android:id="@+id/five_btn"
+                    style="@style/Button3Style"
+                    android:text="@string/five" />
+
+                <Button
+                    android:id="@+id/six_btn"
+                    style="@style/Button3Style"
+                    android:text="@string/six" />
+
+                <Button
+                    android:id="@+id/add_btn"
+                    style="@style/Button3Style"
+                    android:text="@string/add" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="3"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/one_btn"
+                            style="@style/Button3Style"
+                            android:text="@string/one" />
+
+                        <Button
+                            android:id="@+id/two_btn"
+                            style="@style/Button3Style"
+                            android:text="@string/two" />
+
+                        <Button
+                            android:id="@+id/three_btn"
+                            style="@style/Button3Style"
+                            android:text="@string/three" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/percent"
+                            style="@style/Button3Style"
+                            android:text="%" />
+
+                        <Button
+                            android:id="@+id/zero_btn"
+                            style="@style/Button3Style"
+                            android:text="@string/zero" />
+
+                        <Button
+                            android:id="@+id/point_btn"
+                            style="@style/Button3Style"
+                            android:text="@string/point" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/equal_btn"
+                    style="@style/Button4Style"
+                    android:text="@string/equal" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <!---科学布局-->
+
+    <LinearLayout
+        android:id="@+id/kexue_result_menu"
+        android:layout_width="match_parent"
+        android:layout_height="216dp"
+        android:gravity="right"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:padding="12dip">
+
+        <TextView
+            android:id="@+id/prefix"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical|right"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/inputOrOutput"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical|right"
+            android:textColor="#000000"
+            android:textSize="36sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/kexue_menu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                <!--阶乘-->
+                <Button
+                    android:id="@+id/factorial"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="n!"
+                    android:textAllCaps="false" />
+                <!--指数运算-->
+                <Button
+                    android:id="@+id/square"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="^" />
+                <!--开平方跟-->
+                <Button
+                    android:id="@+id/sqrt"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="√" />
+
+                <Button
+                    android:id="@+id/pi"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="π" />
+
+                <Button
+                    android:id="@+id/clear"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="C" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                <!--sin-->
+                <Button
+                    android:id="@+id/sin"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="sin"
+                    android:textAllCaps="false" />
+                <!--左括号-->
+                <Button
+                    android:id="@+id/left"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="(" />
+                <!--右括号-->
+                <Button
+                    android:id="@+id/right"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text=")" />
+                <!--e=2.718 28…-->
+                <Button
+                    android:id="@+id/e"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="E" />
+                <!--delete-->
+                <Button
+                    android:id="@+id/back"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="←" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                <!--cos-->
+                <Button
+                    android:id="@+id/cos"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="cos"
+                    android:textAllCaps="false" />
+                <!--7-->
+                <Button
+                    android:id="@+id/seven"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="7" />
+                <!--8-->
+                <Button
+                    android:id="@+id/eight"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="8" />
+                <!--9-->
+                <Button
+                    android:id="@+id/nine"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="9" />
+
+                <!--除-->
+                <Button
+                    android:id="@+id/division"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="÷" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                <!--tan-->
+                <Button
+                    android:id="@+id/tan"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="tan"
+                    android:textAllCaps="false" />
+                <!--four-->
+                <Button
+                    android:id="@+id/four"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="4" />
+                <!--five-->
+                <Button
+                    android:id="@+id/five"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="5" />
+
+                <!--six-->
+                <Button
+                    android:id="@+id/six"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="6" />
+
+                <Button
+                    android:id="@+id/mutiply"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="×" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                <!--自然对数-->
+                <Button
+                    android:id="@+id/ln"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="ln"
+                    android:textAllCaps="false" />
+                <!--one-->
+                <Button
+                    android:id="@+id/one"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="1" />
+                <!--two-->
+                <Button
+                    android:id="@+id/two"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="2" />
+
+                <!--three-->
+                <Button
+                    android:id="@+id/three"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="3" />
+
+                <!--Subtraction-->
+                <Button
+                    android:id="@+id/Subtraction"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="-" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                <!--常用对数-->
+                <Button
+                    android:id="@+id/lg"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="log"
+                    android:textAllCaps="false" />
+                <!--zero-->
+                <Button
+                    android:id="@+id/zero"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="0" />
+
+                <!--小数点-->
+                <Button
+                    android:id="@+id/point"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="." />
+
+                <!--equal-->
+                <Button
+                    android:id="@+id/equal"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_equal_bg_shape"
+                    android:text="=" />
+
+                <!--add-->
+                <Button
+                    android:id="@+id/add"
+                    style="@style/Button3Style1"
+                    android:background="@drawable/btn_bg_shape"
+                    android:text="+" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/unit_convert_bg"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/rl_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/gridview_bg"
+        >
+
+        <ImageView
+            android:layout_centerVertical="true"
+            android:id="@+id/switch_btn"
+            android:src="@drawable/ic_action_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/switch_btn_marginLeft"/>
+
+        <TextView
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:layout_centerVertical="true"
+            android:id="@+id/title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="@string/capital_title"
+            android:textSize="@dimen/convert_title_tv_size" />
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/view_line"
+        android:layout_below="@+id/rl_title"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/picker_line"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/view_line"
+        android:divider="@drawable/linearlayout_divider"
+        android:dividerPadding="0dp"
+        android:orientation="vertical"
+        android:showDividers="middle" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <TextView
+                android:textStyle="normal"
+                android:id="@+id/pre_unit_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/textview_marginLeftorRight"
+                android:drawableRight="@drawable/choose_arrow_btn"
+                android:textColor="@color/text_def"
+                android:textSize="@dimen/pre_goal_unit_tv_size" />
+
+            <TextView
+                android:textStyle="normal"
+                android:id="@+id/input_num_tv"
+                android:layout_width="215dp"
+                android:layout_height="62dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/textview_marginLeftorRight"
+                android:gravity="bottom|right"
+                android:textColor="@color/text_pressed"
+                android:textSize="@dimen/input_result_num_tv_size" />
+
+            <TextView
+                android:textStyle="normal"
+                android:id="@+id/pre_unit_short_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/input_num_tv"
+                android:layout_marginRight="@dimen/textview_marginLeftorRight"
+                android:textColor="@color/unit_short_text_def"
+                android:textSize="@dimen/pre_goal_unit_short_tv_size" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <TextView
+                android:textStyle="normal"
+                android:id="@+id/goal_unit_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/textview_marginLeftorRight"
+                android:drawableRight="@drawable/choose_arrow_btn"
+                android:textColor="@color/text_def"
+                android:textSize="@dimen/pre_goal_unit_tv_size" />
+
+            <TextView
+                android:textStyle="normal"
+                android:id="@+id/result_num_tv"
+                android:layout_width="215dp"
+                android:layout_height="62dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/textview_marginLeftorRight"
+                android:gravity="bottom|right"
+                android:textColor="@color/text_def"
+                android:textSize="@dimen/input_result_num_tv_size" />
+
+            <TextView
+                android:textStyle="normal"
+                android:id="@+id/goal_unit_short_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/result_num_tv"
+                android:layout_marginRight="@dimen/textview_marginLeftorRight"
+                android:textColor="@color/unit_short_text_def"
+                 android:textSize="@dimen/pre_goal_unit_short_tv_size" />
+        </RelativeLayout>
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2.5"
+            layout="@layout/view_pick_num" />
+    </LinearLayout>
+
+</RelativeLayout>
