@@ -22,6 +22,7 @@ public class VoiceUtils {
     }
 
     private final TextToSpeech.OnInitListener mInitListener = new TextToSpeech.OnInitListener() {
+
         @Override
         public void onInit(int status) {
             if (status == TextToSpeech.SUCCESS) {

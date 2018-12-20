@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/gridview_bg"
+        >
+
+        <ImageView
+            android:layout_centerVertical="true"
+            android:id="@+id/iv_back"
+            android:src="@drawable/ic_action_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/switch_btn_marginLeft"/>
+
+        <TextView
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:layout_centerVertical="true"
+            android:id="@+id/title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="今日新闻"
+            android:textSize="@dimen/convert_title_tv_size" />
+
+        <ImageView
+            android:layout_centerVertical="true"
+            android:id="@+id/iv_home"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/iv_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/switch_btn_marginLeft"/>
+
+    </RelativeLayout>
+
+    <WebView
+        android:id="@+id/webview_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </WebView>
+
+</LinearLayout>

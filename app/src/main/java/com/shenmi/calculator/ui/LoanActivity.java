@@ -83,7 +83,7 @@ public class LoanActivity extends AppCompatActivity {
     }
 
     private void InitViewPager() {
-        mPager = (ViewPager) findViewById(R.id.vPager);
+        mPager =  findViewById(R.id.vPager);
         fragmentsList = new ArrayList<>();
         LayoutInflater mInflater = getLayoutInflater();
         mInflater.inflate(R.layout.viewpager_lay, null);
@@ -99,7 +99,7 @@ public class LoanActivity extends AppCompatActivity {
     }
 
     private void InitWidth() {
-        ivBottomLine = (ImageView) findViewById(R.id.iv_bottom_line);
+        ivBottomLine =  findViewById(R.id.iv_bottom_line);
         bottomLineWidth = BitmapFactory.decodeResource(getResources(),
                 R.drawable.tab_tag_selected).getWidth();// 获取图片宽度;
         Log.d(TAG, "cursor imageview width=" + bottomLineWidth);

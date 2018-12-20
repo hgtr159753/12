@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.shenmi.calculator">
 
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -20,50 +19,49 @@
     <!-- 设置手机震动权限 -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
-
     <application
         android:name=".app.MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/icon_logo"
         android:label="@string/app_name"
-        tools:replace="android:label"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:label">
+        <activity android:name=".ui.UnitConvertActivity" />
+        <activity android:name=".ui.UpperNumActivity" />
         <activity
-            android:name=".ui.FunctionSetActivity">
+            android:name=".ui.LoanActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".ui.CalculatorActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name="com.tencent.bugly.beta.ui.BetaActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|locale"
+            android:theme="@android:style/Theme.Translucent" />
+
+        <!-- 友盟统计SDK配置 -->
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="5acb12d6b27b0a63c500010c" />
+
+        <!-- 设置动态渠道变量 -->
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="${UMENG_CHANNEL_VALUE}" /> <!-- 渠道号，多渠道这里使用了占位符$ -->
+
+        <meta-data
+            android:name="IFLYTEK_APPKEY"
+            android:value="5bd15cce" />
+
+        <activity android:name=".ui.home.MainActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.UnitConvertActivity"></activity>
-        <activity android:name=".ui.UpperNumActivity"></activity>
-        <activity
-            android:name=".ui.LoanActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
-        <activity
-            android:name=".ui.CalculatorActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
-
-        <activity
-            android:name="com.tencent.bugly.beta.ui.BetaActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize|locale"
-            android:theme="@android:style/Theme.Translucent" />
-
-        <!--友盟统计SDK配置-->
-        <meta-data
-            android:name="UMENG_APPKEY"
-            android:value="5acb12d6b27b0a63c500010c" />
-
-        <!--设置动态渠道变量-->
-        <meta-data
-            android:name="UMENG_CHANNEL"
-            android:value="${UMENG_CHANNEL_VALUE}" /> <!--渠道号，多渠道这里使用了占位符$-->
-
-        <meta-data
-            android:name="IFLYTEK_APPKEY"
-            android:value="5bd15cce" />
     </application>
 
 </manifest>

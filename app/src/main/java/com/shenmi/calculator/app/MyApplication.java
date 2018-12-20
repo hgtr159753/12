@@ -29,6 +29,7 @@ public class MyApplication extends Application {
         UMConfigure.setEncryptEnabled(true);
         //推送相关
         PushAgent mPushAgent = PushAgent.getInstance(this);
+
         //注册推送服务，每次调用register方法都会回调该接口
         mPushAgent.register(new IUmengRegisterCallback() {
             @Override

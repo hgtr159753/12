@@ -11,16 +11,12 @@ public class SharedPUtils {
 
     public final static String USER_SETTING = "userInfo_setting";
 
-
-
     public static void setShake(Context context, boolean isOpen) {
         SharedPreferences sp = context.getSharedPreferences(USER_SETTING, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean("shake", isOpen);
         editor.commit();
     }
-
-
 
     public static boolean getShake(Context context) {
         SharedPreferences sp = context.getSharedPreferences(USER_SETTING, Context.MODE_PRIVATE);

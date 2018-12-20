@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+
     <color name="text_pressed">#FFAA00</color>
     <!--<color name="text_pressed">#f65c00</color>-->
     <color name="text_def">#313433</color>
@@ -26,5 +27,9 @@
     <!--贷款计算-->
     <color name="black">#000000</color>
     <color name="defult">#F5F5F5</color>
+
+    <color name="colorPrimary">#5e5653</color>
+    <color name="colorPrimaryDark">#5e5653</color>
+    <color name="colorAccent">#5e5653</color>
        
 </resources>
