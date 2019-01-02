@@ -8,13 +8,13 @@ android {
         applicationId "com.shenmi.calculator"
         minSdkVersion 14
         targetSdkVersion 26
-        versionCode 2
-        versionName "1.1"
+        versionCode 12
+        versionName "1.4"
         flavorDimensions "versionCode"
         manifestPlaceholders = [UMENG_CHANNEL_VALUE: "umeng"] //默认名称
         ndk {
             // 设置支持的SO库架构
-            abiFilters 'armeabi' , 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+            abiFilters 'armeabi', 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
         }
     }
 
@@ -51,7 +51,7 @@ android {
     }
 
     productFlavors {
-        google {}
+        huawei{}
         productFlavors.all {
             flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
         }
@@ -68,6 +68,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     compile 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.android.support:support-v4:26.1.0'
     implementation files('libs/umeng-common-1.5.0.jar')
@@ -79,4 +80,9 @@ dependencies {
     compile 'com.tencent.bugly:nativecrashreport:latest.release'
     //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
     implementation files('libs/Msc.jar')
+    //retrofit2.0
+    compile 'com.squareup.retrofit2:retrofit:2.2.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.1'
+    compile 'pub.devrel:easypermissions:1.0.1'
+    api files('libs/SNMISDK12_26.jar')
 }

@@ -1,5 +1,8 @@
 package com.shenmi.calculator.net;
 
+import com.shenmi.calculator.bean.WebRequest;
+import com.shenmi.calculator.bean.WebResponse;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;

@@ -223,6 +223,9 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
         if (mSoundPool == null) {
             mSoundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
         }
+        if (mSoundPool == null) {
+            return;
+        }
         mSoundResource.put(R.id.zero_btn, mSoundPool.load(this, R.raw.num0, 1));
         mSoundResource.put(R.id.one_btn, mSoundPool.load(this, R.raw.num1, 1));
         mSoundResource.put(R.id.two_btn, mSoundPool.load(this, R.raw.num2, 1));

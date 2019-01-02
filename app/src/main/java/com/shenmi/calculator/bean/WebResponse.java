@@ -1,10 +1,12 @@
-package com.shenmi.calculator.net;
+package com.shenmi.calculator.bean;
+
+import java.io.Serializable;
 
 /**
  * Created by SQ on 2018/12/19.
  */
 
-public class WebResponse {
+public class WebResponse implements Serializable {
 
 //    "AppSwitchConfigInfo":{"IsOpen":true表示打开，false表示关闭},
 //    "ApiStatusCode":200表示请求成功，其他都为失败,

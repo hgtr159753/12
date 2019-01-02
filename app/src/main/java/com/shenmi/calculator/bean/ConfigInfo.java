@@ -1,4 +1,4 @@
-package com.shenmi.calculator.net;
+package com.shenmi.calculator.bean;
 
 /**
  * Created by SQ on 2018/12/19.

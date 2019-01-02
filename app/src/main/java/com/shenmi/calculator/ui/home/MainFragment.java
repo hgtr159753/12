@@ -1,8 +1,11 @@
 package com.shenmi.calculator.ui.home;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +13,14 @@ import android.widget.AdapterView;
 import android.widget.RelativeLayout;
 
 import com.shenmi.calculator.R;
+import com.shenmi.calculator.constant.ADConstant;
 import com.shenmi.calculator.ui.CalculatorActivity;
 import com.shenmi.calculator.ui.LoanActivity;
 import com.shenmi.calculator.ui.UnitConvertActivity;
 import com.shenmi.calculator.ui.UpperNumActivity;
 import com.shenmi.calculator.util.UnitConvertUtil;
+import com.snmi.sdk.AdView;
+import com.snmi.sdk.BannerListener;
 
 /**
  * Created by SQ on 2018/12/18.
@@ -32,12 +38,15 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout rl_speed;
     private RelativeLayout rl_time;
     private RelativeLayout rl_mass;
+    private AdView rl_banner;
+    private Handler mStartSMSDKHandler = new Handler();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_functionset_choose, container, false);
         initView(view);
+        initAD();
         return view;
     }
 
@@ -51,6 +60,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         rl_speed = view.findViewById(R.id.rl_speed);
         rl_time = view.findViewById(R.id.rl_time);
         rl_mass = view.findViewById(R.id.rl_mass);
+        rl_banner = view.findViewById(R.id.rl_banner);
 
         rl_capital.setOnClickListener(this);
         rl_science.setOnClickListener(this);
@@ -61,6 +71,50 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         rl_area.setOnClickListener(this);
         rl_time.setOnClickListener(this);
         rl_mass.setOnClickListener(this);
+    }
+
+    private void initAD() {
+        rl_banner.setAdListener(new BannerMonitor(ADConstant.BANNER_ONE, getActivity()));
+    }
+
+    public class BannerMonitor implements BannerListener {
+        private String loactionID;
+        private Context mContext;
+
+        public BannerMonitor(String locationID, Context context) {
+            this.loactionID = locationID;
+            this.mContext = context;
+        }
+
+        @Override
+        public void bannerClicked() {
+
+        }
+
+        @Override
+        public void adpageClosed() {
+
+        }
+
+        @Override
+        public void bannerClosed() {
+
+        }
+
+        @Override
+        public void bannerShown(String json) {
+
+        }
+
+        @Override
+        public void noAdFound() {
+
+        }
+
+        @Override
+        public void qtClicked(String s) {
+
+        }
     }
 
     @Override

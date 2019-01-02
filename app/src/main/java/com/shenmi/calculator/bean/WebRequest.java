@@ -1,12 +1,14 @@
-package com.shenmi.calculator.net;
+package com.shenmi.calculator.bean;
 
 import android.support.annotation.NonNull;
+
+import java.io.Serializable;
 
 /**
  * Created by SQ on 2018/12/19.
  */
 
-public class WebRequest {
+public class WebRequest implements Serializable{
 
 //    "SwitchType":"开关的事件类型,news：新闻，ad：广告，read：文章",
 //    "DeviceId":"设备号",
