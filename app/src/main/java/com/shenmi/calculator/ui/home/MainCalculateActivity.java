@@ -42,7 +42,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks{
+public class MainCalculateActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks{
 
     private String[] mPermissionList = new String[]{Manifest.permission.READ_PHONE_STATE};
     private VerticalViewPager mViewPager;
@@ -243,9 +243,9 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                mAdView = new AdView(ADConstant.DEEPLINK_ONE, MainActivity.this,
+                mAdView = new AdView(ADConstant.DEEPLINK_ONE, MainCalculateActivity.this,
                         ADConstant.APPID, true, true,
-                        new BannerMonitor(ADConstant.DEEPLINK_ONE, MainActivity.this));
+                        new BannerMonitor(ADConstant.DEEPLINK_ONE, MainCalculateActivity.this));
                 }
             }, 2000);
             moveTaskToBack(true);
@@ -312,9 +312,9 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                         @Override
                         public void run() {
                             if (isAppFrondesk) {
-                                mAdView = new AdView(ADConstant.DEEPLINK_ONE, MainActivity.this,
+                                mAdView = new AdView(ADConstant.DEEPLINK_ONE, MainCalculateActivity.this,
                                         ADConstant.APPID, true, true,
-                                        new BannerMonitor(ADConstant.DEEPLINK_ONE, MainActivity.this));
+                                        new BannerMonitor(ADConstant.DEEPLINK_ONE, MainCalculateActivity.this));
                             }
                         }
                     }, 1000);
@@ -343,7 +343,6 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                         isAppFrondesk = false;
                     } else {
                         isAppFrondesk = true;
-
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

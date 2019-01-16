@@ -100,7 +100,7 @@ public class WebFragment extends Fragment implements View.OnClickListener {
                 webview_main.getSettings().setBlockNetworkImage(false);
             } else {
                 // 网页加载中
-                if (((MainActivity)getActivity()).getPosition() != 0){
+                if (((MainCalculateActivity)getActivity()).getPosition() != 0){
                     if (!progressDialog.isShowing())
                         progressDialog.show();
                 }
@@ -115,7 +115,7 @@ public class WebFragment extends Fragment implements View.OnClickListener {
                 webview_main.loadUrl(ConstantWeb.WEBURL);
                 break;
             case R.id.iv_back:
-                ((MainActivity)getActivity()).setPositionPage();
+                ((MainCalculateActivity)getActivity()).setPositionPage();
                 break;
         }
     }

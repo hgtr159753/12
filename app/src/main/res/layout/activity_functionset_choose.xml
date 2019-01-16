@@ -20,6 +20,18 @@
             android:textColor="@android:color/white"
             android:textSize="@dimen/convert_title_tv_size" />
 
+        <TextView
+            android:id="@+id/tv_book"
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:text="小说"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/convert_title_tv_size" />
+
     </RelativeLayout>
 
     <View

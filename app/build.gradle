@@ -10,6 +10,7 @@ android {
         targetSdkVersion 26
         versionCode 12
         versionName "1.4"
+        multiDexEnabled true
         flavorDimensions "versionCode"
         manifestPlaceholders = [UMENG_CHANNEL_VALUE: "umeng"] //默认名称
         ndk {
@@ -51,7 +52,7 @@ android {
     }
 
     productFlavors {
-        huawei{}
+        xiaomi{}
         productFlavors.all {
             flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
         }
@@ -65,24 +66,124 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
+
+    dexOptions {
+        incremental true
+        javaMaxHeapSize "4g"
+    }
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 dependencies {
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    compile 'com.android.support:support-v4:26.1.0'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+//        compile 'com.android.support:appcompat-v7:26.1.0'
+
+//        compile 'com.android.support:support-v4:26.1.0'
     implementation files('libs/umeng-common-1.5.0.jar')
     implementation files('libs/umeng-analytics-7.5.0.jar')
     implementation files('libs/utdid4all-1.1.5.3_proguard.jar')
     compile project(':push')
     compile 'com.tencent.bugly:crashreport_upgrade:latest.release'
+
     //其中latest.release指代最新Bugly SDK版本号，也可以指定明确的版本号，例如2.1.9
     compile 'com.tencent.bugly:nativecrashreport:latest.release'
+
     //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
     implementation files('libs/Msc.jar')
+
     //retrofit2.0
-    compile 'com.squareup.retrofit2:retrofit:2.2.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.0.1'
     compile 'pub.devrel:easypermissions:1.0.1'
     api files('libs/SNMISDK12_26.jar')
+
+//        compile 'com.squareup.retrofit2:retrofit:2.2.0'
+
+//        compile 'com.squareup.retrofit2:converter-gson:2.0.1'
+
+    //support
+    implementation 'com.android.support:design:26.1.0'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:support-v4:26.1.0'
+    implementation 'com.android.support:cardview-v7:26.1.0'
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
+    compile 'com.android.support:support-annotations:27.1.1'
+//
+    //log
+    debugCompile 'com.zchu:zlog:1.0.1'
+    testCompile 'com.zchu:zlog:1.0.1'
+    releaseCompile 'com.zchu:zlog-no-op:1.0.1'
+//
+//    //正式发布时会将所有的打印方法替换为空方法
+//
+    //状态栏沉浸式
+    implementation 'com.github.niorgai:StatusBarCompat:1.0.0'
+//
+    //progressbar
+    compile 'com.github.fangx:haorefresh:1.0'
+    compile 'com.wang.avi:library:1.0.1'
+
+    //图片加载
+    compile 'com.github.bumptech.glide:glide:4.1.1'
+//
+    //适配器
+    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.28'
+    compile 'com.squareup.okhttp3:okhttp-urlconnection:3.2.0'
+//
+    //Rxjava
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex:rxjava:1.3.0'
+    compile 'com.flyco.tablayout:FlycoTabLayout_Lib:2.0.8@aar'
+    compile 'com.jakewharton.rxrelay:rxrelay:1.2.0'
+    compile('com.zchu:rxcache:1.2.6') {
+        exclude group: 'com.android.support'
+    }
+//
+    //菜单栏
+    compile 'com.github.clans:fab:1.6.4'
+
+    //悬浮动画菜单
+    compile('com.afollestad.material-dialogs:core:0.9.4.3') {
+        exclude group: 'com.android.support'
+    }
+    compile 'com.squareup.okio:okio:1.13.0'
+
+    //retrofit的包
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+//
+    //对gson的支持
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+
+    //对rxjava的适配
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.3.0'
+
+    // greenDao
+    compile 'org.greenrobot:greendao:3.2.2'
+    compile 'org.greenrobot:greendao-generator:3.2.2'
+
+    //支付宝
+    compile 'com.github.ikidou:FragmentBackHandler:2.1'
+//
+    //微信分享登录支付
+    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:1.0.2'
+
+//        //友盟统计基础依赖库
+//
+//        implementation 'com.umeng.sdk:common:1.5.3'
+//
+//        implementation 'com.umeng.sdk:analytics:latest.release'
+//
+//        //友盟推送
+//
+//        implementation 'com.umeng.sdk:utdid:1.1.5.3'
+//
+//        //PushSDK
+//
+//        implementation 'com.umeng.sdk:push:4.2.0'
+        compile(name:'read-sdk', ext:'aar')
+        compile 'com.android.support:multidex:1.0.0'
 }

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.shenmi.calculator.R;
 import com.shenmi.calculator.constant.ADConstant;
@@ -38,6 +39,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout rl_speed;
     private RelativeLayout rl_time;
     private RelativeLayout rl_mass;
+    private TextView tv_book;
     private AdView rl_banner;
     private Handler mStartSMSDKHandler = new Handler();
 
@@ -61,6 +63,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         rl_time = view.findViewById(R.id.rl_time);
         rl_mass = view.findViewById(R.id.rl_mass);
         rl_banner = view.findViewById(R.id.rl_banner);
+        tv_book = view.findViewById(R.id.tv_book);
 
         rl_capital.setOnClickListener(this);
         rl_science.setOnClickListener(this);
@@ -71,6 +74,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         rl_area.setOnClickListener(this);
         rl_time.setOnClickListener(this);
         rl_mass.setOnClickListener(this);
+        tv_book.setOnClickListener(this);
     }
 
     private void initAD() {
@@ -163,6 +167,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 mIntent = new Intent(getActivity(),
                         UnitConvertActivity.class);
                 mIntent.putExtra("UnitType", UnitConvertUtil.MASS);
+                break;
+            case R.id.tv_book:
+                com.sm.readbook.ui.activity.MainActivity.startAction(getActivity());
                 break;
             default:
                 break;
