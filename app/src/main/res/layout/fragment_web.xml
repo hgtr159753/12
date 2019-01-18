@@ -12,10 +12,13 @@
         >
 
         <ImageView
-            android:padding="10dp"
-            android:layout_centerVertical="true"
+            android:layout_marginLeft="6dp"
+            android:padding="4dp"
+            android:visibility="invisible"
             android:id="@+id/iv_back"
             android:src="@drawable/ic_action_back"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -27,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="今日新闻"
+            android:text="新闻"
             android:textSize="@dimen/convert_title_tv_size" />
 
         <ImageView

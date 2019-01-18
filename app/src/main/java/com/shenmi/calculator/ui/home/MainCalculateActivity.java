@@ -9,12 +9,18 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.Window;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 import com.google.gson.Gson;
 import com.shenmi.calculator.R;
@@ -42,14 +48,12 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class MainCalculateActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks{
+public class MainCalculateActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks, View.OnClickListener {
 
     private String[] mPermissionList = new String[]{Manifest.permission.READ_PHONE_STATE};
-    private VerticalViewPager mViewPager;
     private MainFragment mainFragment;
     private WebFragment webFragment;
-    private ArrayList<Fragment> viewList;
-    private MyFragmentPagerAdapter myFragmentPagerAdapter;
+    private List<Fragment> viewList;
     private int CALL_PHONE_REQUEST_CODE = 10;
 
     private AdView mAdView;
@@ -57,13 +61,15 @@ public class MainCalculateActivity extends AppCompatActivity implements EasyPerm
     private boolean isAppFrondesk;
     private ActivityManager activityManager;
     private String packageName;
+    private RadioGroup radioGroupMain;
+    private LinearLayout llBook;
+    private int mIndex = 0;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PushAgent.getInstance(this).onAppStart();
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         initView();
         initPermission();
@@ -108,7 +114,6 @@ public class MainCalculateActivity extends AppCompatActivity implements EasyPerm
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
         Log.i("授权", "onPermissionsDenied:" + requestCode + ":" + perms.size());
-
         // (Optional) Check whether the user denied any permissions and checked "NEVER ASK AGAIN."
         // This will display a dialog directing them to enable the permission in app settings.
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
@@ -144,9 +149,13 @@ public class MainCalculateActivity extends AppCompatActivity implements EasyPerm
                 Log.e("webRequest","webResponse=="+webResponse.toString());
                 if (webResponse.getApiStatusCode() == 200){
                     if (webResponse.getAppSwitchConfigInfo().getOpen()){
+                        //显示
+                        radioGroupMain.setVisibility(View.VISIBLE);
                         webFragment = new WebFragment();
+                        MoneyFragment moneyFragment = new MoneyFragment();
+                        viewList.add(moneyFragment);
                         viewList.add(webFragment);
-                        myFragmentPagerAdapter.notifyDataSetChanged();
+                        radioGroupMain.setOnCheckedChangeListener(onChangedListener);
                     }
                 }
             }
@@ -159,14 +168,19 @@ public class MainCalculateActivity extends AppCompatActivity implements EasyPerm
     }
 
     private void initView() {
-        mViewPager = findViewById(R.id.viewpager_main);
+        radioGroupMain = findViewById(R.id.rg_main);
+        llBook = findViewById(R.id.ll_book);
+        llBook.setOnClickListener(this);
+
+
         viewList = new ArrayList<>();
         mainFragment = new MainFragment();
         viewList.add(mainFragment);
-
-        myFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), viewList);
-        mViewPager.setAdapter(myFragmentPagerAdapter);
-        mViewPager.setOnPageChangeListener(pageChangedlistener);
+        //默认选中主页
+        radioGroupMain.setOnCheckedChangeListener(onChangedListener);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(R.id.fl_content, viewList.get(0)).commit();
+        onChangedListener.onCheckedChanged(radioGroupMain, R.id.rb_calculate);
 
         activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         packageName = this.getPackageName();
@@ -174,59 +188,25 @@ public class MainCalculateActivity extends AppCompatActivity implements EasyPerm
         new Thread(new AppStatus()).start();
     }
 
-
-    private ViewPager.OnPageChangeListener pageChangedlistener = new ViewPager.OnPageChangeListener() {
+    private RadioGroup.OnCheckedChangeListener onChangedListener = new RadioGroup.OnCheckedChangeListener() {
         @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            //只在webview显示的时候禁止view pager上下滑动
-            if (position == 1){
-                mViewPager.setTouch(false);
-            }else{
-                mViewPager.setTouch(true);
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            int index = group.indexOfChild(group.findViewById(checkedId));
+            if (mIndex == index){
+                return;
             }
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.hide(viewList.get(mIndex));
+            if(!viewList.get(index).isAdded()){
+                ft.add(R.id.fl_content, viewList.get(index));
+            }
+            ft.show(viewList.get(index)).commit();
+            mIndex=index;
         }
     };
 
-    /**
-     * 滑动page到第一页
-     */
-    public void setPositionPage(){
-        mViewPager.setCurrentItem(0);
-    }
-
-    /**
-     * 获取当前位置
-     * @return
-     */
-    public int getPosition(){
-        return mViewPager.isTouch()? 0:1;
-    }
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        //这是一个监听用的按键的方法，keyCode 监听用户的动作，如果是按了返回键，同时Webview要返回的话，WebView执行回退操作，因为mWebView.canGoBack()返回的是一个Boolean类型，所以我们把它返回为true
-        if(keyCode==KeyEvent.KEYCODE_BACK
-                && NetworkUtil.isNetworkAvailable(this)
-                && (webFragment != null)
-                && (webFragment.getWebview_main() != null)
-                && (webFragment.getWebview_main().canGoBack())){
-            webFragment.getWebview_main().goBack();
-            return true;
-        }
-        if (!mViewPager.isTouch()){
-            setPositionPage();
-            return true;
-        }
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             doubleClickQuitBrowser();
             return true;
@@ -261,6 +241,15 @@ public class MainCalculateActivity extends AppCompatActivity implements EasyPerm
         MobclickAgent.onResume(this);
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.ll_book:
+                com.sm.readbook.ui.activity.MainActivity.startAction(MainCalculateActivity.this);
+                break;
+        }
+    }
+
 
     /*****************************************************************/
     /**
@@ -282,7 +271,6 @@ public class MainCalculateActivity extends AppCompatActivity implements EasyPerm
             getApplicationContext().unregisterReceiver(mHomeKeyReceiver);
         }
     }
-
 
     /**
      * @author Home键广播监听

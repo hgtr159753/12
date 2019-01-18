@@ -6,7 +6,9 @@ import android.app.ProgressDialog;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,7 @@ import android.widget.ImageView;
 
 import com.shenmi.calculator.R;
 import com.shenmi.calculator.constant.ConstantWeb;
+import com.sm.readbook.base.BaseFragment;
 
 /**
  * Created by SQ on 2018/12/18.
@@ -28,27 +31,35 @@ import com.shenmi.calculator.constant.ConstantWeb;
 public class WebFragment extends Fragment implements View.OnClickListener {
 
     private WebView webview_main;
-    private ImageView iv_back;
     private ImageView iv_home;
+    private ImageView iv_back;
     private ProgressDialog progressDialog;
+    private View mRootView;
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_web, container, false);
-        initView(view);
-        initWebView();
-        return view;
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        if (mRootView == null){
+            mRootView = inflater.inflate(R.layout.fragment_web, container,false);
+            initView(mRootView);
+            setListener();
+        }
+        return mRootView;
     }
 
-    private void initView(View view) {
-        iv_back = view.findViewById(R.id.iv_back);
+    protected void initView(View view) {
         iv_home = view.findViewById(R.id.iv_home);
+        iv_back = view.findViewById(R.id.iv_back);
         webview_main = view.findViewById(R.id.webview_main);
-        iv_back.setOnClickListener(this);
-        iv_home.setOnClickListener(this);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setMessage("稍等哦~");
+        initWebView();
+    }
+
+    protected void setListener() {
+        iv_home.setOnClickListener(this);
+        iv_back.setOnClickListener(this);
     }
 
     @SuppressLint("JavascriptInterface")
@@ -77,6 +88,13 @@ public class WebFragment extends Fragment implements View.OnClickListener {
     private WebViewClient webViewClient = new WebViewClient() {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            Log.e("webviewurl=",url);
+            if (url.contains(ConstantWeb.WEBURL_MAIN_TWO)
+                    || url.contains(ConstantWeb.WEBURL_MAIN_ONE)){
+                iv_back.setVisibility(View.INVISIBLE);
+            }else{
+                iv_back.setVisibility(View.VISIBLE);
+            }
             view.loadUrl(url);
             return true;
         }
@@ -99,10 +117,8 @@ public class WebFragment extends Fragment implements View.OnClickListener {
                     progressDialog.dismiss();
                 webview_main.getSettings().setBlockNetworkImage(false);
             } else {
-                // 网页加载中
-                if (((MainCalculateActivity)getActivity()).getPosition() != 0){
-                    if (!progressDialog.isShowing())
-                        progressDialog.show();
+                if (!progressDialog.isShowing()){
+                    progressDialog.show();
                 }
             }
         }
@@ -115,16 +131,9 @@ public class WebFragment extends Fragment implements View.OnClickListener {
                 webview_main.loadUrl(ConstantWeb.WEBURL);
                 break;
             case R.id.iv_back:
-                ((MainCalculateActivity)getActivity()).setPositionPage();
+                if (webview_main.canGoBack())
+                    webview_main.goBack();
                 break;
         }
-    }
-
-    /**
-     * activity获取webview
-     * @return
-     */
-    public WebView getWebview_main() {
-        return webview_main;
     }
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    //checked选中(true)一种状态的图片样式
+    <item android:drawable="@drawable/icon_press_news" android:state_checked="true"></item>
+    //checked未选中(false)一种状态的图片样式
+    <item android:drawable="@drawable/icon_no_news" android:state_checked="false"></item>
+</selector>

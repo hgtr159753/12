@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import com.shenmi.calculator.ui.LoanActivity;
 import com.shenmi.calculator.ui.UnitConvertActivity;
 import com.shenmi.calculator.ui.UpperNumActivity;
 import com.shenmi.calculator.util.UnitConvertUtil;
+import com.sm.readbook.base.BaseFragment;
 import com.snmi.sdk.AdView;
 import com.snmi.sdk.BannerListener;
 
@@ -39,20 +41,23 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout rl_speed;
     private RelativeLayout rl_time;
     private RelativeLayout rl_mass;
-    private TextView tv_book;
     private AdView rl_banner;
     private Handler mStartSMSDKHandler = new Handler();
 
+    private View mRootView;
+
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_functionset_choose, container, false);
-        initView(view);
-        initAD();
-        return view;
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        if (mRootView == null){
+            mRootView = inflater.inflate(R.layout.activity_functionset_choose, container,false);
+            initView(mRootView);
+            setListener();
+        }
+        return mRootView;
     }
 
-    private void initView(View view) {
+    protected void initView(View view) {
         rl_capital = view.findViewById(R.id.rl_capital);
         rl_science = view.findViewById(R.id.rl_science);
         rl_length = view.findViewById(R.id.rl_length);
@@ -63,8 +68,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         rl_time = view.findViewById(R.id.rl_time);
         rl_mass = view.findViewById(R.id.rl_mass);
         rl_banner = view.findViewById(R.id.rl_banner);
-        tv_book = view.findViewById(R.id.tv_book);
+    }
 
+    protected void setListener() {
         rl_capital.setOnClickListener(this);
         rl_science.setOnClickListener(this);
         rl_length.setOnClickListener(this);
@@ -74,10 +80,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         rl_area.setOnClickListener(this);
         rl_time.setOnClickListener(this);
         rl_mass.setOnClickListener(this);
-        tv_book.setOnClickListener(this);
-    }
-
-    private void initAD() {
         rl_banner.setAdListener(new BannerMonitor(ADConstant.BANNER_ONE, getActivity()));
     }
 
@@ -167,9 +169,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 mIntent = new Intent(getActivity(),
                         UnitConvertActivity.class);
                 mIntent.putExtra("UnitType", UnitConvertUtil.MASS);
-                break;
-            case R.id.tv_book:
-                com.sm.readbook.ui.activity.MainActivity.startAction(getActivity());
                 break;
             default:
                 break;

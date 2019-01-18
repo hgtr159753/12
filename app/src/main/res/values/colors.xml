@@ -29,7 +29,7 @@
     <color name="defult">#F5F5F5</color>
 
     <color name="colorPrimary">#5e5653</color>
-    <color name="colorPrimaryDark">#5e5653</color>
+    <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#5e5653</color>
        
 </resources>

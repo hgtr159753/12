@@ -38,12 +38,17 @@
 
         <activity android:name=".ui.UnitConvertActivity" />
         <activity android:name=".ui.UpperNumActivity" />
-        <activity
-            android:name=".ui.LoanActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".ui.CalculatorActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".ui.LoanActivity"/>
+        <activity android:name=".ui.CalculatorActivity"/>
+
+        <activity android:name=".ui.home.MainCalculateActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name="com.tencent.bugly.beta.ui.BetaActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|locale"
@@ -62,15 +67,6 @@
         <meta-data
             android:name="IFLYTEK_APPKEY"
             android:value="5bd15cce" />
-
-        <activity android:name=".ui.home.MainCalculateActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
 
         <!--sdk部分-->
 
