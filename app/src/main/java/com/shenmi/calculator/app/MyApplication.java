@@ -1,15 +1,14 @@
 package com.shenmi.calculator.app;
 
-import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
-
 import com.iflytek.cloud.SpeechUtility;
 import com.sm.readbook.AppManager;
 import com.sm.readbook.ReadSDK;
 import com.sm.readbook.data.db.DBRepository;
+import com.snmi.sdk.Ad;
 import com.tencent.bugly.Bugly;
 import com.umeng.analytics.AnalyticsConfig;
 import com.umeng.analytics.MobclickAgent;
@@ -30,6 +29,7 @@ public class MyApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         mAppContext = this;
+        Ad.configAD(this);
         DBRepository.initDatabase(this);
         AppManager.init(this);
         ReadSDK.initSDK(mAppContext);

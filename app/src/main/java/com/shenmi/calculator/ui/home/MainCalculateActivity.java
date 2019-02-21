@@ -1,26 +1,36 @@
 package com.shenmi.calculator.ui.home;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import com.google.gson.Gson;
 import com.shenmi.calculator.R;
@@ -32,13 +42,19 @@ import com.shenmi.calculator.bean.WebRequest;
 import com.shenmi.calculator.bean.WebResponse;
 import com.shenmi.calculator.util.AppContentUtil;
 import com.shenmi.calculator.util.NetworkUtil;
+import com.snmi.sdk.Ad;
+import com.snmi.sdk.AdHCallback;
 import com.snmi.sdk.AdView;
+import com.snmi.sdk.SplashADInfo;
+import com.snmi.sdk.SplashFullScreenAD;
+import com.snmi.sdk.download.GPSlistener;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
+import com.zchu.reader.utils.ToastUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 import retrofit2.Call;
@@ -48,23 +64,25 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class MainCalculateActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks, View.OnClickListener {
+public class MainCalculateActivity extends AppCompatActivity implements  View.OnClickListener {
 
-    private String[] mPermissionList = new String[]{Manifest.permission.READ_PHONE_STATE};
     private MainFragment mainFragment;
     private WebFragment webFragment;
     private List<Fragment> viewList;
-    private int CALL_PHONE_REQUEST_CODE = 10;
+    private final int CALL_PHONE_REQUEST_CODE = 10;
 
     private AdView mAdView;
-    private HomeWatcherReceiver mHomeKeyReceiver;
+//    private HomeWatcherReceiver mHomeKeyReceiver;
     private boolean isAppFrondesk;
     private ActivityManager activityManager;
     private String packageName;
     private RadioGroup radioGroupMain;
+    private RadioButton radioButtonNews;
+    private RadioButton radioButtonMoney;
     private LinearLayout llBook;
-    private int mIndex = 0;
-
+    private MoneyFragment moneyFragment;
+    private boolean stop;
+    private SplashADInfo splashAD;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,51 +91,63 @@ public class MainCalculateActivity extends AppCompatActivity implements EasyPerm
         setContentView(R.layout.activity_main);
         initView();
         initPermission();
-        registerHomeKeyReceiver();
-        //注册监听Home按键返回广播
     }
 
-    private void initPermission() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (EasyPermissions.hasPermissions(this, mPermissionList)) {
-                //已经同意过
-                initHttp();
-            } else {
-                //未同意过,或者说是拒绝了，再次申请权限
-                EasyPermissions.requestPermissions(this,  //上下文
-                        "需要获取设备的信息", //提示文言
-                        CALL_PHONE_REQUEST_CODE, //请求码
-                        mPermissionList //权限列表
-                );
+    private void initAD() {
+        Ad.prepareSplashAd(this, ADConstant.APPID,ADConstant.START_SCREEN);
+    }
+
+    String[] permissions = new String[]{
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    List<String> mPermissionList = new ArrayList<>();
+    private final int mRequestCode = 100;
+    /**
+     * 请求读写权限
+     */
+    private void initPermission(){
+        mPermissionList.clear();
+        // 清空没有通过的权限
+        // 逐个判断你要的权限是否已经通过
+        for (int i = 0; i < permissions.length; i++) {
+            if (ContextCompat.checkSelfPermission(this, permissions[i]) != PackageManager.PERMISSION_GRANTED) {
+                // 添加还未授予的权限
+                mPermissionList.add(permissions[i]);
             }
-        } else {
-            //6.0以下，不需要授权
+        }
+        // 申请权限
+        if (mPermissionList.size() > 0) {
+            // 有权限没有通过，需要申请
+            ActivityCompat.requestPermissions(this, permissions, mRequestCode);
+        }else{
+            // 说明权限都已经通过，可以做你想做的事情去
             initHttp();
         }
     }
 
-    //同意授权
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    //请求权限后回调的方法
+    //参数： requestCode  是我们自己定义的权限请求码
+    //参数： permissions  是我们请求的权限名称数组
+    //参数： grantResults 是我们在弹出页面后是否允许权限的标识数组，数组的长度对应的是权限名称数组的长度，数组的数据0表示允许权限，-1表示我们点击了禁止权限
+    @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // Forward results to EasyPermissions
-        //跳转到onPermissionsGranted或者onPermissionsDenied去回调授权结果
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-    }
-
-    @Override
-    public void onPermissionsGranted(int requestCode, List<String> perms) {
-        Log.i("授权", "onPermissionsGranted:" + requestCode);
-        initHttp();
-    }
-
-    @Override
-    public void onPermissionsDenied(int requestCode, List<String> perms) {
-        Log.i("授权", "onPermissionsDenied:" + requestCode + ":" + perms.size());
-        // (Optional) Check whether the user denied any permissions and checked "NEVER ASK AGAIN."
-        // This will display a dialog directing them to enable the permission in app settings.
-        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            new AppSettingsDialog.Builder(this).build().show();
+        boolean hasPermissionDismiss = false;
+        //有权限没有通过
+        if (mRequestCode == requestCode) {
+            for (int i = 0; i < grantResults.length; i++) {
+                if (grantResults[i] == -1) {
+                    hasPermissionDismiss = true;
+                }
+            }
+            //如果有权限没有被允许
+            if (hasPermissionDismiss) {
+                ToastUtils.showToast(this,"拒绝权限会时部分功能无法使用哦~");
+                //跳转到系统设置权限页面，或者直接关闭页面，不让他继续访问
+//                btn_sure.setClickable(false);
+            }else{
+                //全部权限通过，可以进行下一步操作
+                initHttp();
+            }
         }
     }
 
@@ -148,15 +178,31 @@ public class MainCalculateActivity extends AppCompatActivity implements EasyPerm
                 WebResponse webResponse = response.body();
                 Log.e("webRequest","webResponse=="+webResponse.toString());
                 if (webResponse.getApiStatusCode() == 200){
-                    if (webResponse.getAppSwitchConfigInfo().getOpen()){
-                        //显示
-                        radioGroupMain.setVisibility(View.VISIBLE);
+                    //是否有一个栏目显示了
+                    boolean isNone = false;
+//                    if (webResponse.getAppSwitchConfigInfo().getOpenZhuanDianBa()){
+//                        moneyFragment = new MoneyFragment();
+//                        viewList.add(moneyFragment);
+//                        isNone = true;
+//                    }else{
+//                        radioButtonMoney.setVisibility(View.GONE);
+//                    }
+                    if (webResponse.getAppSwitchConfigInfo().getOpenNews()){
                         webFragment = new WebFragment();
-                        MoneyFragment moneyFragment = new MoneyFragment();
-                        viewList.add(moneyFragment);
                         viewList.add(webFragment);
-                        radioGroupMain.setOnCheckedChangeListener(onChangedListener);
+                    }else{
+                        radioButtonNews.setVisibility(View.GONE);
+                        isNone = true;
                     }
+                    if (!webResponse.getAppSwitchConfigInfo().getOpenReadBook()){
+                        llBook.setVisibility(View.GONE);
+                    }
+                    //显示
+                    if (isNone){
+                        //如果赚钱、新闻、小说都不显示，那么也不显示导航栏
+                        radioGroupMain.setVisibility(View.GONE);
+                    }
+                    radioGroupMain.setOnCheckedChangeListener(onChangedListener);
                 }
             }
 
@@ -169,6 +215,8 @@ public class MainCalculateActivity extends AppCompatActivity implements EasyPerm
 
     private void initView() {
         radioGroupMain = findViewById(R.id.rg_main);
+        radioButtonNews = findViewById(R.id.rb_news);
+        radioButtonMoney = findViewById(R.id.rb_money);
         llBook = findViewById(R.id.ll_book);
         llBook.setOnClickListener(this);
 
@@ -191,17 +239,34 @@ public class MainCalculateActivity extends AppCompatActivity implements EasyPerm
     private RadioGroup.OnCheckedChangeListener onChangedListener = new RadioGroup.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
-            int index = group.indexOfChild(group.findViewById(checkedId));
-            if (mIndex == index){
-                return;
-            }
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.hide(viewList.get(mIndex));
-            if(!viewList.get(index).isAdded()){
-                ft.add(R.id.fl_content, viewList.get(index));
+            switch (checkedId){
+                case R.id.rb_calculate:
+                    if (moneyFragment!=null)
+                        ft.hide(moneyFragment);
+                    if (webFragment!=null)
+                        ft.hide(webFragment);
+                    ft.show(mainFragment).commit();
+                    break;
+                case R.id.rb_money:
+                    if (webFragment!=null)
+                        ft.hide(webFragment);
+                    ft.hide(mainFragment);
+                    if(!moneyFragment.isAdded()){
+                        ft.add(R.id.fl_content, moneyFragment);
+                    }
+                    ft.show(moneyFragment).commit();
+                    break;
+                case R.id.rb_news:
+                    if (moneyFragment!=null)
+                        ft.hide(moneyFragment);
+                    ft.hide(mainFragment);
+                    if(!webFragment.isAdded()){
+                        ft.add(R.id.fl_content, webFragment);
+                    }
+                    ft.show(webFragment).commit();
+                    break;
             }
-            ft.show(viewList.get(index)).commit();
-            mIndex=index;
         }
     };
 
@@ -235,11 +300,6 @@ public class MainCalculateActivity extends AppCompatActivity implements EasyPerm
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        MobclickAgent.onResume(this);
-    }
 
     @Override
     public void onClick(View v) {
@@ -250,87 +310,22 @@ public class MainCalculateActivity extends AppCompatActivity implements EasyPerm
         }
     }
 
-
-    /*****************************************************************/
-    /**
-     * 注册监听Home按键返回的广播
-     */
-    private void registerHomeKeyReceiver() {
-        Log.e("mrs", "registerHomeKeyReceiver");
-        mHomeKeyReceiver = new HomeWatcherReceiver();
-        final IntentFilter homeFilter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-        getApplicationContext().registerReceiver(mHomeKeyReceiver, homeFilter);
-    }
-
-    /**
-     * 销毁Home监听广播
-     */
-    private void unregisterHomeKeyReceiver() {
-        Log.e("mrs", "unregisterHomeKeyReceiver");
-        if (null != mHomeKeyReceiver) {
-            getApplicationContext().unregisterReceiver(mHomeKeyReceiver);
-        }
-    }
-
-    /**
-     * @author Home键广播监听
-     *         Created by Mr on 2018/12/18.
-     */
-
-    public class HomeWatcherReceiver extends BroadcastReceiver {
-        private static final String LOG_TAG = "HomeReceiver";
-        private static final String SYSTEM_DIALOG_REASON_KEY = "reason";
-        private static final String SYSTEM_DIALOG_REASON_RECENT_APPS = "recentapps";
-        private static final String SYSTEM_DIALOG_REASON_HOME_KEY = "homekey";
-        private static final String SYSTEM_DIALOG_REASON_LOCK = "lock";
-        private static final String SYSTEM_DIALOG_REASON_ASSIST = "assist";
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            Log.e(LOG_TAG, "onReceive: action: " + action);
-            if (action.equals(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)) {
-                // android.intent.action.CLOSE_SYSTEM_DIALOGS
-                String reason = intent.getStringExtra(SYSTEM_DIALOG_REASON_KEY);
-                Log.e(LOG_TAG, "reason: " + reason);
-                if (SYSTEM_DIALOG_REASON_HOME_KEY.equals(reason)) {
-                    // 短按Home键
-                    Log.e("mrs", "homekey");
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (isAppFrondesk) {
-                                mAdView = new AdView(ADConstant.DEEPLINK_ONE, MainCalculateActivity.this,
-                                        ADConstant.APPID, true, true,
-                                        new BannerMonitor(ADConstant.DEEPLINK_ONE, MainCalculateActivity.this));
-                            }
-                        }
-                    }, 1000);
-
-                } else if (SYSTEM_DIALOG_REASON_RECENT_APPS.equals(reason)) {
-                    // 长按Home键 或者 activity切换键
-                    Log.e(LOG_TAG, "long press home key or activity switch");
-
-                } else if (SYSTEM_DIALOG_REASON_LOCK.equals(reason)) {
-                    // 锁屏
-                    Log.e(LOG_TAG, "lock");
-                } else if (SYSTEM_DIALOG_REASON_ASSIST.equals(reason)) {
-                    // samsung 长按Home键
-                    Log.e(LOG_TAG, "assist");
-                }
-            }
-        }
-    }
-
     private class AppStatus implements Runnable {
         @Override
         public void run() {
-            while (true) {
+            stop = false;
+            while (!stop) {
                 try {
                     if (appOnForeground()) {
+                         Log.e("mrs", "-----------------前台--------------");
                         isAppFrondesk = false;
+                        if (isStartSplash && ADConstant.IS_SCREEN){
+                            showSplash();
+                        }
                     } else {
-                        isAppFrondesk = true;
+                        isStartSplash = true;
+                        Log.e("mrs", "-----------------后台--------------");
+                        showSnMiSDK();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -343,6 +338,73 @@ public class MainCalculateActivity extends AppCompatActivity implements EasyPerm
             }
         }
     }
+
+    protected void onResume() {
+        super.onResume();
+        initAD();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
+
+    /**
+     * 调用广告
+     */
+    public void showSnMiSDK() {
+        if (isAppFrondesk)
+            return;
+        handler.sendEmptyMessageDelayed(1, 50);
+//        Log.e("mrs", "==========showSnMiSDK===========");
+        isAppFrondesk = true;
+    }
+
+    /**
+     * 调用开屏
+     */
+    boolean isStartSplash;
+    public void showSplash() {
+        if (!isStartSplash)
+            return;
+        isStartSplash = false;
+        handler.sendEmptyMessageDelayed(2, 10);
+    }
+
+
+    @SuppressLint("HandlerLeak")
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 1:
+                    Ad.prepareSplashAd(MainCalculateActivity.this, ADConstant.APPID, ADConstant.DEEPLINK_ONE, new AdHCallback() {
+                        @Override
+                        public void adSuccess() {
+                            Log.d("mrs", "==========成功===========");
+                        }
+                    });
+                    break;
+                case 2:
+                    synchronized(this) {
+                        isStartSplash = false;
+                        Log.e("mrs", "==========showSplash===========");
+                        if (!ADConstant.IS_SCREEN) {
+                            //没有开屏，就不打开
+                            Log.e("mrs", "==========没有开屏===========");
+                        } else {
+                            Log.e("mrs", "==========有开屏===========");
+                            Intent intent = new Intent(MainCalculateActivity.this, SplashActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+                    break;
+            }
+        }
+    };
 
     /**
      * 检测APP处于前后台
@@ -400,9 +462,4 @@ public class MainCalculateActivity extends AppCompatActivity implements EasyPerm
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterHomeKeyReceiver();
-    }
 }

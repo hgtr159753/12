@@ -6,13 +6,40 @@ package com.shenmi.calculator.bean;
 
 public class ConfigInfo {
 
-    private Boolean IsOpen;
+    private Boolean IsOpenReadBook;
+    private Boolean IsOpenZhuanDianBa;
+    private Boolean IsOpenNews;
 
-    public Boolean getOpen() {
-        return IsOpen;
+    public Boolean getOpenReadBook() {
+        return IsOpenReadBook;
     }
 
-    public void setOpen(Boolean open) {
-        IsOpen = open;
+    public void setOpenReadBook(Boolean openReadBook) {
+        IsOpenReadBook = openReadBook;
+    }
+
+    public Boolean getOpenZhuanDianBa() {
+        return IsOpenZhuanDianBa;
+    }
+
+    public void setOpenZhuanDianBa(Boolean openZhuanDianBa) {
+        IsOpenZhuanDianBa = openZhuanDianBa;
+    }
+
+    public Boolean getOpenNews() {
+        return IsOpenNews;
+    }
+
+    public void setOpenNews(Boolean openNews) {
+        IsOpenNews = openNews;
+    }
+
+    @Override
+    public String toString() {
+        return "ConfigInfo{" +
+                "IsOpenReadBook=" + IsOpenReadBook +
+                ", IsOpenZhuanDianBa=" + IsOpenZhuanDianBa +
+                ", IsOpenNews=" + IsOpenNews +
+                '}';
     }
 }

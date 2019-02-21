@@ -30,6 +30,7 @@
                     android:text="计算器" />
 
                 <RadioButton
+                    android:visibility="gone"
                     android:id="@+id/rb_money"
                     style="@style/main_tab_bottom"
                     android:drawableTop="@drawable/drawable_money"
@@ -43,6 +44,7 @@
 
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:gravity="center"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"

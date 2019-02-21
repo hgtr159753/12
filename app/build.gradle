@@ -8,7 +8,7 @@ android {
         applicationId "com.shenmi.calculator"
         minSdkVersion 14
         targetSdkVersion 26
-        versionCode 12
+        versionCode 14
         versionName "1.4"
         multiDexEnabled true
         flavorDimensions "versionCode"
@@ -52,11 +52,12 @@ android {
     }
 
     productFlavors {
-        xiaomi{}
+        yingyongbao {}
         productFlavors.all {
             flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
         }
     }
+
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
@@ -88,6 +89,7 @@ dependencies {
     implementation files('libs/umeng-common-1.5.0.jar')
     implementation files('libs/umeng-analytics-7.5.0.jar')
     implementation files('libs/utdid4all-1.1.5.3_proguard.jar')
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     compile project(':push')
     compile 'com.tencent.bugly:crashreport_upgrade:latest.release'
 
@@ -99,7 +101,7 @@ dependencies {
 
     //retrofit2.0
     compile 'pub.devrel:easypermissions:1.0.1'
-    api files('libs/SNMISDK12_26.jar')
+    api files('libs/SNMISDK1_23.jar')
 
 //        compile 'com.squareup.retrofit2:retrofit:2.2.0'
 
@@ -171,19 +173,6 @@ dependencies {
     //微信分享登录支付
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:1.0.2'
 
-//        //友盟统计基础依赖库
-//
-//        implementation 'com.umeng.sdk:common:1.5.3'
-//
-//        implementation 'com.umeng.sdk:analytics:latest.release'
-//
-//        //友盟推送
-//
-//        implementation 'com.umeng.sdk:utdid:1.1.5.3'
-//
-//        //PushSDK
-//
-//        implementation 'com.umeng.sdk:push:4.2.0'
-        compile(name:'read-sdk', ext:'aar')
-        compile 'com.android.support:multidex:1.0.0'
+    compile(name: 'read-sdk', ext: 'aar')
+    compile 'com.android.support:multidex:1.0.0'
 }

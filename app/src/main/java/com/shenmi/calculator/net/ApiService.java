@@ -13,7 +13,7 @@ import retrofit2.http.POST;
 
 public interface ApiService {
 
-    @POST("api/APPConfig/GetAppSwitchConfig")
+    @POST("api/APPConfig/GetAppSwitchConfigNew")
     Call<WebResponse> getWebOpenRequest(@Body WebRequest webRequest);
 
 }
