@@ -14,7 +14,6 @@
         </FrameLayout>
 
         <RadioGroup
-            android:visibility="gone"
             android:id="@+id/rg_main"
             android:layout_width="match_parent"
             android:layout_height="50dp"

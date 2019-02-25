@@ -41,7 +41,11 @@ import com.shenmi.calculator.net.ApiService;
 import com.shenmi.calculator.bean.WebRequest;
 import com.shenmi.calculator.bean.WebResponse;
 import com.shenmi.calculator.util.AppContentUtil;
+import com.shenmi.calculator.util.AppMarketUtil;
 import com.shenmi.calculator.util.NetworkUtil;
+import com.shenmi.calculator.util.SPUtil;
+import com.shenmi.calculator.util.SharedPUtils;
+import com.sm.readbook.utils.SPUtils;
 import com.snmi.sdk.Ad;
 import com.snmi.sdk.AdHCallback;
 import com.snmi.sdk.AdView;
@@ -89,8 +93,20 @@ public class MainCalculateActivity extends AppCompatActivity implements  View.On
         super.onCreate(savedInstanceState);
         PushAgent.getInstance(this).onAppStart();
         setContentView(R.layout.activity_main);
+        initTime();
         initView();
         initPermission();
+    }
+
+    /**
+     * 第二次进来提示用户评价
+     */
+    private void initTime() {
+        int times = (int) SPUtil.get(this, "times", 1);
+        if (times == 2){
+            AppMarketUtil.goThirdApp(this);
+        }
+        SPUtil.put(this,"times",++times);
     }
 
     private void initAD() {
