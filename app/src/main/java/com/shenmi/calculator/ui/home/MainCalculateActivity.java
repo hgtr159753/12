@@ -87,12 +87,14 @@ public class MainCalculateActivity extends AppCompatActivity implements  View.On
     private MoneyFragment moneyFragment;
     private boolean stop;
     private SplashADInfo splashAD;
+    private Boolean isOpen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PushAgent.getInstance(this).onAppStart();
         setContentView(R.layout.activity_main);
+        isOpen = (Boolean) SPUtil.get(this, ADConstant.ISOPENAD, false);
         initTime();
         initView();
         initPermission();
@@ -110,6 +112,7 @@ public class MainCalculateActivity extends AppCompatActivity implements  View.On
     }
 
     private void initAD() {
+        if (isOpen)
         Ad.prepareSplashAd(this, ADConstant.APPID,ADConstant.START_SCREEN);
     }
 
@@ -194,6 +197,12 @@ public class MainCalculateActivity extends AppCompatActivity implements  View.On
                 WebResponse webResponse = response.body();
                 Log.e("webRequest","webResponse=="+webResponse.toString());
                 if (webResponse.getApiStatusCode() == 200){
+                    //判断是否显示广告
+                    if (webResponse.getAppSwitchConfigInfo().getOpenCalculatorAD()){
+                        SPUtil.put(MainCalculateActivity.this,ADConstant.ISOPENAD,true);
+                    }else{
+                        SPUtil.put(MainCalculateActivity.this,ADConstant.ISOPENAD,false);
+                    }
                     //是否有一个栏目显示了
                     boolean isNone = false;
 //                    if (webResponse.getAppSwitchConfigInfo().getOpenZhuanDianBa()){
@@ -249,6 +258,7 @@ public class MainCalculateActivity extends AppCompatActivity implements  View.On
         activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         packageName = this.getPackageName();
         //检测APP处于前台还是后台
+        if (isOpen)
         new Thread(new AppStatus()).start();
     }
 
@@ -304,6 +314,7 @@ public class MainCalculateActivity extends AppCompatActivity implements  View.On
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    if (isOpen)
                 mAdView = new AdView(ADConstant.DEEPLINK_ONE, MainCalculateActivity.this,
                         ADConstant.APPID, true, true,
                         new BannerMonitor(ADConstant.DEEPLINK_ONE, MainCalculateActivity.this));

@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 
 import com.shenmi.calculator.R;
 import com.shenmi.calculator.constant.ADConstant;
+import com.shenmi.calculator.util.SPUtil;
 import com.snmi.sdk.Ad;
 import com.snmi.sdk.SplashADInfo;
 import com.snmi.sdk.SplashFullScreenAD;
@@ -32,6 +33,7 @@ public class SplashActivity extends AppCompatActivity {
     private String[] umb = new String[4];
     SplashADInfo splashAD;
     private SmHandler handler;
+    private boolean isOpen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +43,11 @@ public class SplashActivity extends AppCompatActivity {
         container = findViewById(R.id.rl_splash);
         imgSplash = findViewById(R.id.iv_splash);
         handler = new SmHandler(this);
-        initAD();
+        isOpen = (Boolean) SPUtil.get(this, ADConstant.ISOPENAD, false);
+        if (isOpen) {
+            initAD();
+        }
+        handler.postDelayed(callbacks, 3000);
     }
 
     private void initAD() {
@@ -89,12 +95,13 @@ public class SplashActivity extends AppCompatActivity {
                 }
             });
         }
-        handler.postDelayed(new Runnable() {
-            public void run() {
-               gotoMain();
-            }
-        }, 3000);
     }
+
+    private Runnable callbacks = new Runnable() {
+        public void run() {
+            gotoMain();
+        }
+    };
 
     void gotoMain() {
         Log.d("splash", "goMain");
@@ -117,10 +124,12 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
+        if (splashAD == null){
+            return;
+        }
         if(splashAD.dplink != null && i > 0){
             handler.postDelayed(new Runnable() {
                 public void run() {
@@ -133,6 +142,7 @@ public class SplashActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
+        handler.removeCallbacks(callbacks);
         Log.d("splash", "onStop");
         super.onStop();
     }

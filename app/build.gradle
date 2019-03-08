@@ -9,7 +9,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 26
         versionCode 14
-        versionName "1.4"
+        versionName "1.7"
         multiDexEnabled true
         flavorDimensions "versionCode"
         manifestPlaceholders = [UMENG_CHANNEL_VALUE: "umeng"] //默认名称
@@ -52,7 +52,7 @@ android {
     }
 
     productFlavors {
-        yingyongbao {}
+        zhuandianba {}
         productFlavors.all {
             flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
         }
@@ -101,7 +101,7 @@ dependencies {
 
     //retrofit2.0
     compile 'pub.devrel:easypermissions:1.0.1'
-    api files('libs/SNMISDK1_23.jar')
+    api files('libs/SNMISDK2_28.jar')
 
 //        compile 'com.squareup.retrofit2:retrofit:2.2.0'
 

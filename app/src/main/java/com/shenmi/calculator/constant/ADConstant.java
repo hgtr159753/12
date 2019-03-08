@@ -6,6 +6,9 @@ package com.shenmi.calculator.constant;
 
 public class ADConstant {
 
+    //是否开启广告sp
+    public static final String ISOPENAD= "isopenad";
+
     public static String APPID = "EFCF4787249A408D951D6583D1F63205";
 
     /**
