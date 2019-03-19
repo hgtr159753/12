@@ -105,7 +105,7 @@ public class MainCalculateActivity extends AppCompatActivity implements  View.On
      */
     private void initTime() {
         int times = (int) SPUtil.get(this, "times", 1);
-        if (times == 2){
+        if (times == 3){
             AppMarketUtil.goThirdApp(this);
         }
         SPUtil.put(this,"times",++times);
@@ -319,7 +319,7 @@ public class MainCalculateActivity extends AppCompatActivity implements  View.On
                         ADConstant.APPID, true, true,
                         new BannerMonitor(ADConstant.DEEPLINK_ONE, MainCalculateActivity.this));
                 }
-            }, 2000);
+            }, 1000);
             moveTaskToBack(true);
         } else {
             Toast.makeText(this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
@@ -337,6 +337,7 @@ public class MainCalculateActivity extends AppCompatActivity implements  View.On
         }
     }
 
+    private long currentTimes = System.currentTimeMillis();
     private class AppStatus implements Runnable {
         @Override
         public void run() {
@@ -349,6 +350,7 @@ public class MainCalculateActivity extends AppCompatActivity implements  View.On
                         if (isStartSplash && ADConstant.IS_SCREEN){
                             showSplash();
                         }
+                        currentTimes = System.currentTimeMillis();
                     } else {
                         isStartSplash = true;
                         Log.e("mrs", "-----------------后台--------------");
@@ -397,7 +399,11 @@ public class MainCalculateActivity extends AppCompatActivity implements  View.On
         if (!isStartSplash)
             return;
         isStartSplash = false;
-        handler.sendEmptyMessageDelayed(2, 10);
+        Log.e("mrs", "-----------------前台--------------"+currentTimes);
+        if (System.currentTimeMillis()-currentTimes>(25*1000)){
+            Log.e("mrs", "----------------开启开屏--------------");
+            handler.sendEmptyMessageDelayed(2, 10);
+        }
     }
 
 

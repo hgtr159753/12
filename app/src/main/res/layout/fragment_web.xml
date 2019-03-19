@@ -44,11 +44,26 @@
 
     </RelativeLayout>
 
-    <WebView
-        android:id="@+id/webview_main"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </WebView>
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:max="100"/>
+
+        <WebView
+            android:id="@+id/webview_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </WebView>
+
+    </LinearLayout>
+
 
 </LinearLayout>

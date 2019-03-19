@@ -29,6 +29,7 @@ import com.shenmi.calculator.ui.LoanActivity;
 import com.shenmi.calculator.ui.UnitConvertActivity;
 import com.shenmi.calculator.ui.UpperNumActivity;
 import com.shenmi.calculator.util.AppMarketUtil;
+import com.shenmi.calculator.util.SPUtil;
 import com.shenmi.calculator.util.UnitConvertUtil;
 import com.sm.readbook.base.BaseFragment;
 import com.snmi.sdk.AdView;
@@ -95,7 +96,14 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         rl_area.setOnClickListener(this);
         rl_time.setOnClickListener(this);
         rl_mass.setOnClickListener(this);
-        rl_banner.setAdListener(new BannerMonitor(ADConstant.BANNER_ONE, getActivity()));
+        boolean isOpen = (Boolean) SPUtil.get(getActivity(), ADConstant.ISOPENAD, false);
+        if (isOpen){
+//            //有广告则调用申米广告sdk
+            rl_banner.setVisibility(View.VISIBLE);
+            rl_banner.setAdListener(new BannerMonitor(ADConstant.BANNER_ONE, getActivity()));
+        }else{
+            rl_banner.setVisibility(View.GONE);
+        }
     }
 
     public class BannerMonitor implements BannerListener {

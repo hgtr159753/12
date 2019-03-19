@@ -18,6 +18,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.shenmi.calculator.R;
 import com.shenmi.calculator.constant.ConstantWeb;
@@ -33,7 +34,7 @@ public class WebFragment extends Fragment implements View.OnClickListener {
     private WebView webview_main;
     private ImageView iv_home;
     private ImageView iv_back;
-    private ProgressDialog progressDialog;
+    private ProgressBar progressBar;
     private View mRootView;
 
     @Nullable
@@ -50,10 +51,8 @@ public class WebFragment extends Fragment implements View.OnClickListener {
     protected void initView(View view) {
         iv_home = view.findViewById(R.id.iv_home);
         iv_back = view.findViewById(R.id.iv_back);
+        progressBar = view.findViewById(R.id.progressBar);
         webview_main = view.findViewById(R.id.webview_main);
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setMessage("稍等哦~");
         initWebView();
     }
 
@@ -113,13 +112,11 @@ public class WebFragment extends Fragment implements View.OnClickListener {
         public void onProgressChanged(WebView view, int newProgress) {
             if (newProgress == 100) {
                 // 网页加载完成
-                if (progressDialog.isShowing())
-                    progressDialog.dismiss();
+                progressBar.setVisibility(View.GONE);
                 webview_main.getSettings().setBlockNetworkImage(false);
             } else {
-                if (!progressDialog.isShowing()){
-                    progressDialog.show();
-                }
+                progressBar.setVisibility(View.VISIBLE);
+                progressBar.setProgress(newProgress);
             }
         }
     };

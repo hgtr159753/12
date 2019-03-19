@@ -64,6 +64,7 @@ public class MyApplication extends MultiDexApplication {
         mPushAgent.addAlias("calendar", "aplsh", new UTrack.ICallBack() {
             @Override
             public void onMessage(boolean b, String s) {
+
             }
         });
     }

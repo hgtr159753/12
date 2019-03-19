@@ -27,12 +27,21 @@
         android:layout_height="0.5dp"
         android:background="@color/picker_line"/>
 
-    <com.snmi.sdk.AdView
-        android:id="@+id/rl_banner"
+    <RelativeLayout
+        android:id="@+id/rl_adbanner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        locationID="F8DEE961D6E34E158FD484AC6286117F"
-        publisherID="EFCF4787249A408D951D6583D1F63205" />
+        android:layout_height="wrap_content">
+
+        <com.snmi.sdk.AdView
+            android:visibility="gone"
+            android:id="@+id/rl_banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            locationID="F8DEE961D6E34E158FD484AC6286117F"
+            publisherID="EFCF4787249A408D951D6583D1F63205" />
+
+    </RelativeLayout>
+
 
 
     <LinearLayout
