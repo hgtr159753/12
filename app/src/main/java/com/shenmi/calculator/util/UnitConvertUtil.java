@@ -34,6 +34,7 @@ public class UnitConvertUtil {
 	public static final int SPEED = 4;
 	public static final int TIME = 5;
 	public static final int MASS = 6;
+	public static final int RATE = 7;//汇率
 
 	// 长度
 	public static String computeConvertResult(String inputNum, int preUnit,
@@ -151,7 +152,23 @@ public class UnitConvertUtil {
 					result = ArithUtil.mul(result, ArithUtil.getScientificIndex(mid));
 				}
 				break;
-
+				//汇率
+			case RATE:
+				if (Double.valueOf(inputNum) > 1) {
+					mid = computeRate(inputNum, preUnit, true);
+				} else {
+					mid = computeRate(ArithUtil.getScientificNum(inputNum),
+							preUnit, true);
+					mid = ArithUtil.mul(mid, ArithUtil.getScientificIndex(inputNum));
+				}
+				if (Double.valueOf(mid) > 1) {
+					result = computeRate(mid, aftUnit, false);
+				} else {
+					result = computeRate(ArithUtil.getScientificNum(mid), aftUnit,
+							false);
+					result = ArithUtil.mul(result, ArithUtil.getScientificIndex(mid));
+				}
+				break;
 			default:
 				break;
 			}
@@ -1148,6 +1165,188 @@ public class UnitConvertUtil {
 
 			default:
 				break;
+			}
+		}
+		return result;
+	}
+
+	private static String computeRate(String inputNum, int unit,
+									  boolean isToStandardUnit) {
+		/**
+		 * 标准单位设置为人民币
+		 */
+		String result = "1";
+		if (!isToStandardUnit) {
+			switch (unit) {
+				//0:人民币CNY y=x
+				case 0:
+					result= inputNum;
+					break;
+				//1:美元USD y=0.1489x;
+				case 1:
+					result= ArithUtil.mul(inputNum, "0.1453");
+					break;
+				//2:欧元 y=0.1323x
+				case 2:
+					result=ArithUtil.mul(inputNum, "0.1323");
+					break;
+				//3:日元 y=x 16.4701
+				case 3:
+					result= ArithUtil.mul(inputNum, "16.4701");
+					break;
+				//4:港币 y=x 1.169
+				case 4:
+					result= ArithUtil.mul(inputNum, "1.169");
+					break;
+				//5:韩元 y=168.99 x
+				case 5:
+					result= ArithUtil.mul(inputNum, "168.99");
+					break;
+				//6:英镑 y=0.1129x
+				case 6:
+					result= ArithUtil.mul(inputNum, "0.1129");
+					break;
+				//7:泰铢 y=4.7279x
+				case 7:
+					result= ArithUtil.mul(inputNum, "4.7279");
+					break;
+				//8:新台币 y=4.595x
+				case 8:
+					result= ArithUtil.mul(inputNum, "4.595");
+					break;
+				//9:越南盾
+				case 9:
+					result= ArithUtil.mul(inputNum, "3461.05");
+					break;
+				//10:阿根廷比索
+				case 10:
+					result= ArithUtil.mul(inputNum, "6.3478");
+					break;
+				//11:阿联酋迪拉姆
+				case 11:
+					result= ArithUtil.mul(inputNum, "0.547");
+					break;
+				//12:澳大利亚元
+				case 12:
+					result= ArithUtil.mul(inputNum, "0.2097");
+					break;
+				//13:澳门元
+				case 13:
+					result= ArithUtil.mul(inputNum, "1.203");
+					break;
+				//14: 白俄罗斯卢布
+				case 14:
+					result= ArithUtil.mul(inputNum, "0.316");
+					break;
+				//15:巴西雷亚尔
+				case 15:
+					result= ArithUtil.mul(inputNum, "0.5773");
+					break;
+				//16:俄罗斯卢布
+				case 16:
+					result= ArithUtil.mul(inputNum, "9.5981");
+					break;
+				//17:菲律宾比索
+				case 17:
+					result= ArithUtil.mul(inputNum, "0.1995");
+					break;
+				//18:加拿大元
+				case 18:
+					result= ArithUtil.mul(inputNum, "5");
+					break;
+				//19:马拉西亚
+				case 19:
+					result= ArithUtil.mul(inputNum, "0.6052");
+					break;
+
+				default:
+					break;
+			}
+		} else {
+			switch (unit) {
+				//0:人名币
+				case 0:
+					result= inputNum;
+					break;
+				//1:美元
+				case 1:
+					result= ArithUtil.mul(inputNum, "6.8839");
+					break;
+				//2:欧元
+				case 2:
+					result=ArithUtil.mul(inputNum, "7.5597");
+					break;
+				//3:日元
+				case 3:
+					result= ArithUtil.mul(inputNum, "0.0607");
+					break;
+				//4:港币
+				case 4:
+					result= ArithUtil.mul(inputNum, "0.8555");
+					break;
+				//5:韩元
+				case 5:
+					result= ArithUtil.mul(inputNum, "0.0059");
+					break;
+				//6:英镑
+				case 6:
+					result= ArithUtil.mul(inputNum, "8.8561");
+					break;
+				//7:泰铢
+				case 7:
+					result= ArithUtil.mul(inputNum, "8.8561");
+					break;
+				//8:新台币
+				case 8:
+					result= ArithUtil.mul(inputNum, "0.2176");
+					break;
+				//9:越南盾
+				case 9:
+					result=ArithUtil.mul(inputNum, "0.0003");
+					break;
+				//10:阿根廷比索
+				case 10:
+					result=ArithUtil.mul(inputNum, "0.1575");
+					break;
+				//11:阿联酋迪拉姆
+				case 11:
+					result=ArithUtil.mul(inputNum, "1.8282");
+					break;
+				//12:澳大利亚元
+				case 12:
+					result=ArithUtil.mul(inputNum, "4.7692");
+					break;
+				//13:澳门元
+				case 13:
+					result=ArithUtil.mul(inputNum, "0.8313");
+					break;
+				//14:白俄罗斯卢布
+				case 14:
+					result=ArithUtil.mul(inputNum, "3.1645");
+					break;
+				//15:巴西雷加尔
+				case 15:
+					result=ArithUtil.mul(inputNum, "1.7321");
+					break;
+				//16:俄罗斯卢布
+				case 16:
+					result=ArithUtil.mul(inputNum, "0.1042");
+					break;
+				//17:菲律宾比索
+				case 17:
+					result=ArithUtil.mul(inputNum, "0.1277");
+					break;
+				//18:加拿大元
+				case 18:
+					result=ArithUtil.mul(inputNum, "5.0128");
+					break;
+				//19:马拉西亚
+				case 19:
+					result= ArithUtil.div(inputNum, "1.6523");
+					break;
+
+				default:
+					break;
 			}
 		}
 		return result;

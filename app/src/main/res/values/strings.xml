@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">生活计算器</string>
+    <string name="app_name">计算机</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
@@ -13,21 +13,27 @@
     <string name="speed_title">速度单位计算</string>
     <string name="time_title">时间单位计算</string>
     <string name="mass_title">重量单位计算</string>
+    <string name="rate_title">汇率计算</string>
     <string name="capital_title">大写计算</string>
+    <string name="tax_title">个税计算</string>
     <string name="house_title">房贷计算</string>
     <string name="choose_unit">选择单位</string>
     <string name="pick_commit">确认</string>
     <string name="pick_cancel">取消</string>
+    <string name="tax_result">月薪清单</string>
     <!-- FunctionSet显示 -->
+    <string name="rate_text">汇率计算</string>
     <string name="length_text">长度计算</string>
     <string name="area_text">面积计算</string>
     <string name="volume_text">体积计算</string>
-    <string name="temperature_text">房贷计算</string>
+    <string name="loan_text">房贷计算</string>
+    <string name="temperature_text">温度计算</string>
     <string name="speed_text">速度计算</string>
     <string name="time_text">时间计算</string>
     <string name="mass_text">重量计算</string>
     <string name="capital_text">大写计算</string>
     <string name="science_text">科学计算器</string>
+    <string name="wealth_text">理财计算</string>
     <!-- 长度单位集合 全称 -->
     <string name="km_length">千米</string>
     <string name="m_length">米</string>
@@ -137,6 +143,29 @@
     <string name="jin_mass">斤</string>
     <string name="qian_mass">钱</string>
     <string name="liang_mass">两</string>
+
+    <!-- 国家集合 全称 -->
+    <string name="rmb_rate">人民币</string>
+    <string name="my_rate">美元</string>
+    <string name="oy_rate">欧元</string>
+    <string name="ry_rate">日元</string>
+    <string name="gb_rate">港币</string>
+    <string name="hy_rate">韩元</string>
+    <string name="yb_rate">英镑</string>
+    <string name="tz_rate">泰铢</string>
+    <string name="xtb_rate">新台币</string>
+    <string name="ynd_rate">越南盾</string>
+    <string name="agtbs_rate">阿根廷比索</string>
+    <string name="alqdlm_rate">阿联酋迪拉姆</string>
+    <string name="adlyy_rate">澳大利亚元</string>
+    <string name="amy_rate">澳门元</string>
+    <string name="belslb_rate">白俄罗斯卢布</string>
+    <string name="bxlye_rate">巴西雷亚尔</string>
+    <string name="elslu_rate">俄罗斯卢布</string>
+    <string name="flbbs_rate">菲律宾比索</string>
+    <string name="jndy_rate">加拿大元</string>
+    <string name="mlxyljt_rate">马来西亚林吉特</string>
+
 
     <!-- 长度单位集合 缩写 -->
     <string name="km_length_short">km</string>
@@ -298,6 +327,28 @@
     <string name="sub">-</string>
     <string name="point">.</string>
     <string name="equal">=</string>
-    <string name="percent">=</string>
+    <string name="percent">%</string>
+
+    <!--汇率单位缩写-->
+    <string name="rmb_country">CNY</string>
+    <string name="my_country">USD</string>
+    <string name="oy_country">EUR</string>
+    <string name="ry_country">JPY</string>
+    <string name="gb_country">HKD</string>
+    <string name="hy_country">KRW</string>
+    <string name="yb_country">GBP</string>
+    <string name="tz_country">THB</string>
+    <string name="xtb_country">TWD</string>
+    <string name="ynd_country">VND</string>
+    <string name="agtbs_country">ARS</string>
+    <string name="alqdlm_country">AED</string>
+    <string name="adlyy_country">AUD</string>
+    <string name="amy_country">MOP</string>
+    <string name="belslb_country">BYN</string>
+    <string name="bxlye_country">BRL</string>
+    <string name="elslu_country">RUB</string>
+    <string name="flbbs_country">PHP</string>
+    <string name="jndy_country">CAD</string>
+    <string name="mlxyljt_country">MYR</string>
 
 </resources>

@@ -20,6 +20,21 @@
             android:textColor="@android:color/white"
             android:textSize="@dimen/convert_title_tv_size" />
 
+        <TextView
+            android:id="@+id/iv_qq"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="15dp"
+            android:layout_marginRight="15dp"
+            android:drawableTop="@drawable/qq"
+            android:text="客服"
+            android:textColor="@android:color/white"
+            android:textSize="8sp"
+            android:textStyle="bold" />
+
     </RelativeLayout>
 
     <View
@@ -27,20 +42,19 @@
         android:layout_height="0.5dp"
         android:background="@color/picker_line"/>
 
-    <RelativeLayout
-        android:id="@+id/rl_adbanner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <!--<RelativeLayout-->
+        <!--android:id="@+id/rl_adbanner"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
 
-        <com.snmi.sdk.AdView
-            android:visibility="gone"
-            android:id="@+id/rl_banner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            locationID="F8DEE961D6E34E158FD484AC6286117F"
-            publisherID="EFCF4787249A408D951D6583D1F63205" />
+        <!--<com.snmi.sdk.AdView-->
+            <!--android:id="@+id/rl_banner"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--locationID="F8DEE961D6E34E158FD484AC6286117F"-->
+            <!--publisherID="EFCF4787249A408D951D6583D1F63205" />-->
 
-    </RelativeLayout>
+    <!--</RelativeLayout>-->
 
 
 
@@ -125,7 +139,7 @@
             android:background="@color/picker_line"/>
 
         <RelativeLayout
-            android:id="@+id/rl_length"
+            android:id="@+id/rl_rate"
             android:background="@color/unit_convert_bg"
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -139,13 +153,136 @@
                 android:orientation="vertical" >
 
                 <ImageView
-                    android:src="@drawable/length_convert"
+                    android:src="@drawable/rate_convert"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center" />
 
                 <TextView
-                    android:text="@string/length_text"
+                    android:text="@string/rate_text"
+                    android:layout_marginTop="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textColor="@color/function_choose_text" >
+                </TextView>
+            </LinearLayout>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/picker_line"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/picker_line"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_tax"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_weight="1"
+            android:background="@color/unit_convert_bg">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/tax_convert" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:text="@string/tax_title"
+                    android:textColor="@color/function_choose_text"></TextView>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/picker_line"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_mass"
+            android:background="@color/unit_convert_bg"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:src="@drawable/mass_convert"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" />
+
+                <TextView
+                    android:text="@string/mass_text"
+                    android:layout_marginTop="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textColor="@color/function_choose_text" >
+                </TextView>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/picker_line"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_loan"
+            android:background="@color/unit_convert_bg"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:src="@drawable/loan_convert"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" />
+
+                <TextView
+                    android:text="@string/loan_text"
                     android:layout_marginTop="20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -244,7 +381,7 @@
             android:background="@color/picker_line"/>
 
         <RelativeLayout
-            android:id="@+id/rl_temperature"
+            android:id="@+id/rl_length"
             android:background="@color/unit_convert_bg"
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -258,13 +395,13 @@
                 android:orientation="vertical" >
 
                 <ImageView
-                    android:src="@drawable/temperature_convert0"
+                    android:src="@drawable/length_convert"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center" />
 
                 <TextView
-                    android:text="@string/temperature_text"
+                    android:text="@string/length_text"
                     android:layout_marginTop="20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -363,34 +500,33 @@
             android:background="@color/picker_line"/>
 
         <RelativeLayout
-            android:id="@+id/rl_mass"
-            android:background="@color/unit_convert_bg"
+            android:id="@+id/rl_temperature"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="match_parent"
-            android:layout_centerInParent="true">
+            android:layout_centerInParent="true"
+            android:layout_weight="1"
+            android:background="@color/unit_convert_bg">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <ImageView
-                    android:src="@drawable/mass_convert"
-                    android:layout_width="wrap_content"
+                    android:src="@drawable/temperature_convert"
+                   android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center" />
 
                 <TextView
-                    android:text="@string/mass_text"
-                    android:layout_marginTop="20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
                     android:gravity="center"
-                    android:textColor="@color/function_choose_text" >
-                </TextView>
+                    android:text="@string/temperature_text"
+                    android:textColor="@color/function_choose_text"></TextView>
             </LinearLayout>
         </RelativeLayout>
 

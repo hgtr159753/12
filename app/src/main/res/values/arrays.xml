@@ -54,7 +54,7 @@
         <item>@drawable/length_convert</item>
         <item>@drawable/area_convert</item>
         <item>@drawable/volume_convert</item>
-        <item>@drawable/temperature_convert0</item>
+        <item>@drawable/loan_convert</item>
         <item>@drawable/speed_convert</item>
         <item>@drawable/time_convert</item>
         <item>@drawable/mass_convert</item>

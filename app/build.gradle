@@ -8,8 +8,8 @@ android {
         applicationId "com.shenmi.calculator"
         minSdkVersion 14
         targetSdkVersion 26
-        versionCode 19
-        versionName "1.5"
+        versionCode 22
+        versionName "2.2"
         multiDexEnabled true
         flavorDimensions "versionCode"
         manifestPlaceholders = [UMENG_CHANNEL_VALUE: "umeng"] //默认名称
@@ -26,6 +26,7 @@ android {
             keyAlias "key"
             keyPassword "123456"
         }
+
         release {
             storeFile file("calculator.jks")
             storePassword "123456"
@@ -52,7 +53,7 @@ android {
     }
 
     productFlavors {
-        sanxing {}
+        yingyongbao {}
         productFlavors.all {
             flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
         }
@@ -62,6 +63,7 @@ android {
         checkReleaseBuilds false
         abortOnError false
     }
+
     sourceSets {
         main {
             jniLibs.srcDirs = ['libs']
@@ -82,10 +84,6 @@ repositories {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-
-//        compile 'com.android.support:appcompat-v7:26.1.0'
-
-//        compile 'com.android.support:support-v4:26.1.0'
     implementation files('libs/umeng-common-1.5.0.jar')
     implementation files('libs/umeng-analytics-7.5.0.jar')
     implementation files('libs/utdid4all-1.1.5.3_proguard.jar')
@@ -97,45 +95,41 @@ dependencies {
     compile 'com.tencent.bugly:nativecrashreport:latest.release'
 
     //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
-    implementation files('libs/Msc.jar')
+    api files('libs/Msc.jar')
 
     //retrofit2.0
     compile 'pub.devrel:easypermissions:1.0.1'
-    api files('libs/SNMISDK2_28.jar')
-
-//        compile 'com.squareup.retrofit2:retrofit:2.2.0'
-
-//        compile 'com.squareup.retrofit2:converter-gson:2.0.1'
 
     //support
-    implementation 'com.android.support:design:26.1.0'
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support:support-v4:26.1.0'
-    implementation 'com.android.support:cardview-v7:26.1.0'
-    implementation 'com.android.support:recyclerview-v7:26.1.0'
+    api 'com.android.support:design:26.1.0'
+    api 'com.android.support:appcompat-v7:26.1.0'
+    api 'com.android.support:support-v4:26.1.0'
+    api 'com.android.support:cardview-v7:26.1.0'
+    api 'com.android.support:recyclerview-v7:26.1.0'
     compile 'com.android.support:support-annotations:27.1.1'
-//
+
+    //
+
     //log
     debugCompile 'com.zchu:zlog:1.0.1'
     testCompile 'com.zchu:zlog:1.0.1'
     releaseCompile 'com.zchu:zlog-no-op:1.0.1'
-//
-//    //正式发布时会将所有的打印方法替换为空方法
-//
-    //状态栏沉浸式
-    implementation 'com.github.niorgai:StatusBarCompat:1.0.0'
-//
+
+    //
+
     //progressbar
     compile 'com.github.fangx:haorefresh:1.0'
     compile 'com.wang.avi:library:1.0.1'
 
     //图片加载
     compile 'com.github.bumptech.glide:glide:4.1.1'
-//
+
     //适配器
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.28'
     compile 'com.squareup.okhttp3:okhttp-urlconnection:3.2.0'
-//
+
+    //
+
     //Rxjava
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'io.reactivex:rxjava:1.3.0'
@@ -144,35 +138,28 @@ dependencies {
     compile('com.zchu:rxcache:1.2.6') {
         exclude group: 'com.android.support'
     }
-//
-    //菜单栏
-    compile 'com.github.clans:fab:1.6.4'
-
-    //悬浮动画菜单
-    compile('com.afollestad.material-dialogs:core:0.9.4.3') {
-        exclude group: 'com.android.support'
-    }
     compile 'com.squareup.okio:okio:1.13.0'
 
     //retrofit的包
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
-//
+
     //对gson的支持
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
 
     //对rxjava的适配
     compile 'com.squareup.retrofit2:adapter-rxjava:2.3.0'
-
-    // greenDao
-    compile 'org.greenrobot:greendao:3.2.2'
-    compile 'org.greenrobot:greendao-generator:3.2.2'
-
-    //支付宝
-    compile 'com.github.ikidou:FragmentBackHandler:2.1'
-//
-    //微信分享登录支付
-    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:1.0.2'
-
-    compile(name: 'read-sdk', ext: 'aar')
     compile 'com.android.support:multidex:1.0.0'
+    api files('libs/SNMISDK.jar')
+
+    //215(正常广告、开插屏、banner、解锁屏)
+
+    //只有唤醒()
+    //时间选择器
+    api 'com.contrarywind:Android-PickerView:3.2.6'
+
+    api(name: 'calender', ext: 'aar')
+    implementation project(':calendarview')
+
+    implementation project(':okhttputils')
+    implementation files('libs/SMSDK_WS5_29.jar')
 }

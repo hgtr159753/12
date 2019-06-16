@@ -5,10 +5,11 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 import com.iflytek.cloud.SpeechUtility;
-import com.sm.readbook.AppManager;
-import com.sm.readbook.ReadSDK;
-import com.sm.readbook.data.db.DBRepository;
+import com.shenmi.calculator.constant.ADConstant;
 import com.snmi.sdk.Ad;
+import com.snmi.sdk_3.Hs;
+import com.snmi.sdk_3.util.HsHelper;
+import com.snmi.sdk_3.util.SDKHelper;
 import com.tencent.bugly.Bugly;
 import com.umeng.analytics.AnalyticsConfig;
 import com.umeng.analytics.MobclickAgent;
@@ -16,6 +17,17 @@ import com.umeng.commonsdk.UMConfigure;
 import com.umeng.message.IUmengRegisterCallback;
 import com.umeng.message.PushAgent;
 import com.umeng.message.UTrack;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.https.HttpsUtils;
+import com.zhy.http.okhttp.log.LoggerInterceptor;
+
+import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
+
+import okhttp3.OkHttpClient;
 
 /**
  * Created by SQ on 2018/4/9.
@@ -24,15 +36,12 @@ import com.umeng.message.UTrack;
 public class MyApplication extends MultiDexApplication {
 
     private static MyApplication mAppContext;
+    private static String channelName;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mAppContext = this;
-        Ad.configAD(this);
-        DBRepository.initDatabase(this);
-        AppManager.init(this);
-        ReadSDK.initSDK(mAppContext);
         //公共区域
         UMConfigure.init(this,UMConfigure.DEVICE_TYPE_PHONE, "afd7439042e4225d6dcbda9a80a5ef4c");
         MobclickAgent.setScenarioType(this, MobclickAgent.EScenarioType.E_UM_NORMAL);
@@ -54,10 +63,8 @@ public class MyApplication extends MultiDexApplication {
                 Log.e("Token",s + s1);
             }
         });
-        //腾讯bugly初始化
-        String channelName = AnalyticsConfig.getChannel(this);
-        Bugly.setAppChannel(this, channelName);
-        Bugly.init(getApplicationContext(), "e968353f92", false);
+//        //腾讯bugly初始化
+        channelName = AnalyticsConfig.getChannel(this);
         //初始化讯飞
         // 设置你申请的应用appid
         SpeechUtility.createUtility(this, "appid=5bd15cce");
@@ -67,6 +74,37 @@ public class MyApplication extends MultiDexApplication {
 
             }
         });
+//        SDKHelper.newInstance().register(this, ADConstant.APPID, ADConstant.DEEPLINK_ONE, new SDKHelper.SDKHelperListener() {
+//            @Override
+//            public void success() {
+//                Log.e("SDKHelper","SDKHelper");
+//            }
+//        });
+        HsHelper.newInstance().register(this);
+        //初始化okhttp
+        HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory(null, null, null);
+//        CookieJarImpl cookieJar1 = new CookieJarImpl(new MemoryCookieStore());
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(10000L, TimeUnit.MILLISECONDS)
+                .readTimeout(10000L, TimeUnit.MILLISECONDS)
+                .addInterceptor(new LoggerInterceptor("TAG"))
+                .hostnameVerifier(new HostnameVerifier() {
+                    @Override
+                    public boolean verify(String hostname, SSLSession session) {
+                        return true;
+                    }
+                })
+                .sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager)
+                .build();
+        OkHttpUtils.initClient(okHttpClient);
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        //onTerminate中注销
+        HsHelper.newInstance().unRegister();
+//        SDKHelper.newInstance().unRegister();
     }
 
     @Override
@@ -75,8 +113,13 @@ public class MyApplication extends MultiDexApplication {
         MultiDex.install(this);
     }
 
+
     public static MyApplication getAppContext() {
         return mAppContext;
+    }
+
+    public static String getAppChannelName() {
+        return channelName;
     }
 
 }

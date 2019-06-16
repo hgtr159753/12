@@ -22,7 +22,6 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="dayNightBackground">@color/day_backgroup_color</item>
     </style>
 
     <style name="digits_btn_style">
@@ -53,14 +52,14 @@
     <style name="Button3Style" parent="baseButtonStyle">
         <item name="android:layout_margin">0.1dip</item>
         <item name="android:background">#FFFFFA</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">28sp</item>
         <item name="android:layout_weight">1</item>
     </style>
 
     <style name="Button3Style1" parent="baseButtonStyle1">
         <item name="android:layout_margin">0.1dip</item>
         <item name="android:background">#FFFFFA</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">24sp</item>
         <item name="android:layout_weight">1</item>
     </style>
 

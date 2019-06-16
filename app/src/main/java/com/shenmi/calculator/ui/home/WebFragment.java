@@ -21,8 +21,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.shenmi.calculator.R;
+import com.shenmi.calculator.app.MyApplication;
 import com.shenmi.calculator.constant.ConstantWeb;
-import com.sm.readbook.base.BaseFragment;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by SQ on 2018/12/18.
@@ -111,6 +112,7 @@ public class WebFragment extends Fragment implements View.OnClickListener {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             if (newProgress == 100) {
+                MobclickAgent.onEvent(MyApplication.getAppContext(), "Calculator_News");
                 // 网页加载完成
                 progressBar.setVisibility(View.GONE);
                 webview_main.getSettings().setBlockNetworkImage(false);

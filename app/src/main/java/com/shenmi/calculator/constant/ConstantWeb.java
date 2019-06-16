@@ -10,7 +10,7 @@ public class ConstantWeb {
 
     public  static String MAINURL = "http://cbk.h5abc.com/";
 
-//    public  static String MAINURL_TEST = "http://139.129.98.94:8022/";
+    public  static String MAINURL_TEST = "http://139.129.98.94:8022/";
 
     /**
      * 表示当前请求结束后的状态,请求是否成功

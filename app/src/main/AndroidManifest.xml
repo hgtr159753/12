@@ -15,8 +15,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <!--<uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />-->
-    <!--<uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />-->
     <!-- 定位相关权限，建议添加，便于广告的定向  location group -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -27,6 +25,18 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
+    <!-- 定位相关权限，建议添加，便于广告的定向  location group -->
+    <uses-permission android:name="android.permission.SET_DEBUG_APP"
+        tools:ignore="ProtectedPermissions" />
+    <!-- 悬浮窗权限-->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
+    <uses-permission android:name="android.permission.GET_TASKS"/>
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+
     <application
         android:name=".app.MyApplication"
         android:allowBackup="true"
@@ -35,8 +45,8 @@
         android:roundIcon="@drawable/icon_logo_calculator"
         android:supportsRtl="true"
         android:theme="@style/AppMainTheme"
+        android:usesCleartextTraffic="true"
         tools:replace="android:icon">
-
         <activity android:name=".ui.home.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -44,16 +54,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".ui.UnitConvertActivity" />
         <activity android:name=".ui.UpperNumActivity" />
         <activity android:name=".ui.LoanActivity" />
         <activity android:name=".ui.CalculatorActivity" />
-        <activity android:name=".ui.home.StartFlashActivity">
-        </activity>
-        <activity android:name=".ui.home.MainCalculateActivity"
-            android:launchMode="singleTask">
-        </activity>
+        <activity android:name=".ui.home.StartFlashActivity" />
+        <activity
+            android:name=".ui.home.MainCalculateActivity"
+            android:launchMode="singleTask" />
         <activity
             android:name="com.tencent.bugly.beta.ui.BetaActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|locale"
@@ -119,6 +127,16 @@
                 android:resource="@xml/file_path" />
         </provider>
 
+        <activity android:name=".ui.TaxActivity" />
+        <activity android:name=".ui.TaxResultActivity" />
+        <activity android:name=".ui.home.TaxSelectActivity"></activity>
+        <activity android:name="com.snmi.sdk_3.ac.HsActivity"
+            android:launchMode="singleInstance"
+            android:theme="@android:style/Theme.Dialog" >
+            <intent-filter>
+                <action android:name="app.intent.tag" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

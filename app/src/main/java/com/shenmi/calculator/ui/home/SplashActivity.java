@@ -20,7 +20,7 @@ import com.shenmi.calculator.util.SPUtil;
 import com.snmi.sdk.Ad;
 import com.snmi.sdk.SplashADInfo;
 import com.snmi.sdk.SplashFullScreenAD;
-import com.zchu.reader.utils.ToastUtils;
+import com.snmi.sdk_3.Hs;
 
 import java.lang.ref.WeakReference;
 
@@ -46,7 +46,6 @@ public class SplashActivity extends AppCompatActivity {
         Log.e("mrs","onCreate");
         setContentView(R.layout.activity_splash);
         initView();
-
         handler = new SmHandler(this);
         isOpen = (Boolean) SPUtil.get(this, ADConstant.ISOPENAD, false);
         if (isOpen) {

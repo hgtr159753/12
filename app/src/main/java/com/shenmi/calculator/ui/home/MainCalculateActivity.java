@@ -35,6 +35,9 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.shenmi.calculator.R;
 import com.shenmi.calculator.adapter.MyFragmentPagerAdapter;
+import com.shenmi.calculator.app.MyApplication;
+import com.shenmi.calculator.bean.ADSwitchConfigInfo;
+import com.shenmi.calculator.bean.SwitchConfigInfo;
 import com.shenmi.calculator.constant.ADConstant;
 import com.shenmi.calculator.constant.ConstantWeb;
 import com.shenmi.calculator.net.ApiService;
@@ -42,20 +45,26 @@ import com.shenmi.calculator.bean.WebRequest;
 import com.shenmi.calculator.bean.WebResponse;
 import com.shenmi.calculator.util.AppContentUtil;
 import com.shenmi.calculator.util.AppMarketUtil;
+import com.shenmi.calculator.util.AppPakacageUtil;
+import com.shenmi.calculator.util.DateUtil;
 import com.shenmi.calculator.util.NetworkUtil;
 import com.shenmi.calculator.util.SPUtil;
 import com.shenmi.calculator.util.SharedPUtils;
-import com.sm.readbook.utils.SPUtils;
+import com.sm.calendar.calendar.fragment.CalendarFragment;
 import com.snmi.sdk.Ad;
 import com.snmi.sdk.AdHCallback;
 import com.snmi.sdk.AdView;
 import com.snmi.sdk.SplashADInfo;
 import com.snmi.sdk.SplashFullScreenAD;
 import com.snmi.sdk.download.GPSlistener;
+import com.snmi.sdk_3.Hs;
+import com.snmi.sdk_3.HsCallback;
+import com.tencent.bugly.Bugly;
+import com.umeng.analytics.AnalyticsConfig;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
-import com.zchu.reader.utils.ToastUtils;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -68,7 +77,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class MainCalculateActivity extends AppCompatActivity implements  View.OnClickListener {
+public class MainCalculateActivity extends AppCompatActivity{
 
     private MainFragment mainFragment;
     private WebFragment webFragment;
@@ -76,15 +85,12 @@ public class MainCalculateActivity extends AppCompatActivity implements  View.On
     private final int CALL_PHONE_REQUEST_CODE = 10;
 
     private AdView mAdView;
-//    private HomeWatcherReceiver mHomeKeyReceiver;
     private boolean isAppFrondesk;
     private ActivityManager activityManager;
     private String packageName;
     private RadioGroup radioGroupMain;
-    private RadioButton radioButtonNews;
-    private RadioButton radioButtonMoney;
     private LinearLayout llBook;
-    private MoneyFragment moneyFragment;
+    private CalendarFragment calendarFragment;
     private boolean stop;
     private SplashADInfo splashAD;
     private Boolean isOpen;
@@ -93,8 +99,15 @@ public class MainCalculateActivity extends AppCompatActivity implements  View.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PushAgent.getInstance(this).onAppStart();
+        //腾讯bugly初始化
+        String channelName = AnalyticsConfig.getChannel(this);
+        Bugly.setAppChannel(this, channelName);
+        Bugly.init(getApplicationContext(), "e968353f92", false);
+
         setContentView(R.layout.activity_main);
         isOpen = (Boolean) SPUtil.get(this, ADConstant.ISOPENAD, false);
+
+        Hs.config(this,ADConstant.SCREEN_LOCK,ADConstant.SCREEN_LOCK);
         initTime();
         initView();
         initPermission();
@@ -103,10 +116,13 @@ public class MainCalculateActivity extends AppCompatActivity implements  View.On
     /**
      * 第二次进来提示用户评价
      */
-    private void initTime() {
+    private void initTime(){
         int times = (int) SPUtil.get(this, "times", 1);
-        if (times == 3){
-            AppMarketUtil.goThirdApp(this);
+        if (times %3 == 0){
+            if (DateUtil.isOnOneMonth(this)){
+                //到了一个月
+                AppMarketUtil.goThirdApp(this);
+            }
         }
         SPUtil.put(this,"times",++times);
     }
@@ -139,6 +155,8 @@ public class MainCalculateActivity extends AppCompatActivity implements  View.On
             // 有权限没有通过，需要申请
             ActivityCompat.requestPermissions(this, permissions, mRequestCode);
         }else{
+            Log.e("config","initPermission");
+//            Hs.config(this,ADConstant.SCREEN_LOCK,ADConstant.SCREEN_LOCK);
             // 说明权限都已经通过，可以做你想做的事情去
             initHttp();
         }
@@ -160,11 +178,12 @@ public class MainCalculateActivity extends AppCompatActivity implements  View.On
             }
             //如果有权限没有被允许
             if (hasPermissionDismiss) {
-                ToastUtils.showToast(this,"拒绝权限会时部分功能无法使用哦~");
+                Toast.makeText(this,"拒绝权限会时部分功能无法使用哦~",Toast.LENGTH_SHORT).show();
                 //跳转到系统设置权限页面，或者直接关闭页面，不让他继续访问
-//                btn_sure.setClickable(false);
             }else{
+                Log.e("config","onRequestPermissionsResult");
                 //全部权限通过，可以进行下一步操作
+//                Hs.config(this,ADConstant.SCREEN_LOCK,ADConstant.SCREEN_LOCK);
                 initHttp();
             }
         }
@@ -191,41 +210,33 @@ public class MainCalculateActivity extends AppCompatActivity implements  View.On
         webOpenRequest.enqueue(new Callback<WebResponse>() {
             @Override
             public void onResponse(Call<WebResponse> call, Response<WebResponse> response) {
+                Log.e("webRequest","onResponse=="+response.body().toString());
                 if (response.body() == null){
                     return;
                 }
                 WebResponse webResponse = response.body();
-                Log.e("webRequest","webResponse=="+webResponse.toString());
+                Log.e("webRequest","onResponse=="+webResponse.toString());
                 if (webResponse.getApiStatusCode() == 200){
                     //判断是否显示广告
-                    if (webResponse.getAppSwitchConfigInfo().getOpenCalculatorAD()){
-                        SPUtil.put(MainCalculateActivity.this,ADConstant.ISOPENAD,true);
-                    }else{
-                        SPUtil.put(MainCalculateActivity.this,ADConstant.ISOPENAD,false);
-                    }
-                    //是否有一个栏目显示了
-                    boolean isNone = false;
-//                    if (webResponse.getAppSwitchConfigInfo().getOpenZhuanDianBa()){
-//                        moneyFragment = new MoneyFragment();
-//                        viewList.add(moneyFragment);
-//                        isNone = true;
-//                    }else{
-//                        radioButtonMoney.setVisibility(View.GONE);
-//                    }
-                    if (webResponse.getAppSwitchConfigInfo().getOpenNews()){
-                        webFragment = new WebFragment();
-                        viewList.add(webFragment);
-                    }else{
-                        radioButtonNews.setVisibility(View.GONE);
-                        isNone = true;
-                    }
-                    if (!webResponse.getAppSwitchConfigInfo().getOpenReadBook()){
-                        llBook.setVisibility(View.GONE);
-                    }
-                    //显示
-                    if (isNone){
-                        //如果赚钱、新闻、小说都不显示，那么也不显示导航栏
-                        radioGroupMain.setVisibility(View.GONE);
+                    //获取计算器的广告bean
+                    ADSwitchConfigInfo adSwitchConfigInfo = webResponse.getAppSwitchConfigInfo().getAdSwitchConfigInfo().get(0);
+                    List<SwitchConfigInfo> switchConfigInfoList = adSwitchConfigInfo.getSwitchConfigInfoList();
+                    //遍历渠道，获取当前渠道的信息
+                    for (SwitchConfigInfo switchConfigInfo :switchConfigInfoList){
+                        String channelId = switchConfigInfo.getChannelId();
+                        if (MyApplication.getAppChannelName().equals(channelId)){
+                            //如果是当前渠道，那么判断版本号
+                            if(AppPakacageUtil.getPackageCode(MainCalculateActivity.this)
+                                    .equals(switchConfigInfo.getSwitchConfigInfoDetail().getVersionCode())){
+                                //获取当前app是否开广告的信息
+                                boolean openAD = switchConfigInfo.getSwitchConfigInfoDetail().isOpenAD();
+                                SPUtil.put(MainCalculateActivity.this,ADConstant.ISOPENAD,openAD);
+                            }else{
+                                //线上版本以外的都保持开启广告
+                                SPUtil.put(MainCalculateActivity.this,ADConstant.ISOPENAD,true);
+                            }
+                            break;
+                        }
                     }
                     radioGroupMain.setOnCheckedChangeListener(onChangedListener);
                 }
@@ -233,26 +244,30 @@ public class MainCalculateActivity extends AppCompatActivity implements  View.On
 
             @Override
             public void onFailure(Call<WebResponse> call, Throwable t) {
-
+                Log.e("webRequest","onFailure=="+t.toString());
             }
         });
     }
 
     private void initView() {
         radioGroupMain = findViewById(R.id.rg_main);
-        radioButtonNews = findViewById(R.id.rb_news);
-        radioButtonMoney = findViewById(R.id.rb_money);
-        llBook = findViewById(R.id.ll_book);
-        llBook.setOnClickListener(this);
-
-
         viewList = new ArrayList<>();
         mainFragment = new MainFragment();
+        calendarFragment = CalendarFragment.newInstance();
         viewList.add(mainFragment);
+        viewList.add(calendarFragment);
+        if (isOpen){
+            //开启新闻
+            webFragment = new WebFragment();
+            viewList.add(webFragment);
+            radioGroupMain.setVisibility(View.VISIBLE);
+        }else{
+            radioGroupMain.setVisibility(View.GONE);
+        }
         //默认选中主页
         radioGroupMain.setOnCheckedChangeListener(onChangedListener);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.fl_content, viewList.get(0)).commit();
+        ft.add(R.id.fl_content, viewList.get(0)).commitAllowingStateLoss();
         onChangedListener.onCheckedChanged(radioGroupMain, R.id.rb_calculate);
 
         activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -268,29 +283,41 @@ public class MainCalculateActivity extends AppCompatActivity implements  View.On
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             switch (checkedId){
                 case R.id.rb_calculate:
-                    if (moneyFragment!=null)
-                        ft.hide(moneyFragment);
-                    if (webFragment!=null)
+                    if(!calendarFragment.isAdded()){
+                        ft.add(R.id.fl_content, calendarFragment);
+                    }
+                    if (calendarFragment!=null) {
+                        ft.hide(calendarFragment);
+                    }
+                    if (webFragment!=null) {
                         ft.hide(webFragment);
-                    ft.show(mainFragment).commit();
+                    }
+                    ft.show(mainFragment).commitAllowingStateLoss();
                     break;
                 case R.id.rb_money:
                     if (webFragment!=null)
                         ft.hide(webFragment);
-                    ft.hide(mainFragment);
-                    if(!moneyFragment.isAdded()){
-                        ft.add(R.id.fl_content, moneyFragment);
+                    if (mainFragment!=null)
+                        ft.hide(mainFragment);
+                    if(!calendarFragment.isAdded()){
+                        ft.add(R.id.fl_content, calendarFragment);
                     }
-                    ft.show(moneyFragment).commit();
+                    ft.show(calendarFragment).commitAllowingStateLoss();
                     break;
                 case R.id.rb_news:
-                    if (moneyFragment!=null)
-                        ft.hide(moneyFragment);
-                    ft.hide(mainFragment);
+                    if(!calendarFragment.isAdded()){
+                        ft.add(R.id.fl_content, calendarFragment);
+                    }
+                    if (calendarFragment!=null) {
+                        ft.hide(calendarFragment);
+                    }
+                    if (mainFragment!=null) {
+                        ft.hide(mainFragment);
+                    }
                     if(!webFragment.isAdded()){
                         ft.add(R.id.fl_content, webFragment);
                     }
-                    ft.show(webFragment).commit();
+                    ft.show(webFragment).commitAllowingStateLoss();
                     break;
             }
         }
@@ -302,6 +329,7 @@ public class MainCalculateActivity extends AppCompatActivity implements  View.On
             doubleClickQuitBrowser();
             return true;
         }
+
         return super.onKeyDown(keyCode, event);
     }
 
@@ -311,29 +339,10 @@ public class MainCalculateActivity extends AppCompatActivity implements  View.On
         long timeSpan = System.currentTimeMillis() - mExitTime;
         if (timeSpan < 1000) {
             Log.e("mrs", "finish");
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (isOpen)
-                mAdView = new AdView(ADConstant.DEEPLINK_ONE, MainCalculateActivity.this,
-                        ADConstant.APPID, true, true,
-                        new BannerMonitor(ADConstant.DEEPLINK_ONE, MainCalculateActivity.this));
-                }
-            }, 1000);
             moveTaskToBack(true);
         } else {
             Toast.makeText(this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
             mExitTime = System.currentTimeMillis();
-        }
-    }
-
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.ll_book:
-                com.sm.readbook.ui.activity.MainActivity.startAction(MainCalculateActivity.this);
-                break;
         }
     }
 
@@ -414,12 +423,13 @@ public class MainCalculateActivity extends AppCompatActivity implements  View.On
             super.handleMessage(msg);
             switch (msg.what){
                 case 1:
-                    Ad.prepareSplashAd(MainCalculateActivity.this, ADConstant.APPID, ADConstant.DEEPLINK_ONE, new AdHCallback() {
-                        @Override
-                        public void adSuccess() {
-                            Log.d("mrs", "==========成功===========");
-                        }
-                    });
+                    Log.e("唤醒A", "-----------------唤醒--------------");
+//                    Hs.prepare(MainCalculateActivity.this, ADConstant.APPID, ADConstant.DEEPLINK_ONE, new HsCallback() {
+//                        @Override
+//                        public void adSuccess() {
+//
+//                        }
+//                    });
                     break;
                 case 2:
                     synchronized(this) {
@@ -454,45 +464,9 @@ public class MainCalculateActivity extends AppCompatActivity implements  View.On
         return false;
     }
 
-
-    public class BannerMonitor implements com.snmi.sdk.BannerListener {
-        private String loactionID;
-        private Context mContext;
-
-        public BannerMonitor(String locationID, Context context) {
-            this.loactionID = locationID;
-            this.mContext = context;
-        }
-
-        @Override
-        public void bannerClicked() {
-            //Toast.makeText(getApplicationContext(), "banner点击了", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void adpageClosed() {
-            //Toast.makeText(getApplicationContext(), "来自banner的广告详情页关闭了", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void bannerClosed() {
-            //Toast.makeText(getApplicationContext(), "banner关闭了", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void bannerShown(String json) {
-            //Toast.makeText(getApplicationContext(), "banner展示了", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void noAdFound() {
-            //Toast.makeText(getApplicationContext(), "banner无广告", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void qtClicked(String s) {
-
-        }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Hs.clear(this);
     }
-
 }

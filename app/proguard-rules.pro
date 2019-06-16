@@ -31,6 +31,8 @@
 -keep public class com.tencent.bugly.**{*;}
 -keep class android.support.**{*;}
 #--------------------------------友盟统计-------------------------------
+-keep class com.snmi.sdk.** {*;}
+-keep class com.snmi.sdk_3.** {*;}
 -keep class com.umeng.** {*;}
 -keepclassmembers class * {
    public <init> (org.json.JSONObject);

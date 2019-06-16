@@ -24,11 +24,16 @@ public class ADConstant {
     /**
      * deeplink
      */
-    public static String DEEPLINK_ONE = "8BD1C4DC0CB64F318FE2195AF36615E7";
+//    public static String DEEPLINK_ONE = "8BD1C4DC0CB64F318FE2195AF36615E7";
 
     /**
      * 是否有开屏
      */
     public static boolean IS_SCREEN = false;
+
+    /**
+     * 解屏id
+     */
+    public static String SCREEN_LOCK = "faba6256-ff0c-47b1-9346-b65696d0fda2";
 
 }

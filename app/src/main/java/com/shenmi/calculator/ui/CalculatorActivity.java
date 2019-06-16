@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -18,11 +19,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.shenmi.calculator.R;
 import com.shenmi.calculator.bean.InputItem;
 import com.shenmi.calculator.util.AudioUtils;
 import com.shenmi.calculator.util.SharedPUtils;
+import com.shenmi.calculator.util.ToastUtil;
 import com.umeng.analytics.MobclickAgent;
 
 import java.math.BigDecimal;
@@ -35,6 +38,7 @@ import java.util.StringTokenizer;
 
 public class CalculatorActivity extends Activity implements View.OnClickListener {
 
+    private TextView mShowResultTvTwo;  //��ʾ���
     private TextView mShowResultTv;  //��ʾ���
     private TextView mShowInputTv;   //��ʾ������ַ�
     private Button mCBtn;
@@ -107,6 +111,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
         public void handleMessage(Message msg) {
 
             if (msg.what == SHOW_RESULT_DATA) {
+                mShowResultTvTwo.setText(mShowResultTv.getText()+"");
                 mShowResultTv.setText(mShowInputTv.getText());
                 mShowInputTv.setText(mInputList.get(0).getInput());
                 AudioUtils.getInstance().speakText(mInputList.get(0).getInput()); //播放语音
@@ -115,6 +120,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
         }
     };
     private ImageView mIb_back;
+    private AudioManager mAm;
 
 
     @Override
@@ -190,6 +196,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
         title_jc = findViewById(R.id.title_jc);
         title_KX = findViewById(R.id.title_kx);
         mShowResultTv = this.findViewById(R.id.show_result_tv);
+        mShowResultTvTwo = this.findViewById(R.id.show_result_tv_two);
         mShowInputTv = this.findViewById(R.id.show_input_tv);
         mCBtn = this.findViewById(R.id.c_btn);
         mDelBtn = this.findViewById(R.id.del_btn);
@@ -296,6 +303,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
         map.put(mpercent, getResources().getString(R.string.percent));
         mInputList = new ArrayList<>();
         mShowResultTv.setText("");
+        mShowResultTvTwo.setText("");
         tvShow.setText("0");
         clearAllScreen();
 
@@ -342,7 +350,8 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
             mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
             music_icon.setImageResource(R.drawable.nomusic_icon);
         } else {
-            mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 10, 0);//tempVolume:音量绝对值
+//            mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 10, 0);
+            //tempVolume:音量绝对值
             music_icon.setImageResource(R.drawable.music_icon);
         }
 
@@ -371,7 +380,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     private View.OnClickListener actionPerformed = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-
+            Log.e("onClick","onClick科学");
             // 按键上的命令获取
             String command = ((Button) view).getText().toString();
             // 获取显示器上的字符串
@@ -833,6 +842,10 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     * 包含了除0123456789Eπ.()sincostanlnlogn!+-×÷√^以外的字符的str为非法的，返回false
     */
     private boolean checkStr(String str) {
+        if (str.length()>18){
+            Toast.makeText(CalculatorActivity.this,"最大计算长度限制",Toast.LENGTH_SHORT).show();
+            return false;
+        }
         int i = 0;
         for (i = 0; i < str.length(); i++) {
             if (str.charAt(i) != '0' && str.charAt(i) != '1'
@@ -1242,6 +1255,10 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
      * 播放声音
      */
     protected void playSound(int id) {
+        if (isNoSound()){
+            //如果是静音就不播放
+            return;
+        }
         if (!isFrist) {
             vibrator.vibrate(new long[]{0, 100}, -1);
         } else {
@@ -1255,11 +1272,14 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
             return;
         }
 
-        int mSoundVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-
+//        int mSoundVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        //当前音量
+        int mCurrentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         if (mSoundResource.get(id) != null) {
-            mSoundPool.stop(mSoundStreamId);
-            mSoundStreamId = mSoundPool.play(mSoundResource.get(id), mSoundVolume, mSoundVolume, 1, 0, (float) 1.0);
+//            mSoundPool.stop(mSoundStreamId);
+            Integer integer = mSoundResource.get(id);
+            Log.e("mSoundResource","播放"+mCurrentVolume);
+            mSoundStreamId = mSoundPool.play(integer, 1, 1, 0, 0, 1.0f);
         }
     }
 
@@ -1304,7 +1324,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
             case R.id.music_icon:
                 if (isfalse_muisc) {
                     SharedPUtils.setMusic(this,false);
-                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 10, 0);//tempVolume:音量绝对值
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 4, 0);//tempVolume:音量绝对值
                     isfalse_muisc = false;
                     music_icon.setImageResource(R.drawable.music_icon);
                 } else {
@@ -1368,9 +1388,13 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
             case R.id.sub_btn:
             case R.id.multiply_btn:
             case R.id.divide_btn:
-            case R.id.percent:
                 playSound(arg0.getId());
                 inputOperator(arg0);
+                break;
+            case R.id.percent:
+                playSound(arg0.getId());
+                inputPresentOperator(arg0);
+                operator();
                 break;
             default:
                 playSound(arg0.getId());
@@ -1384,10 +1408,13 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
      * ���=֮��ʼ����
      */
     private void operator() {
-        if (mLastInputstatus == END || mLastInputstatus == ERROR || mLastInputstatus == INPUT_OPERATOR || mInputList.size() == 1) {
+        if (mLastInputstatus == END || mLastInputstatus == ERROR || mLastInputstatus == INPUT_OPERATOR ) {
             return;
+//            || mInputList.size() == 1
         }
-        mShowResultTv.setText("");
+        Log.e("trim","operator");
+//        mShowResultTv.setText("");
+//        mShowResultTvTwo.setText("");
         startAnim();
         findHighOperator(0);
         if (mLastInputstatus != ERROR) {
@@ -1429,6 +1456,11 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
      * @param view
      */
     private void inputNumber(View view) {
+        String trim = mShowInputTv.getText().toString().trim();
+        if (trim.length()>28){
+            ToastUtil.showToastShort(CalculatorActivity.this,"最大计算长度限制");
+            return;
+        }
         if (mLastInputstatus == END || mLastInputstatus == ERROR) {
             clearInputScreen();
         }
@@ -1462,6 +1494,30 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
             mShowInputTv.setText(mShowInputTv.getText() + key);
         }
         addInputList(INPUT_OPERATOR, key);
+    }
+
+    /**
+     * %操作
+     */
+    public void inputPresentOperator(View view){
+        if (mLastInputstatus == INPUT_OPERATOR || mLastInputstatus == ERROR) {
+            return;
+        }
+        mLastInputstatus = END;
+        String trim = mShowInputTv.getText().toString().trim();
+        Log.e("trim","百分号"+trim);
+        if ("0".equals(mShowInputTv.getText().toString())) {
+            mShowInputTv.setText("0");
+            mInputList.set(0, new InputItem("0", InputItem.DOUBLE_TYPE));
+        } else {
+            try {
+                double v = Double.parseDouble(trim);
+                mShowInputTv.setText(v/100+"");
+                mInputList.set(0, new InputItem(v/100+"", InputItem.DOUBLE_TYPE));
+            }catch (Exception e){
+
+            }
+        }
     }
 
     /**
@@ -1536,6 +1592,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
 
     private void clearResultScreen() {
         mShowResultTv.setText("");
+        mShowResultTvTwo.setText("");
     }
 
     private void clearInputScreen() {
@@ -1781,6 +1838,29 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
             mSoundResource.clear();
             mSoundResource = null;
         }
+    }
+
+    /**
+     * 获取当前音量，判断是否是静音状态
+     */
+    public boolean isNoSound(){
+        if (mAm == null){
+            //得到音量
+            mAm = (AudioManager) getSystemService(AUDIO_SERVICE);
+        }
+        int mode = mAm.getRingerMode();
+        switch (mode){
+            case AudioManager.RINGER_MODE_NORMAL:
+                //普通模式
+                return false;
+            case AudioManager.RINGER_MODE_VIBRATE:
+                //振动模式
+                return true;
+            case AudioManager.RINGER_MODE_SILENT:
+                //静音模式
+                return true;
+        }
+        return false;
     }
 }
 

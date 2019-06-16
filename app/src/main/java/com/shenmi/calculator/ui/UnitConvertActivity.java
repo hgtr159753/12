@@ -9,6 +9,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,13 +20,30 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.shenmi.calculator.R;
+import com.shenmi.calculator.bean.WebRequest;
+import com.shenmi.calculator.bean.WebResponse;
+import com.shenmi.calculator.bean.rate.RateResponse;
+import com.shenmi.calculator.constant.ConstantWeb;
+import com.shenmi.calculator.constant.RateConstant;
+import com.shenmi.calculator.net.ApiService;
+import com.shenmi.calculator.util.AppContentUtil;
 import com.shenmi.calculator.util.UnitConvertUtil;
 import com.shenmi.calculator.view.PickerView;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.message.PushAgent;
 
 import java.util.ArrayList;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Query;
 
 public class UnitConvertActivity extends Activity implements OnClickListener {
 	private int nowUnitType;// 根据单位类型载入不同的文本
@@ -35,6 +53,7 @@ public class UnitConvertActivity extends Activity implements OnClickListener {
 	private ArrayList<String> UnitSet = new ArrayList<String>();// 单位集合
 	private ArrayList<String> UnitShortSet = new ArrayList<String>();// 单位的缩写集合
 	private ArrayList<String> mPickerData = new ArrayList<String>();// 单位加上单位缩写组成的字符串
+	private TextView mTitleCalculate;
 	private TextView mTitleView;
 	private TextView mPreUnitView;
 	private TextView mGoalUnitView;
@@ -60,6 +79,8 @@ public class UnitConvertActivity extends Activity implements OnClickListener {
 	private final int GOAL_TIME_DEF = 5;
 	private final int PRE_MASS_DEF = 1;
 	private final int GOAL_MASS_DEF = 2;
+	private final int PRE_RATR_DEF = 1;
+	private final int GOAL_RATE_DEF = 0;
 	private String inputNum = "1";
 	// 默认PreUnit,AftUnit;
 	private int mPreUnitIndex;
@@ -79,7 +100,6 @@ public class UnitConvertActivity extends Activity implements OnClickListener {
 		mIntent = getIntent();
 		nowUnitType = mIntent.getIntExtra("UnitType", 0);
 		mResources = getResources();
-//		StatusBarUtil.setStatusBar(this);
 		init();
 	}
 
@@ -90,6 +110,7 @@ public class UnitConvertActivity extends Activity implements OnClickListener {
 			mPickerData.add(UnitSet.get(i) + " " + UnitShortSet.get(i));
 		}
 		// 获取控件实例
+		mTitleCalculate = (TextView) findViewById(R.id.tv_calculate);
 		mTitleView = (TextView) findViewById(R.id.title_tv);
 		mPreUnitView = (TextView) findViewById(R.id.pre_unit_tv);
 		mGoalUnitView = (TextView) findViewById(R.id.goal_unit_tv);
@@ -157,6 +178,11 @@ public class UnitConvertActivity extends Activity implements OnClickListener {
 			mButton.setOnClickListener(this);
 		}
 		convertButtons.recycle();
+
+		if (nowUnitType == UnitConvertUtil.RATE){
+			mTitleCalculate.setVisibility(View.VISIBLE);
+		}
+		mTitleCalculate.setOnClickListener(this);
 	}
 
 	private void setPreUnitIndexAndGoalUnitIndex(int type) {
@@ -196,6 +222,10 @@ public class UnitConvertActivity extends Activity implements OnClickListener {
 			mGoalUnitIndex = GOAL_MASS_DEF;
 			break;
 
+		case UnitConvertUtil.RATE:
+			mPreUnitIndex = PRE_RATR_DEF;
+			mGoalUnitIndex = GOAL_RATE_DEF;
+			break;
 		default:
 			break;
 		}
@@ -308,6 +338,7 @@ public class UnitConvertActivity extends Activity implements OnClickListener {
 			break;
 
 		case UnitConvertUtil.TEMPERATURE:
+			MobclickAgent.onEvent(this,"Calculator_temp");
 			// UnitSet初始化
 			UnitSet.add(getString(R.string.c_temperature));
 			UnitSet.add(getString(R.string.f_temperature));
@@ -415,7 +446,51 @@ public class UnitConvertActivity extends Activity implements OnClickListener {
 			UnitShortSet.add(getString(R.string.qian_mass_short));
 			UnitShortSet.add(getString(R.string.liang_mass_short));
 			break;
-
+		case UnitConvertUtil.RATE:
+			// UnitSet初始化
+			MobclickAgent.onEvent(this,"Calculator_rate");
+			UnitSet.add(getString(R.string.rmb_rate));
+			UnitSet.add(getString(R.string.my_rate));
+			UnitSet.add(getString(R.string.oy_rate));
+			UnitSet.add(getString(R.string.ry_rate));
+			UnitSet.add(getString(R.string.gb_rate));
+			UnitSet.add(getString(R.string.hy_rate));
+			UnitSet.add(getString(R.string.yb_rate));
+			UnitSet.add(getString(R.string.tz_rate));
+			UnitSet.add(getString(R.string.xtb_rate));
+			UnitSet.add(getString(R.string.ynd_rate));
+			UnitSet.add(getString(R.string.agtbs_rate));
+			UnitSet.add(getString(R.string.alqdlm_rate));
+			UnitSet.add(getString(R.string.adlyy_rate));
+			UnitSet.add(getString(R.string.amy_rate));
+			UnitSet.add(getString(R.string.belslb_rate));
+			UnitSet.add(getString(R.string.bxlye_rate));
+			UnitSet.add(getString(R.string.elslu_rate));
+			UnitSet.add(getString(R.string.flbbs_rate));
+			UnitSet.add(getString(R.string.jndy_rate));
+			UnitSet.add(getString(R.string.mlxyljt_rate));
+				// UnitShortSet初始化
+			UnitShortSet.add(getString(R.string.rmb_country));
+			UnitShortSet.add(getString(R.string.my_country));
+			UnitShortSet.add(getString(R.string.oy_country));
+			UnitShortSet.add(getString(R.string.ry_country));
+			UnitShortSet.add(getString(R.string.gb_country));
+			UnitShortSet.add(getString(R.string.hy_country));
+			UnitShortSet.add(getString(R.string.yb_country));
+			UnitShortSet.add(getString(R.string.tz_country));
+			UnitShortSet.add(getString(R.string.xtb_country));
+			UnitShortSet.add(getString(R.string.ynd_country));
+			UnitShortSet.add(getString(R.string.agtbs_country));
+			UnitShortSet.add(getString(R.string.alqdlm_country));
+			UnitShortSet.add(getString(R.string.adlyy_country));
+			UnitShortSet.add(getString(R.string.amy_country));
+			UnitShortSet.add(getString(R.string.belslb_country));
+			UnitShortSet.add(getString(R.string.bxlye_country));
+			UnitShortSet.add(getString(R.string.elslu_country));
+			UnitShortSet.add(getString(R.string.flbbs_country));
+			UnitShortSet.add(getString(R.string.jndy_country));
+			UnitShortSet.add(getString(R.string.mlxyljt_country));
+			break;
 		default:
 			break;
 		}
@@ -450,6 +525,10 @@ public class UnitConvertActivity extends Activity implements OnClickListener {
 
 		case UnitConvertUtil.MASS:
 			mGoalUnitShortText = UnitShortSet.get(GOAL_MASS_DEF);
+			break;
+
+		case UnitConvertUtil.RATE:
+			mGoalUnitShortText = UnitShortSet.get(GOAL_RATE_DEF);
 			break;
 
 		default:
@@ -489,6 +568,9 @@ public class UnitConvertActivity extends Activity implements OnClickListener {
 			mPreUnitShort = UnitShortSet.get(PRE_MASS_DEF);
 			break;
 
+		case UnitConvertUtil.RATE:
+			mPreUnitShort = UnitShortSet.get(PRE_RATR_DEF);
+			break;
 		default:
 			break;
 		}
@@ -526,6 +608,9 @@ public class UnitConvertActivity extends Activity implements OnClickListener {
 			mGoalUnit = UnitSet.get(GOAL_MASS_DEF);
 			break;
 
+		case UnitConvertUtil.RATE:
+			mGoalUnit = UnitSet.get(GOAL_RATE_DEF);
+			break;
 		default:
 			break;
 		}
@@ -563,6 +648,9 @@ public class UnitConvertActivity extends Activity implements OnClickListener {
 			mPreUnit = UnitSet.get(PRE_MASS_DEF);
 			break;
 
+		case UnitConvertUtil.RATE:
+			mPreUnit = UnitSet.get(PRE_RATR_DEF);
+			break;
 		default:
 			break;
 		}
@@ -600,6 +688,9 @@ public class UnitConvertActivity extends Activity implements OnClickListener {
 			mTitleText = getString(R.string.mass_title);
 			break;
 
+		case UnitConvertUtil.RATE:
+			mTitleText = getString(R.string.rate_title);
+			break;
 		default:
 			break;
 		}
@@ -719,6 +810,10 @@ public class UnitConvertActivity extends Activity implements OnClickListener {
 			inputNum = "";
 		}
 		switch (v.getId()) {
+		case R.id.tv_calculate:
+			//计算
+			initRateHttp();
+			break;
 		case R.id.digit_0:
 			inputNum = inputNum + "0";
 			break;
@@ -789,6 +884,48 @@ public class UnitConvertActivity extends Activity implements OnClickListener {
 			mResultText.setText("Error");
 		}
 
+	}
+
+	public void initRateHttp(){
+		Gson gson = new GsonBuilder()
+				.setLenient()
+				.create();
+		Retrofit retrofit = new Retrofit.Builder()
+				.baseUrl(RateConstant.RATE_URL)
+				//可以接收自定义的Gson，当然也可以不传
+				.addConverterFactory(GsonConverterFactory.create(gson))
+				.build();
+        final String input = mInputText.getText().toString().trim();
+        String preUnit = mPreUnitView.getText().toString().trim();
+        String goalUnit = mGoalUnitView.getText().toString().trim();
+        final String result = mResultText.getText().toString().trim();
+        String query = input+preUnit+"等于多少"+goalUnit;
+		ApiService apiService = retrofit.create(ApiService.class);
+		Call<RateResponse> webOpenRequest = apiService.getRateRequest(query, RateConstant.resource_id
+            , RateConstant.t);
+		webOpenRequest.enqueue(new Callback<RateResponse>() {
+			@Override
+			public void onResponse(Call<RateResponse> call, Response<RateResponse> response) {
+				if (response.body() == null){
+					return;
+				}
+				RateResponse webResponse = response.body();
+				Log.e("RateResponse","webResponse=="+webResponse.toString());
+				if (webResponse.getData() != null && webResponse.getData().size()>0){
+                    String number2 = webResponse.getData().get(0).getNumber2();
+                    Log.e("RateResponse","number2=="+number2);
+                    mResultText.setText(number2);
+					mInputText.setText(input);
+                }
+			}
+
+			@Override
+			public void onFailure(Call<RateResponse> call, Throwable t) {
+				Log.e("RateResponse","onFailure=="+t.toString());
+				mResultText.setText(result);
+				mInputText.setText(input);
+			}
+		});
 	}
 
 
