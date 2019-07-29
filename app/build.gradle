@@ -1,21 +1,28 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
     buildToolsVersion "27.0.3"
 
     defaultConfig {
         applicationId "com.shenmi.calculator"
         minSdkVersion 14
-        targetSdkVersion 26
-        versionCode 22
-        versionName "2.2"
+        targetSdkVersion 28
+        versionCode 24
+        versionName "2.3"
         multiDexEnabled true
         flavorDimensions "versionCode"
         manifestPlaceholders = [UMENG_CHANNEL_VALUE: "umeng"] //默认名称
         ndk {
             // 设置支持的SO库架构
             abiFilters 'armeabi', 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+        }
+    }
+
+    productFlavors {
+        yingyongbao {}
+        productFlavors.all {
+            flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
         }
     }
 
@@ -52,12 +59,6 @@ android {
         }
     }
 
-    productFlavors {
-        yingyongbao {}
-        productFlavors.all {
-            flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
-        }
-    }
 
     lintOptions {
         checkReleaseBuilds false

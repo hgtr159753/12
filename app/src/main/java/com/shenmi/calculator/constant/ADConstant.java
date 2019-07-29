@@ -25,6 +25,7 @@ public class ADConstant {
      * deeplink
      */
 //    public static String DEEPLINK_ONE = "8BD1C4DC0CB64F318FE2195AF36615E7";
+    public static String DEEPLINK_ONE = "31ddb547-0916-40fd-baa1-c7820da9434c";
 
     /**
      * 是否有开屏
@@ -32,8 +33,9 @@ public class ADConstant {
     public static boolean IS_SCREEN = false;
 
     /**
-     * 解屏id
+     * 锁屏id
      */
-    public static String SCREEN_LOCK = "faba6256-ff0c-47b1-9346-b65696d0fda2";
+//    public static String SCREEN_LOCK = "faba6256-ff0c-47b1-9346-b65696d0fda2";
+    public static String SCREEN_LOCK = "a91c1ce4-7cf4-4c48-9dd2-1e1ccab74ebb";
 
 }

@@ -47,7 +47,9 @@
         android:theme="@style/AppMainTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:icon">
-        <activity android:name=".ui.home.SplashActivity">
+
+        <activity android:name=".ui.home.SplashActivity"
+            android:theme="@style/AppTheme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -137,6 +139,8 @@
                 <action android:name="app.intent.tag" />
             </intent-filter>
         </activity>
+
+        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
     </application>
 
 </manifest>

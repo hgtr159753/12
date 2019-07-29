@@ -24,6 +24,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppTheme.Launcher">
+        <item name="android:windowBackground">@drawable/icon_calculator_splash</item>
+    </style>
+
     <style name="digits_btn_style">
         <item name="android:background">@drawable/btn_digit</item>
     </style>

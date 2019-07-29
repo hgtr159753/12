@@ -50,6 +50,7 @@ import com.shenmi.calculator.util.DateUtil;
 import com.shenmi.calculator.util.NetworkUtil;
 import com.shenmi.calculator.util.SPUtil;
 import com.shenmi.calculator.util.SharedPUtils;
+import com.shenmi.calculator.util.ToastUtil;
 import com.sm.calendar.calendar.fragment.CalendarFragment;
 import com.snmi.sdk.Ad;
 import com.snmi.sdk.AdHCallback;
@@ -106,7 +107,7 @@ public class MainCalculateActivity extends AppCompatActivity{
 
         setContentView(R.layout.activity_main);
         isOpen = (Boolean) SPUtil.get(this, ADConstant.ISOPENAD, false);
-
+        
         Hs.config(this,ADConstant.SCREEN_LOCK,ADConstant.SCREEN_LOCK);
         initTime();
         initView();
@@ -156,7 +157,6 @@ public class MainCalculateActivity extends AppCompatActivity{
             ActivityCompat.requestPermissions(this, permissions, mRequestCode);
         }else{
             Log.e("config","initPermission");
-//            Hs.config(this,ADConstant.SCREEN_LOCK,ADConstant.SCREEN_LOCK);
             // 说明权限都已经通过，可以做你想做的事情去
             initHttp();
         }
@@ -183,7 +183,6 @@ public class MainCalculateActivity extends AppCompatActivity{
             }else{
                 Log.e("config","onRequestPermissionsResult");
                 //全部权限通过，可以进行下一步操作
-//                Hs.config(this,ADConstant.SCREEN_LOCK,ADConstant.SCREEN_LOCK);
                 initHttp();
             }
         }
@@ -210,8 +209,7 @@ public class MainCalculateActivity extends AppCompatActivity{
         webOpenRequest.enqueue(new Callback<WebResponse>() {
             @Override
             public void onResponse(Call<WebResponse> call, Response<WebResponse> response) {
-                Log.e("webRequest","onResponse=="+response.body().toString());
-                if (response.body() == null){
+                if (response == null ||response.body() == null){
                     return;
                 }
                 WebResponse webResponse = response.body();
@@ -363,7 +361,6 @@ public class MainCalculateActivity extends AppCompatActivity{
                     } else {
                         isStartSplash = true;
                         Log.e("mrs", "-----------------后台--------------");
-                        showSnMiSDK();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -390,17 +387,6 @@ public class MainCalculateActivity extends AppCompatActivity{
     }
 
     /**
-     * 调用广告
-     */
-    public void showSnMiSDK() {
-        if (isAppFrondesk)
-            return;
-        handler.sendEmptyMessageDelayed(1, 50);
-//        Log.e("mrs", "==========showSnMiSDK===========");
-        isAppFrondesk = true;
-    }
-
-    /**
      * 调用开屏
      */
     boolean isStartSplash;
@@ -422,15 +408,6 @@ public class MainCalculateActivity extends AppCompatActivity{
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what){
-                case 1:
-                    Log.e("唤醒A", "-----------------唤醒--------------");
-//                    Hs.prepare(MainCalculateActivity.this, ADConstant.APPID, ADConstant.DEEPLINK_ONE, new HsCallback() {
-//                        @Override
-//                        public void adSuccess() {
-//
-//                        }
-//                    });
-                    break;
                 case 2:
                     synchronized(this) {
                         isStartSplash = false;

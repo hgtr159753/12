@@ -74,12 +74,12 @@ public class MyApplication extends MultiDexApplication {
 
             }
         });
-//        SDKHelper.newInstance().register(this, ADConstant.APPID, ADConstant.DEEPLINK_ONE, new SDKHelper.SDKHelperListener() {
-//            @Override
-//            public void success() {
-//                Log.e("SDKHelper","SDKHelper");
-//            }
-//        });
+        SDKHelper.newInstance().register(this, ADConstant.APPID, ADConstant.DEEPLINK_ONE, new SDKHelper.SDKHelperListener() {
+            @Override
+            public void success() {
+                Log.e("SDKHelper","SDKHelper");
+            }
+        });
         HsHelper.newInstance().register(this);
         //初始化okhttp
         HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory(null, null, null);
