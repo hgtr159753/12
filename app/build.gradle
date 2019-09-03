@@ -8,8 +8,8 @@ android {
         applicationId "com.shenmi.calculator"
         minSdkVersion 14
         targetSdkVersion 28
-        versionCode 24
-        versionName "2.3"
+        versionCode 25
+        versionName "2.4"
         multiDexEnabled true
         flavorDimensions "versionCode"
         manifestPlaceholders = [UMENG_CHANNEL_VALUE: "umeng"] //默认名称
@@ -21,6 +21,9 @@ android {
 
     productFlavors {
         yingyongbao {}
+        huawei{}
+        sanxing{}
+        oppo{}
         productFlavors.all {
             flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
         }

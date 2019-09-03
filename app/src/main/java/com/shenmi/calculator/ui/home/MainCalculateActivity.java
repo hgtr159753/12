@@ -107,7 +107,7 @@ public class MainCalculateActivity extends AppCompatActivity{
 
         setContentView(R.layout.activity_main);
         isOpen = (Boolean) SPUtil.get(this, ADConstant.ISOPENAD, false);
-        
+
         Hs.config(this,ADConstant.SCREEN_LOCK,ADConstant.SCREEN_LOCK);
         initTime();
         initView();
@@ -217,8 +217,18 @@ public class MainCalculateActivity extends AppCompatActivity{
                 if (webResponse.getApiStatusCode() == 200){
                     //判断是否显示广告
                     //获取计算器的广告bean
-                    ADSwitchConfigInfo adSwitchConfigInfo = webResponse.getAppSwitchConfigInfo().getAdSwitchConfigInfo().get(0);
-                    List<SwitchConfigInfo> switchConfigInfoList = adSwitchConfigInfo.getSwitchConfigInfoList();
+                    List<ADSwitchConfigInfo> adSwitchConfigInfoList = webResponse.getAppSwitchConfigInfo().getAdSwitchConfigInfo();
+                    ADSwitchConfigInfo adConfigInfo = null;
+                    for (ADSwitchConfigInfo adSwitchConfigInfo: adSwitchConfigInfoList) {
+                        if (adSwitchConfigInfo.getADType().equals(ADConstant.APPNAME)){
+                            adConfigInfo = adSwitchConfigInfo;
+                        }
+                    }
+                    //如果adConfigInfo==null，则表示这个app对应的广告开关不存在
+                    if (null == adConfigInfo)
+                        return;
+
+                    List<SwitchConfigInfo> switchConfigInfoList = adConfigInfo.getSwitchConfigInfoList();
                     //遍历渠道，获取当前渠道的信息
                     for (SwitchConfigInfo switchConfigInfo :switchConfigInfoList){
                         String channelId = switchConfigInfo.getChannelId();

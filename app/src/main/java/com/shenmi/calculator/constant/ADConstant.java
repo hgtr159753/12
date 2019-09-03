@@ -38,4 +38,9 @@ public class ADConstant {
 //    public static String SCREEN_LOCK = "faba6256-ff0c-47b1-9346-b65696d0fda2";
     public static String SCREEN_LOCK = "a91c1ce4-7cf4-4c48-9dd2-1e1ccab74ebb";
 
+    /**
+     * 获取广告开关的接口时，根据name判断是哪一个app
+     */
+    public static final String APPNAME = "CalculatorAD";
+
 }

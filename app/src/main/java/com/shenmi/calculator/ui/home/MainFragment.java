@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.shenmi.calculator.R;
 import com.shenmi.calculator.constant.ADConstant;
@@ -28,6 +29,7 @@ import com.shenmi.calculator.ui.TaxActivity;
 import com.shenmi.calculator.ui.UnitConvertActivity;
 import com.shenmi.calculator.ui.UpperNumActivity;
 import com.shenmi.calculator.util.SPUtil;
+import com.shenmi.calculator.util.ShareUtils;
 import com.shenmi.calculator.util.UnitConvertUtil;
 import com.snmi.sdk.AdView;
 import com.snmi.sdk.BannerListener;
@@ -157,8 +159,17 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         Intent mIntent = null;
         switch (v.getId()) {
             case R.id.iv_qq:
-                String url = "mqqwpa://im/chat?chat_type=wpa&uin=" + "3172938578";
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                    if (ShareUtils.isQQClientAvailable(getActivity(), "com.tencent.mobileqq")) {
+                    //跳转客服QQ界面
+                    String url = "mqqwpa://im/chat?chat_type=wpa&uin=3172938578";
+                    Intent intent = new Intent(Intent.ACTION_VIEW,Uri.parse(url));
+                    // 跳转前先判断Uri是否存在，如果打开一个不存在的Uri，App可能会崩溃
+                    if (ShareUtils.isValidIntent(getActivity(), intent)) {
+                        startActivity(intent);
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "检查到您手机没有安装QQ客户端，请安装后使用该功能", Toast.LENGTH_LONG).show();
+                }
                 break;
             case R.id.rl_capital:
                 mIntent = new Intent(getActivity(),
