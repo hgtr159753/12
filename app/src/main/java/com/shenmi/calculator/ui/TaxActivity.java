@@ -103,7 +103,7 @@ public class TaxActivity extends AppCompatActivity implements View.OnClickListen
             ToastUtil.showToast(this,"请填写完整的信息");
             return false;
         }
-        taxBean.setMoney(Integer.parseInt(money));
+        taxBean.setMoney(Long.parseLong((money)));
         taxBean.setGongjijin(gongjijin);
         taxBean.setYiliao(yiliao);
         taxBean.setYanglao(yanglao);

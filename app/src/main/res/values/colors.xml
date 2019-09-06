@@ -31,5 +31,6 @@
     <color name="colorPrimary">#5e5653</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#5e5653</color>
-       
+    <color name="sm_color_title_bg">#5c5c5c</color>
+    <color name="sm_color_title_text">#ffffff</color>
 </resources>

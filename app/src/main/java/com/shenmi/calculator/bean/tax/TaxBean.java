@@ -9,7 +9,7 @@ import android.os.Parcelable;
 
 public class TaxBean implements Parcelable {
 
-    private int money;
+    private Long money;
     private String gongjijin;
     private String yiliao;
     private String yanglao;
@@ -18,11 +18,11 @@ public class TaxBean implements Parcelable {
     private String shengyu;
     private String type;//年终0，工资1
 
-    public int getMoney() {
+    public Long getMoney() {
         return money;
     }
 
-    public void setMoney(int money) {
+    public void setMoney(Long money) {
         this.money = money;
     }
 
@@ -89,7 +89,7 @@ public class TaxBean implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.money);
+        dest.writeLong(this.money);
         dest.writeString(this.gongjijin);
         dest.writeString(this.yiliao);
         dest.writeString(this.yanglao);
@@ -103,7 +103,7 @@ public class TaxBean implements Parcelable {
     }
 
     protected TaxBean(Parcel in) {
-        this.money = in.readInt();
+        this.money = in.readLong();
         this.gongjijin = in.readString();
         this.yiliao = in.readString();
         this.yanglao = in.readString();

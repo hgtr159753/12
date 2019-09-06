@@ -3,79 +3,45 @@ package com.shenmi.calculator.ui.home;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
-import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
-import com.google.gson.Gson;
+
+import com.eric.commonlibrary.utils.ApiUtils;
+import com.eric.commonlibrary.utils.CommonUtils;
+import com.haibin.calendarview.calendar.calendar.fragment.CalendarFragment;
 import com.shenmi.calculator.R;
-import com.shenmi.calculator.adapter.MyFragmentPagerAdapter;
-import com.shenmi.calculator.app.MyApplication;
-import com.shenmi.calculator.bean.ADSwitchConfigInfo;
-import com.shenmi.calculator.bean.SwitchConfigInfo;
 import com.shenmi.calculator.constant.ADConstant;
-import com.shenmi.calculator.constant.ConstantWeb;
-import com.shenmi.calculator.net.ApiService;
-import com.shenmi.calculator.bean.WebRequest;
-import com.shenmi.calculator.bean.WebResponse;
-import com.shenmi.calculator.util.AppContentUtil;
 import com.shenmi.calculator.util.AppMarketUtil;
-import com.shenmi.calculator.util.AppPakacageUtil;
 import com.shenmi.calculator.util.DateUtil;
-import com.shenmi.calculator.util.NetworkUtil;
 import com.shenmi.calculator.util.SPUtil;
-import com.shenmi.calculator.util.SharedPUtils;
-import com.shenmi.calculator.util.ToastUtil;
-import com.sm.calendar.calendar.fragment.CalendarFragment;
 import com.snmi.sdk.Ad;
-import com.snmi.sdk.AdHCallback;
 import com.snmi.sdk.AdView;
 import com.snmi.sdk.SplashADInfo;
-import com.snmi.sdk.SplashFullScreenAD;
-import com.snmi.sdk.download.GPSlistener;
 import com.snmi.sdk_3.Hs;
-import com.snmi.sdk_3.HsCallback;
 import com.tencent.bugly.Bugly;
 import com.umeng.analytics.AnalyticsConfig;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import pub.devrel.easypermissions.AppSettingsDialog;
-import pub.devrel.easypermissions.EasyPermissions;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MainCalculateActivity extends AppCompatActivity{
@@ -112,6 +78,17 @@ public class MainCalculateActivity extends AppCompatActivity{
         initTime();
         initView();
         initPermission();
+        CommonUtils.startPrivacyDialog(this, new CommonUtils.OnClick() {
+            @Override
+            public void onLeftClick() {
+
+            }
+
+            @Override
+            public void onRight() {
+
+            }
+        });
     }
 
     /**
@@ -189,70 +166,15 @@ public class MainCalculateActivity extends AppCompatActivity{
     }
 
     private void initHttp() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(ConstantWeb.MAINURL)
-                //可以接收自定义的Gson，当然也可以不传
-                .addConverterFactory(GsonConverterFactory.create(new Gson()))
-                .build();
-        ApiService apiService = retrofit.create(ApiService.class);
-        WebRequest.Builder webBuilder = new WebRequest.Builder();
-        WebRequest webRequest = webBuilder.setAppName(AppContentUtil.getAppName(this))
-                .setAppVersion(AppContentUtil.getVersionName(this)+"."+
-                        AppContentUtil.getVersionCode(this))
-                .setChannel(PushAgent.getInstance(this).getMessageChannel())
-                .setDeviceId(AppContentUtil.getDevicedId(this))
-                .setPackageName(AppContentUtil.getPackageName(this))
-                .setSwitchType("news")
-                .build();
-        Log.e("webRequest",webRequest.toString());
-        Call<WebResponse> webOpenRequest = apiService.getWebOpenRequest(webRequest);
-        webOpenRequest.enqueue(new Callback<WebResponse>() {
+        ApiUtils.getAppSwitchConfig(this, PushAgent.getInstance(this).getMessageChannel(), "news", new ApiUtils.OnApiResult() {
             @Override
-            public void onResponse(Call<WebResponse> call, Response<WebResponse> response) {
-                if (response == null ||response.body() == null){
-                    return;
-                }
-                WebResponse webResponse = response.body();
-                Log.e("webRequest","onResponse=="+webResponse.toString());
-                if (webResponse.getApiStatusCode() == 200){
-                    //判断是否显示广告
-                    //获取计算器的广告bean
-                    List<ADSwitchConfigInfo> adSwitchConfigInfoList = webResponse.getAppSwitchConfigInfo().getAdSwitchConfigInfo();
-                    ADSwitchConfigInfo adConfigInfo = null;
-                    for (ADSwitchConfigInfo adSwitchConfigInfo: adSwitchConfigInfoList) {
-                        if (adSwitchConfigInfo.getADType().equals(ADConstant.APPNAME)){
-                            adConfigInfo = adSwitchConfigInfo;
-                        }
-                    }
-                    //如果adConfigInfo==null，则表示这个app对应的广告开关不存在
-                    if (null == adConfigInfo)
-                        return;
-
-                    List<SwitchConfigInfo> switchConfigInfoList = adConfigInfo.getSwitchConfigInfoList();
-                    //遍历渠道，获取当前渠道的信息
-                    for (SwitchConfigInfo switchConfigInfo :switchConfigInfoList){
-                        String channelId = switchConfigInfo.getChannelId();
-                        if (MyApplication.getAppChannelName().equals(channelId)){
-                            //如果是当前渠道，那么判断版本号
-                            if(AppPakacageUtil.getPackageCode(MainCalculateActivity.this)
-                                    .equals(switchConfigInfo.getSwitchConfigInfoDetail().getVersionCode())){
-                                //获取当前app是否开广告的信息
-                                boolean openAD = switchConfigInfo.getSwitchConfigInfoDetail().isOpenAD();
-                                SPUtil.put(MainCalculateActivity.this,ADConstant.ISOPENAD,openAD);
-                            }else{
-                                //线上版本以外的都保持开启广告
-                                SPUtil.put(MainCalculateActivity.this,ADConstant.ISOPENAD,true);
-                            }
-                            break;
-                        }
-                    }
-                    radioGroupMain.setOnCheckedChangeListener(onChangedListener);
-                }
+            public void onResponse(boolean isOpenAD) {
+                SPUtil.put(MainCalculateActivity.this,ADConstant.ISOPENAD,isOpenAD);
             }
 
             @Override
-            public void onFailure(Call<WebResponse> call, Throwable t) {
-                Log.e("webRequest","onFailure=="+t.toString());
+            public void onFailure(String msg) {
+                SPUtil.put(MainCalculateActivity.this,ADConstant.ISOPENAD,true);
             }
         });
     }

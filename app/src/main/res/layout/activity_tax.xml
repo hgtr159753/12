@@ -57,6 +57,7 @@
                 android:id="@+id/et_money"
                 android:layout_marginTop="@dimen/dp_10"
                 android:layout_margin="4dp"
+                android:maxLength="10"
                 android:textSize="20sp"
                 android:hint="请输入您的税前收入"
                 android:layout_width="match_parent"
@@ -149,6 +150,7 @@
                     android:id="@+id/et_gongjijin"
                     android:layout_alignParentRight="true"
                     android:text="7.0"
+                    android:inputType="numberDecimal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -184,6 +186,7 @@
                     android:id="@+id/et_yiliao"
                     android:layout_alignParentRight="true"
                     android:text="2.0"
+                    android:inputType="numberDecimal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -220,6 +223,7 @@
                     android:id="@+id/et_yanglao"
                     android:layout_alignParentRight="true"
                     android:text="8.0"
+                    android:inputType="numberDecimal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -256,6 +260,7 @@
                     android:id="@+id/et_shiye"
                     android:layout_alignParentRight="true"
                     android:text="0.5"
+                    android:inputType="numberDecimal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -292,6 +297,7 @@
                     android:id="@+id/et_gongshang"
                     android:layout_alignParentRight="true"
                     android:text="0.0"
+                    android:inputType="numberDecimal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -328,6 +334,7 @@
                     android:id="@+id/et_shengyu"
                     android:layout_alignParentRight="true"
                     android:text="0.0"
+                    android:inputType="numberDecimal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 

@@ -23,17 +23,12 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.shenmi.calculator.R;
-import com.shenmi.calculator.bean.WebRequest;
-import com.shenmi.calculator.bean.WebResponse;
 import com.shenmi.calculator.bean.rate.RateResponse;
-import com.shenmi.calculator.constant.ConstantWeb;
 import com.shenmi.calculator.constant.RateConstant;
 import com.shenmi.calculator.net.ApiService;
-import com.shenmi.calculator.util.AppContentUtil;
 import com.shenmi.calculator.util.UnitConvertUtil;
 import com.shenmi.calculator.view.PickerView;
 import com.umeng.analytics.MobclickAgent;
-import com.umeng.message.PushAgent;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -43,7 +38,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Query;
 
 public class UnitConvertActivity extends Activity implements OnClickListener {
 	private int nowUnitType;// 根据单位类型载入不同的文本

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -1528,7 +1529,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
             clearInputScreen();
         }
         String str = mShowInputTv.getText().toString();
-        if (str.length() != 1) {
+        if (!TextUtils.isEmpty(str) && str.length()> 1) {
             mShowInputTv.setText(str.substring(0, str.length() - 1));
             backList();
         } else {

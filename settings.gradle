@@ -1,1 +1,1 @@
-include ':app', ':push', ':okhttputils', ':calendarview'
+include ':app', ':push', ':okhttputils'

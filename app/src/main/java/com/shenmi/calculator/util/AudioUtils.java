@@ -40,6 +40,7 @@ public class AudioUtils {
 
     public void init(Context context) {
         mySynthesizer = SpeechSynthesizer.createSynthesizer(context, myInitListener);
+        if(mySynthesizer==null) return;
         mySynthesizer.setParameter(SpeechConstant.VOICE_NAME, "xiaoyan");
         mySynthesizer.setParameter(SpeechConstant.PITCH, "50");
         mySynthesizer.setParameter(SpeechConstant.VOLUME, "50");
