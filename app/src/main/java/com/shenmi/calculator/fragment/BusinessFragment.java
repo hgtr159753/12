@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.shenmi.calculator.R;
 import com.shenmi.calculator.listener.BusinessSelectedListener;
+import com.shenmi.calculator.util.ToastUtil;
 
 import java.math.BigDecimal;
 
@@ -127,7 +128,12 @@ public class BusinessFragment extends Fragment {
         double ze = Double.parseDouble(value.toString()) * 10000;
         double nx = Double.parseDouble(nxvj1.getSelectedItem().toString()) * 12;
         double rate = Double.parseDouble(shangyelilv.getText().toString()) / 100;
-        cal(ze, nx, rate);
+        try {
+            cal(ze, nx, rate);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ToastUtil.showToast(getActivity(), "输入有误!");
+        }
     }
 
 

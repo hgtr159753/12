@@ -21,11 +21,18 @@ android {
 
     productFlavors {
         yingyongbao {}
-        huawei{}
+        huawei_new{}
+        xiaomi_new{}
         sanxing{}
         oppo{}
         productFlavors.all {
             flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+        }
+    }
+
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "calculator_${variant.flavorName}_${defaultConfig.versionName}.${defaultConfig.versionCode}._${variant.buildType.name}.apk"
         }
     }
 
@@ -55,7 +62,7 @@ android {
         }
 
         release {
-            minifyEnabled true //不启用混淆
+            minifyEnabled false //不启用混淆
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             //签名配置
             signingConfig signingConfigs.release

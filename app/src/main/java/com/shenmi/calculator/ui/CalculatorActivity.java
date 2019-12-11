@@ -4,12 +4,15 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PersistableBundle;
 import android.os.Vibrator;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -24,7 +27,9 @@ import android.widget.Toast;
 
 import com.shenmi.calculator.R;
 import com.shenmi.calculator.bean.InputItem;
+import com.shenmi.calculator.util.AppMarketUtil;
 import com.shenmi.calculator.util.AudioUtils;
+import com.shenmi.calculator.util.SPUtil;
 import com.shenmi.calculator.util.SharedPUtils;
 import com.shenmi.calculator.util.ToastUtil;
 import com.umeng.analytics.MobclickAgent;
@@ -70,9 +75,9 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     public static final int END = -2;
     public static final int ERROR = -3;
     public static final int SHOW_RESULT_DATA = 1;
+    public static final int SHOW_RESULT_DATA2 = 2;
     public static final String nan = "NaN";
     public static final String infinite = "��";
-
 
     //基础，科学
     private TextView title_jc, title_KX;
@@ -106,17 +111,31 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     private List<Button> btnList;
     private TextView prefix;
 
+    private String result;//3*0.1问题结果
+    int times;//三次计算成功跳转应用市场
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
 
         public void handleMessage(Message msg) {
 
             if (msg.what == SHOW_RESULT_DATA) {
-                mShowResultTvTwo.setText(mShowResultTv.getText()+"");
-                mShowResultTv.setText(mShowInputTv.getText());
-                mShowInputTv.setText(mInputList.get(0).getInput());
-                AudioUtils.getInstance().speakText(mInputList.get(0).getInput()); //播放语音
-                clearScreen(mInputList.get(0));
+                if(mInputList!=null && mInputList.size()>0) {
+                    mShowResultTvTwo.setText(mShowResultTv.getText() + "");
+                    mShowResultTv.setText(mShowInputTv.getText());
+                    mShowInputTv.setText(mInputList.get(0).getInput());
+                    AudioUtils.getInstance().speakText(mInputList.get(0).getInput()); //播放语音
+                    clearScreen(mInputList.get(0));
+                }
+            }
+
+            if (msg.what == SHOW_RESULT_DATA2) {
+                if(mInputList!=null && mInputList.size()>0) {
+                    mShowResultTvTwo.setText(mShowResultTv.getText() + "");
+                    mShowResultTv.setText(mShowInputTv.getText());
+                    mShowInputTv.setText(result);
+                    AudioUtils.getInstance().speakText(result); //播放语音
+                    clearScreen(mInputList.get(0));
+                }
             }
         }
     };
@@ -229,59 +248,84 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     public void initMusic(){
         mSoundResource = new HashMap<>();
         if (mSoundPool == null) {
-            mSoundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
-        }
-        if (mSoundPool == null) {
-            return;
-        }
-        mSoundResource.put(R.id.zero_btn, mSoundPool.load(this, R.raw.num0, 1));
-        mSoundResource.put(R.id.one_btn, mSoundPool.load(this, R.raw.num1, 1));
-        mSoundResource.put(R.id.two_btn, mSoundPool.load(this, R.raw.num2, 1));
-        mSoundResource.put(R.id.three_btn, mSoundPool.load(this, R.raw.num3, 1));
-        mSoundResource.put(R.id.four_btn, mSoundPool.load(this, R.raw.num4, 1));
-        mSoundResource.put(R.id.five_btn, mSoundPool.load(this, R.raw.num5, 1));
-        mSoundResource.put(R.id.six_btn, mSoundPool.load(this, R.raw.num6, 1));
-        mSoundResource.put(R.id.seven_btn, mSoundPool.load(this, R.raw.num7, 1));
-        mSoundResource.put(R.id.eight_btn, mSoundPool.load(this, R.raw.num8, 1));
-        mSoundResource.put(R.id.nine_btn, mSoundPool.load(this, R.raw.num9, 1));
-        mSoundResource.put(R.id.equal_btn, mSoundPool.load(this, R.raw.dengyu, 1));
-        mSoundResource.put(R.id.add_btn, mSoundPool.load(this, R.raw.jia, 1));
-        mSoundResource.put(R.id.sub_btn, mSoundPool.load(this, R.raw.jian, 1));
-        mSoundResource.put(R.id.multiply_btn, mSoundPool.load(this, R.raw.chengyi, 1));
-        mSoundResource.put(R.id.divide_btn, mSoundPool.load(this, R.raw.chuyi, 1));
-        mSoundResource.put(R.id.del_btn, mSoundPool.load(this, R.raw.huitui, 1));
-        mSoundResource.put(R.id.point_btn, mSoundPool.load(this, R.raw.dian, 1));
-        mSoundResource.put(R.id.percent, mSoundPool.load(this, R.raw.baifenhao, 1));
-        mSoundResource.put(R.id.c_btn, mSoundPool.load(this, R.raw.qingchu, 1));
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                AudioAttributes audioAttributes;
+                audioAttributes = new AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .build();
 
-        mSoundResource.put(R.id.zero, mSoundPool.load(this, R.raw.num0, 1));
-        mSoundResource.put(R.id.one, mSoundPool.load(this, R.raw.num1, 1));
-        mSoundResource.put(R.id.two, mSoundPool.load(this, R.raw.num2, 1));
-        mSoundResource.put(R.id.three, mSoundPool.load(this, R.raw.num3, 1));
-        mSoundResource.put(R.id.four, mSoundPool.load(this, R.raw.num4, 1));
-        mSoundResource.put(R.id.five, mSoundPool.load(this, R.raw.num5, 1));
-        mSoundResource.put(R.id.six, mSoundPool.load(this, R.raw.num6, 1));
-        mSoundResource.put(R.id.seven, mSoundPool.load(this, R.raw.num7, 1));
-        mSoundResource.put(R.id.eight, mSoundPool.load(this, R.raw.num8, 1));
-        mSoundResource.put(R.id.nine, mSoundPool.load(this, R.raw.num9, 1));
-        mSoundResource.put(R.id.equal, mSoundPool.load(this, R.raw.dengyu, 1));
-        mSoundResource.put(R.id.add, mSoundPool.load(this, R.raw.jia, 1));
-        mSoundResource.put(R.id.Subtraction, mSoundPool.load(this, R.raw.jian, 1));
-        mSoundResource.put(R.id.mutiply, mSoundPool.load(this, R.raw.chengyi, 1));
-        mSoundResource.put(R.id.division, mSoundPool.load(this, R.raw.chuyi, 1));
-        mSoundResource.put(R.id.back, mSoundPool.load(this, R.raw.huitui, 1));
-        mSoundResource.put(R.id.point, mSoundPool.load(this, R.raw.dian, 1));
-        mSoundResource.put(R.id.clear, mSoundPool.load(this, R.raw.qingchu, 1));
-        mSoundResource.put(R.id.left, mSoundPool.load(this, R.raw.zuokuohao, 1));
-        mSoundResource.put(R.id.right, mSoundPool.load(this, R.raw.youkuohao, 1));
+                mSoundPool = new SoundPool.Builder()
+                        .setMaxStreams(1)
+                        .setAudioAttributes(audioAttributes)
+                        .build();
+            } else { // 5.0 以前
+                mSoundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);  // 创建SoundPool
+            }
+            // 设置加载完成监听
+            mSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+                @Override
+                public void onLoadComplete(SoundPool soundPool, int i, int i1) {
+                    Log.i("snmilog","音频加载完成");
+                }
+            });
+        }
+        if (mSoundPool != null) {
+            try {
+                mSoundResource.put(R.id.zero_btn, mSoundPool.load(this, R.raw.num0, 1));
+                mSoundResource.put(R.id.one_btn, mSoundPool.load(this, R.raw.num1, 1));
+                mSoundResource.put(R.id.two_btn, mSoundPool.load(this, R.raw.num2, 1));
+                mSoundResource.put(R.id.three_btn, mSoundPool.load(this, R.raw.num3, 1));
+                mSoundResource.put(R.id.four_btn, mSoundPool.load(this, R.raw.num4, 1));
+                mSoundResource.put(R.id.five_btn, mSoundPool.load(this, R.raw.num5, 1));
+                mSoundResource.put(R.id.six_btn, mSoundPool.load(this, R.raw.num6, 1));
+                mSoundResource.put(R.id.seven_btn, mSoundPool.load(this, R.raw.num7, 1));
+                mSoundResource.put(R.id.eight_btn, mSoundPool.load(this, R.raw.num8, 1));
+                mSoundResource.put(R.id.nine_btn, mSoundPool.load(this, R.raw.num9, 1));
+                mSoundResource.put(R.id.equal_btn, mSoundPool.load(this, R.raw.dengyu, 1));
+                mSoundResource.put(R.id.add_btn, mSoundPool.load(this, R.raw.jia, 1));
+                mSoundResource.put(R.id.sub_btn, mSoundPool.load(this, R.raw.jian, 1));
+                mSoundResource.put(R.id.multiply_btn, mSoundPool.load(this, R.raw.chengyi, 1));
+                mSoundResource.put(R.id.divide_btn, mSoundPool.load(this, R.raw.chuyi, 1));
+                mSoundResource.put(R.id.del_btn, mSoundPool.load(this, R.raw.huitui, 1));
+                mSoundResource.put(R.id.point_btn, mSoundPool.load(this, R.raw.dian, 1));
+                mSoundResource.put(R.id.percent, mSoundPool.load(this, R.raw.baifenhao, 1));
+                mSoundResource.put(R.id.c_btn, mSoundPool.load(this, R.raw.qingchu, 1));
 
-        mSoundResource.put(R.id.pi, mSoundPool.load(this, R.raw.w, 1));
+                mSoundResource.put(R.id.zero, mSoundPool.load(this, R.raw.num0, 1));
+                mSoundResource.put(R.id.one, mSoundPool.load(this, R.raw.num1, 1));
+                mSoundResource.put(R.id.two, mSoundPool.load(this, R.raw.num2, 1));
+                mSoundResource.put(R.id.three, mSoundPool.load(this, R.raw.num3, 1));
+                mSoundResource.put(R.id.four, mSoundPool.load(this, R.raw.num4, 1));
+                mSoundResource.put(R.id.five, mSoundPool.load(this, R.raw.num5, 1));
+                mSoundResource.put(R.id.six, mSoundPool.load(this, R.raw.num6, 1));
+                mSoundResource.put(R.id.seven, mSoundPool.load(this, R.raw.num7, 1));
+                mSoundResource.put(R.id.eight, mSoundPool.load(this, R.raw.num8, 1));
+                mSoundResource.put(R.id.nine, mSoundPool.load(this, R.raw.num9, 1));
+                mSoundResource.put(R.id.equal, mSoundPool.load(this, R.raw.dengyu, 1));
+                mSoundResource.put(R.id.add, mSoundPool.load(this, R.raw.jia, 1));
+                mSoundResource.put(R.id.Subtraction, mSoundPool.load(this, R.raw.jian, 1));
+                mSoundResource.put(R.id.mutiply, mSoundPool.load(this, R.raw.chengyi, 1));
+                mSoundResource.put(R.id.division, mSoundPool.load(this, R.raw.chuyi, 1));
+                mSoundResource.put(R.id.back, mSoundPool.load(this, R.raw.huitui, 1));
+                mSoundResource.put(R.id.point, mSoundPool.load(this, R.raw.dian, 1));
+                mSoundResource.put(R.id.clear, mSoundPool.load(this, R.raw.qingchu, 1));
+                mSoundResource.put(R.id.left, mSoundPool.load(this, R.raw.zuokuohao, 1));
+                mSoundResource.put(R.id.right, mSoundPool.load(this, R.raw.youkuohao, 1));
+
+                mSoundResource.put(R.id.pi, mSoundPool.load(this, R.raw.w, 1));
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("smnilog", "音频加载失败");
+            }
+        }
     }
 
     /**
      *初始化数据
      */
     private void initData() {
+        times = (int) SPUtil.get(CalculatorActivity.this, "calculatorSuccessTimes", 0);
 
         if (map == null)
             map = new HashMap<>();
@@ -587,7 +631,19 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                 // 将-1x转换成-
                 str_new = str.replaceAll("-", "-1×");
                 // 计算算式结果
-                new calc().process(str_new);
+                try {
+                    new calc().process(str_new, "1");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ToastUtil.showToast(CalculatorActivity.this, "超出最大计算长度或输入有误");
+                }
+                //成功计算三次后提示应用市场评价
+                if(times<=2) {
+                    if (times == 2) {
+                        AppMarketUtil.goThirdApp(CalculatorActivity.this);
+                    }
+                    SPUtil.put(CalculatorActivity.this, "calculatorSuccessTimes", ++times);
+                }
             }
             // 表明可以继续输入
             tip_lock = true;
@@ -901,7 +957,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
          *  重复直到当前运算符大于栈顶
          *   扫描完后对剩下的运算符与数字依次计算
          */
-        public void process(String str) {
+        public void process(String str, String type) {
             int weightPlus = 0, topOp = 0, topNum = 0, flag = 1, weightTemp = 0;
             // weightPlus为同一（）下的基本优先级，weightTemp临时记录优先级的变化
             // topOp为weight[]，operator[]的计数器；topNum为number[]的计数器
@@ -1200,10 +1256,14 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                 showError(3, str_old);
                 return;
             }
-            // 输出最终结果
-            prefix.setText(str_old);
-            AudioUtils.getInstance().speakText(String.valueOf(checkResult(number[0]))); //播放语音
-            tvShow.setText(" = " + String.valueOf(checkResult(number[0])));
+            if(type.equals("1")) {
+                // 输出最终结果
+                prefix.setText(str_old);
+                AudioUtils.getInstance().speakText(String.valueOf(checkResult(number[0]))); //播放语音
+                tvShow.setText(" = " + String.valueOf(checkResult(number[0])));
+            }else{
+                result = checkResult(number[0])+"";
+            }
         }
 
 
@@ -1383,7 +1443,12 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                 break;
             case R.id.equal_btn:
                 playSound(R.id.equal_btn);
-                operator();
+                try {
+                    operator();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ToastUtil.showToast(this, "超出最大计算长度或输入有误");
+                }
                 break;
             case R.id.add_btn:
             case R.id.sub_btn:
@@ -1395,7 +1460,12 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
             case R.id.percent:
                 playSound(arg0.getId());
                 inputPresentOperator(arg0);
-                operator();
+                try {
+                    operator();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ToastUtil.showToast(this, "超出最大计算长度或输入有误");
+                }
                 break;
             default:
                 playSound(arg0.getId());
@@ -1403,6 +1473,11 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                 break;
 
         }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
     }
 
     /**
@@ -1417,11 +1492,29 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
 //        mShowResultTv.setText("");
 //        mShowResultTvTwo.setText("");
         startAnim();
-        findHighOperator(0);
-        if (mLastInputstatus != ERROR) {
-            findLowOperator(0);
+        if(mShowInputTv.getText().toString().contains("×")){ //java中0.1问题 https://blog.csdn.net/weixin_44018338/article/details/91420963
+            String inputString = mShowInputTv.getText().toString();
+                new calc().process(inputString.substring(0, inputString.length()-1), "2");
+            findHighOperator(0);
+            if (mLastInputstatus != ERROR) {
+                findLowOperator(0);
+            }
+            mHandler.sendMessageDelayed(mHandler.obtainMessage(SHOW_RESULT_DATA2), 300);
+        }else{
+            findHighOperator(0);
+            if (mLastInputstatus != ERROR) {
+                findLowOperator(0);
+            }
+            mHandler.sendMessageDelayed(mHandler.obtainMessage(SHOW_RESULT_DATA), 300);
         }
-        mHandler.sendMessageDelayed(mHandler.obtainMessage(SHOW_RESULT_DATA), 300);
+
+        //成功计算三次后提示应用市场评价
+        if(times<=2) {
+            if (times == 2) {
+                AppMarketUtil.goThirdApp(CalculatorActivity.this);
+            }
+            SPUtil.put(CalculatorActivity.this, "calculatorSuccessTimes", ++times);
+        }
     }
 
     private void startAnim() {
@@ -1645,6 +1738,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                         } else {
                             d = Double.parseDouble(mInputList.get(i + 1).getInput());
                             if (getResources().getString(R.string.multply).equals(item.getInput())) {
+                                Log.i("erictest", "a="+a + ",d="+d+"=="+a*d);
                                 mInputList.set(i - 1, new InputItem(String.valueOf(a * d), InputItem.DOUBLE_TYPE));
                             } else {
                                 if (d == 0) {

@@ -69,7 +69,7 @@ public class MainCalculateActivity extends AppCompatActivity{
         //腾讯bugly初始化
         String channelName = AnalyticsConfig.getChannel(this);
         Bugly.setAppChannel(this, channelName);
-        Bugly.init(getApplicationContext(), "e968353f92", false);
+        Bugly.init(getApplicationContext(), "db5fbfbb11", false);
 
         setContentView(R.layout.activity_main);
         isOpen = (Boolean) SPUtil.get(this, ADConstant.ISOPENAD, false);
