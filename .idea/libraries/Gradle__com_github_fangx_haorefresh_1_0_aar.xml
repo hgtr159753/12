@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.fangx:haorefresh:1.0@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/haorefresh-1.0.aar/d45c3dc882f6b0d0a93192b7707e964c/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/haorefresh-1.0.aar/d45c3dc882f6b0d0a93192b7707e964c/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/haorefresh-1.0.aar/efd1a8786101459ac8a73af187ccb3be/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/haorefresh-1.0.aar/efd1a8786101459ac8a73af187ccb3be/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

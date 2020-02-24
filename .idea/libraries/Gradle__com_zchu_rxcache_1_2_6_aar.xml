@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.zchu:rxcache:1.2.6@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rxcache-1.2.6.aar/ccab7b55fb99c37a066dc45544c4f890/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rxcache-1.2.6.aar/ccab7b55fb99c37a066dc45544c4f890/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rxcache-1.2.6.aar/fe481a82c52c4e9fbc2a7160a7dc4ec9/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rxcache-1.2.6.aar/fe481a82c52c4e9fbc2a7160a7dc4ec9/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

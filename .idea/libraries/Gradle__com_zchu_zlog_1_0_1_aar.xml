@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.zchu:zlog:1.0.1@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/zlog-1.0.1.aar/1cf3f5007e92b0589ea5ff8e3cfa8957/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/zlog-1.0.1.aar/1cf3f5007e92b0589ea5ff8e3cfa8957/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/zlog-1.0.1.aar/9e67c441ce71510a6f2368499111780c/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/zlog-1.0.1.aar/9e67c441ce71510a6f2368499111780c/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

@@ -20,11 +20,6 @@ android {
     }
 
     productFlavors {
-        yingyongbao {}
-        huawei_new{}
-        xiaomi_new{}
-        sanxing{}
-        oppo{}
         productFlavors.all {
             flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
         }
