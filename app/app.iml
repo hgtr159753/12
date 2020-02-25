@@ -129,7 +129,7 @@
     <orderEntry type="library" name="Gradle: com.android.support:recyclerview-v7:26.1.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.contrarywind:Android-PickerView:3.2.6@aar" level="project" />
     <orderEntry type="library" name="Gradle: :calendar:@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.tencent.bugly:crashreport_upgrade:1.4.2@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.tencent.bugly:crashreport_upgrade:1.4.5@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.tencent.bugly:nativecrashreport:3.7.1@aar" level="project" />
     <orderEntry type="library" name="Gradle: pub.devrel:easypermissions:1.0.1@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:animated-vector-drawable:26.1.0@aar" level="project" />
