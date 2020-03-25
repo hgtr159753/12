@@ -28,13 +28,15 @@
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
     <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
     <!-- 定位相关权限，建议添加，便于广告的定向  location group -->
-    <uses-permission android:name="android.permission.SET_DEBUG_APP"
+    <uses-permission
+        android:name="android.permission.SET_DEBUG_APP"
         tools:ignore="ProtectedPermissions" />
     <!-- 悬浮窗权限-->
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
-    <uses-permission android:name="android.permission.GET_TASKS"/>
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
 
     <application
@@ -48,7 +50,8 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:icon">
 
-        <activity android:name=".ui.home.SplashActivity"
+        <activity
+            android:name=".ui.home.SplashActivity"
             android:theme="@style/AppTheme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -59,7 +62,9 @@
         <activity android:name=".ui.UnitConvertActivity" />
         <activity android:name=".ui.UpperNumActivity" />
         <activity android:name=".ui.LoanActivity" />
-        <activity android:name=".ui.CalculatorActivity" />
+        <activity
+            android:name=".ui.CalculatorActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".ui.home.StartFlashActivity" />
         <activity
             android:name=".ui.home.MainCalculateActivity"
@@ -132,15 +137,18 @@
         <activity android:name=".ui.TaxActivity" />
         <activity android:name=".ui.TaxResultActivity" />
         <activity android:name=".ui.home.TaxSelectActivity"></activity>
-        <activity android:name="com.snmi.sdk_3.ac.HsActivity"
+        <activity
+            android:name="com.snmi.sdk_3.ac.HsActivity"
             android:launchMode="singleInstance"
-            android:theme="@android:style/Theme.Dialog" >
+            android:theme="@android:style/Theme.Dialog">
             <intent-filter>
                 <action android:name="app.intent.tag" />
             </intent-filter>
         </activity>
 
-        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
     </application>
 
 </manifest>
