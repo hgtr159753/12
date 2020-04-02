@@ -343,5 +343,10 @@ public static final int *;
 -keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
     rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
-#commonlibrary  广告接口
+#commonlibrary  GG接口
 -keep class com.eric.commonlibrary.bean.** { *; }
+
+#网盟
+-keep class com.bytedance.sdk.openadsdk.** { *; }
+-keep public interface com.bytedance.sdk.openadsdk.downloadnew.** {*;}
+-keep class com.pgl.sys.ces.* {*;}

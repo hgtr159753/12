@@ -28,6 +28,7 @@ import com.haibin.calendarview.calendar.calendar.fragment.CalendarFragment;
 import com.shenmi.calculator.R;
 import com.shenmi.calculator.constant.ADConstant;
 import com.shenmi.calculator.util.AppMarketUtil;
+import com.shenmi.calculator.util.CustomApiUtils;
 import com.shenmi.calculator.util.DateUtil;
 import com.shenmi.calculator.util.SPUtil;
 import com.snmi.sdk.Ad;
@@ -74,7 +75,7 @@ public class MainCalculateActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
         isOpen = (Boolean) SPUtil.get(this, ADConstant.ISOPENAD, false);
 
-        Hs.config(this,ADConstant.SCREEN_LOCK,ADConstant.SCREEN_LOCK);
+        initAD();
         initTime();
         initView();
         initPermission();
@@ -107,6 +108,9 @@ public class MainCalculateActivity extends AppCompatActivity{
 
     private void initAD() {
         if (isOpen)
+            Hs.config(this,ADConstant.SCREEN_LOCK,ADConstant.SCREEN_LOCK);
+        Ad.configAD(getApplicationContext());
+        Ad.initLockerAd(getApplicationContext(), ADConstant.APPID, "C28D978B85334C32849883788F045DC6");
         Ad.prepareSplashAd(this, ADConstant.APPID,ADConstant.START_SCREEN);
     }
 
@@ -166,10 +170,12 @@ public class MainCalculateActivity extends AppCompatActivity{
     }
 
     private void initHttp() {
-        ApiUtils.getAppSwitchConfig(this, PushAgent.getInstance(this).getMessageChannel(), "news", new ApiUtils.OnApiResult() {
+        CustomApiUtils.getAppSwitchConfig(this, PushAgent.getInstance(this).getMessageChannel(), "news", new CustomApiUtils.OnApiResult() {
             @Override
-            public void onResponse(boolean isOpenAD) {
-                SPUtil.put(MainCalculateActivity.this,ADConstant.ISOPENAD,isOpenAD);
+            public void onResponse(boolean var1, int var2) {
+                SPUtil.put(MainCalculateActivity.this,ADConstant.ISOPENAD,var1);
+                // 保存展示顺序
+                SPUtil.put(MainCalculateActivity.this,ADConstant.ISADODDER,var2);
             }
 
             @Override
@@ -203,8 +209,8 @@ public class MainCalculateActivity extends AppCompatActivity{
         activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         packageName = this.getPackageName();
         //检测APP处于前台还是后台
-        if (isOpen)
-        new Thread(new AppStatus()).start();
+       /* if (isOpen)
+        new Thread(new AppStatus()).start();*/
     }
 
     private RadioGroup.OnCheckedChangeListener onChangedListener = new RadioGroup.OnCheckedChangeListener() {
@@ -269,7 +275,8 @@ public class MainCalculateActivity extends AppCompatActivity{
         long timeSpan = System.currentTimeMillis() - mExitTime;
         if (timeSpan < 1000) {
             Log.e("mrs", "finish");
-            moveTaskToBack(true);
+            //moveTaskToBack(true);
+            finish();
         } else {
             Toast.makeText(this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
             mExitTime = System.currentTimeMillis();
@@ -284,7 +291,7 @@ public class MainCalculateActivity extends AppCompatActivity{
             while (!stop) {
                 try {
                     if (appOnForeground()) {
-                         Log.e("mrs", "-----------------前台--------------");
+                        // Log.e("mrs", "-----------------前台--------------");
                         isAppFrondesk = false;
                         if (isStartSplash && ADConstant.IS_SCREEN){
                             showSplash();
@@ -292,7 +299,7 @@ public class MainCalculateActivity extends AppCompatActivity{
                         currentTimes = System.currentTimeMillis();
                     } else {
                         isStartSplash = true;
-                        Log.e("mrs", "-----------------后台--------------");
+                        //Log.e("mrs", "-----------------后台--------------");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -308,7 +315,6 @@ public class MainCalculateActivity extends AppCompatActivity{
 
     protected void onResume() {
         super.onResume();
-        initAD();
         MobclickAgent.onResume(this);
     }
 
@@ -326,7 +332,7 @@ public class MainCalculateActivity extends AppCompatActivity{
         if (!isStartSplash)
             return;
         isStartSplash = false;
-        Log.e("mrs", "-----------------前台--------------"+currentTimes);
+        //Log.e("mrs", "-----------------前台--------------"+currentTimes);
         if (System.currentTimeMillis()-currentTimes>(25*1000)){
             Log.e("mrs", "----------------开启开屏--------------");
             handler.sendEmptyMessageDelayed(2, 10);

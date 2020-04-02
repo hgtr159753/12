@@ -4,8 +4,13 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
+
+import com.bytedance.sdk.openadsdk.TTAdConfig;
+import com.bytedance.sdk.openadsdk.TTAdConstant;
+import com.bytedance.sdk.openadsdk.TTAdSdk;
 import com.iflytek.cloud.SpeechUtility;
 import com.shenmi.calculator.constant.ADConstant;
+import com.shenmi.calculator.util.TTAdManagerHolder;
 import com.snmi.sdk.Ad;
 import com.snmi.sdk_3.Hs;
 import com.snmi.sdk_3.util.HsHelper;
@@ -74,7 +79,7 @@ public class MyApplication extends MultiDexApplication {
 
             }
         });
-        SDKHelper.newInstance().register(this, ADConstant.APPID, ADConstant.DEEPLINK_ONE, new SDKHelper.SDKHelperListener() {
+        SDKHelper.newInstance().register(this, ADConstant.DEEPLINK_ONE, ADConstant.DEEPLINK_ONE, new SDKHelper.SDKHelperListener() {
             @Override
             public void success() {
                 Log.e("SDKHelper","SDKHelper");
@@ -97,7 +102,13 @@ public class MyApplication extends MultiDexApplication {
                 .sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager)
                 .build();
         OkHttpUtils.initClient(okHttpClient);
+
+        TTAdManagerHolder.init(this);
     }
+
+
+
+
 
     @Override
     public void onTerminate() {

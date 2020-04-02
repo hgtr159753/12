@@ -8,8 +8,8 @@ android {
         applicationId "com.shenmi.calculator"
         minSdkVersion 15
         targetSdkVersion 28
-        versionCode 25
-        versionName "2.4"
+        versionCode 31
+        versionName "3.0"
         multiDexEnabled true
         flavorDimensions "versionCode"
         manifestPlaceholders = [UMENG_CHANNEL_VALUE: "umeng"] //默认名称
@@ -20,16 +20,26 @@ android {
     }
 
     productFlavors {
+        yingyongbao {}
+        huawei_new{}
+        huawei{}
+        xiaomi_new{}
+        sanxing{}
+        oppo{}
+        yahu{}
+        xiaomi{}
+        vivo{}
+        meizu{}
         productFlavors.all {
             flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
         }
     }
 
-   /* android.applicationVariants.all { variant ->
+    android.applicationVariants.all { variant ->
         variant.outputs.all {
             outputFileName = "calculator_${variant.flavorName}_${defaultConfig.versionName}.${defaultConfig.versionCode}._${variant.buildType.name}.apk"
         }
-    }*/
+    }
 
     signingConfigs {
         debug {
@@ -154,9 +164,8 @@ dependencies {
     //对rxjava的适配
     compile 'com.squareup.retrofit2:adapter-rxjava:2.3.0'
     compile 'com.android.support:multidex:1.0.0'
-    api files('libs/SNMISDK.jar')
 
-    //215(正常广告、开插屏、banner、解锁屏)
+    //215(正常GG、开插屏、banner、解锁屏)
 
     //只有唤醒()
     //时间选择器
@@ -166,7 +175,10 @@ dependencies {
 //    implementation project(':calendarview')
 
     implementation project(':okhttputils')
-    implementation files('libs/SMSDK_WS5_29.jar')
     implementation(name: 'commonlibrary', ext: 'aar')
+    implementation files('libs\\open_ad_sdk.aar')
+    implementation files('libs\\SFSDK.jar')
+    implementation files('libs\\SFSDK.jar')
+    implementation files('libs\\GDT.aar')
 
 }

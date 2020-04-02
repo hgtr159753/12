@@ -6,8 +6,12 @@ package com.shenmi.calculator.constant;
 
 public class ADConstant {
 
-    //是否开启广告sp
+    //是否开启GGsp
     public static final String ISOPENAD= "isopenad";
+    /**
+     * 广告开关sp
+     */
+    public static final String ISADODDER = "is_ad_order";
 
     public static String APPID = "EFCF4787249A408D951D6583D1F63205";
 
@@ -28,6 +32,14 @@ public class ADConstant {
     public static String DEEPLINK_ONE = "31ddb547-0916-40fd-baa1-c7820da9434c";
 
     /**
+     * 开屏请求
+     */
+    public static String SPLASH_REQUEST= "Clock_Splash_Request";
+    /**
+     * 开屏展示
+     */
+    public static String SPLASH_OPEN = "Clock_Splash_Open";
+    /**
      * 是否有开屏
      */
     public static boolean IS_SCREEN = false;
@@ -39,8 +51,10 @@ public class ADConstant {
     public static String SCREEN_LOCK = "a91c1ce4-7cf4-4c48-9dd2-1e1ccab74ebb";
 
     /**
-     * 获取广告开关的接口时，根据name判断是哪一个app
+     * 获取GG开关的接口时，根据name判断是哪一个app
      */
     public static final String APPNAME = "CalculatorAD";
 
+    public static final String APPID_TENCENT = "1110294177";
+    public static final String SplashPosID_TENCENT = "6071203654430728";
 }

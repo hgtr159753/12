@@ -104,7 +104,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         iv_qq.setOnClickListener(this);
 //        boolean isOpen = (Boolean) SPUtil.get(getActivity(), ADConstant.ISOPENAD, false);
 //        if (isOpen){
-////            //有广告则调用申米广告sdk
+////            //有GG则调用申米GGsdk
 //            Log.e("banner","banner");
 //            rl_banner.setVisibility(View.VISIBLE);
 //            rl_banner.setAdListener(new BannerMonitor(ADConstant.BANNER_ONE, getActivity()));
