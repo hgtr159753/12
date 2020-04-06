@@ -61,6 +61,15 @@
             android:layout_toLeftOf="@id/music_icon"
             android:src="@drawable/shake_icon" />
 
+        <ImageView
+            android:id="@+id/shake_history"
+            android:layout_width="23dp"
+            android:layout_height="23dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/shake_icon"
+            android:src="@drawable/shake_refresh" />
+
     </RelativeLayout>
 
     <View
@@ -130,11 +139,11 @@
                     android:textColor="#FFAA00" />
 
                 <RelativeLayout
+                    android:id="@+id/del_btn"
                     style="@style/Button3Style"
                     android:layout_height="match_parent">
 
                     <ImageView
-                        android:id="@+id/del_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="20dp"
                         android:layout_centerHorizontal="true"
@@ -307,6 +316,7 @@
             android:textColor="#000000"
             android:textSize="36sp" />
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/kexue_menu"
         android:layout_width="match_parent"

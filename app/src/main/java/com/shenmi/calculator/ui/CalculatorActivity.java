@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -22,25 +23,32 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shenmi.calculator.R;
+import com.shenmi.calculator.bean.HistoryBean;
 import com.shenmi.calculator.bean.InputItem;
+import com.shenmi.calculator.db.ObjectBox;
 import com.shenmi.calculator.util.AppMarketUtil;
 import com.shenmi.calculator.util.AudioUtils;
 import com.shenmi.calculator.util.SPUtil;
 import com.shenmi.calculator.util.SharedPUtils;
 import com.shenmi.calculator.util.ToastUtil;
 import com.umeng.analytics.MobclickAgent;
+import com.zchu.rxcache.utils.LogUtils;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+
+import io.objectbox.Box;
 
 public class CalculatorActivity extends Activity implements View.OnClickListener {
 
@@ -48,7 +56,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     private TextView mShowResultTv;
     private TextView mShowInputTv;
     private Button mCBtn;
-    private ImageView mDelBtn;
+    private RelativeLayout mDelBtn;
     private Button mAddBtn;
     private Button mSubBtn;
     private Button mMultiplyBtn;
@@ -82,7 +90,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     //基础，科学
     private TextView title_jc, title_KX;
     //震动,声音
-    private ImageView music_icon, shake_icon;
+    private ImageView music_icon, shake_icon, shake_history;
     private boolean isfalse_muisc, isfalse_shake;
 
     private SoundPool mSoundPool;
@@ -119,29 +127,38 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
         public void handleMessage(Message msg) {
 
             if (msg.what == SHOW_RESULT_DATA) {
-                if(mInputList!=null && mInputList.size()>0) {
+                if (mInputList != null && mInputList.size() > 0) {
+
+                    mHistoryBean.addData(mShowInputTv.getText() + ":" + mInputList.get(0).getInput());
+
                     mShowResultTvTwo.setText(mShowResultTv.getText() + "");
                     mShowResultTv.setText(mShowInputTv.getText());
                     mShowInputTv.setText(mInputList.get(0).getInput());
                     AudioUtils.getInstance().speakText(mInputList.get(0).getInput()); //播放语音
                     clearScreen(mInputList.get(0));
+
                 }
             }
 
             if (msg.what == SHOW_RESULT_DATA2) {
-                if(mInputList!=null && mInputList.size()>0) {
+                if (mInputList != null && mInputList.size() > 0) {
+                    mHistoryBean.addData(mShowInputTv.getText() + ":" + result);
+
                     mShowResultTvTwo.setText(mShowResultTv.getText() + "");
                     mShowResultTv.setText(mShowInputTv.getText());
                     mShowInputTv.setText(result);
                     AudioUtils.getInstance().speakText(result); //播放语音
                     clearScreen(mInputList.get(0));
+
                 }
             }
+
         }
     };
     private ImageView mIb_back;
     private AudioManager mAm;
-
+    private Box<HistoryBean> mHistoryBeanBox;
+    private HistoryBean mHistoryBean = new HistoryBean();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,6 +168,8 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
         initView();
         initData();
         MobclickAgent.onEvent(this, "Calculator_science");
+
+        mHistoryBeanBox = ObjectBox.get().boxFor(HistoryBean.class);
     }
 
     protected void onResume() {
@@ -169,12 +188,12 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
      */
     private void initView() {
 
-       new Thread(){
-           @Override
-           public void run() {
-               initMusic();
-           }
-       }.start();
+        new Thread() {
+            @Override
+            public void run() {
+                initMusic();
+            }
+        }.start();
         tvShow = findViewById(R.id.inputOrOutput);
         prefix = findViewById(R.id.prefix);
         jishu_result_menu = findViewById(R.id.jichu_result_menu);
@@ -213,6 +232,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
         jichu_menu = findViewById(R.id.jichu_menu);
         music_icon = findViewById(R.id.music_icon);
         shake_icon = findViewById(R.id.shake_icon);
+        shake_history = findViewById(R.id.shake_history);
         title_jc = findViewById(R.id.title_jc);
         title_KX = findViewById(R.id.title_kx);
         mShowResultTv = this.findViewById(R.id.show_result_tv);
@@ -244,8 +264,8 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
 
     /**
      * 初始化音频
-     * */
-    public void initMusic(){
+     */
+    public void initMusic() {
         mSoundResource = new HashMap<>();
         if (mSoundPool == null) {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -266,7 +286,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
             mSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
                 @Override
                 public void onLoadComplete(SoundPool soundPool, int i, int i1) {
-                    Log.i("snmilog","音频加载完成");
+                    Log.i("snmilog", "音频加载完成");
                 }
             });
         }
@@ -322,7 +342,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     }
 
     /**
-     *初始化数据
+     * 初始化数据
      */
     private void initData() {
         times = (int) SPUtil.get(CalculatorActivity.this, "calculatorSuccessTimes", 0);
@@ -388,8 +408,8 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
         if (mAudioManager == null) {
             mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         }
-        isfalse_shake =  SharedPUtils.getShake(this);
-        isfalse_muisc=  SharedPUtils.getMusic(this);
+        isfalse_shake = SharedPUtils.getShake(this);
+        isfalse_muisc = SharedPUtils.getMusic(this);
 
         if (isfalse_muisc) {
             mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
@@ -425,7 +445,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     private View.OnClickListener actionPerformed = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Log.e("onClick","onClick科学");
+            Log.e("onClick", "onClick科学");
             // 按键上的命令获取
             String command = ((Button) view).getText().toString();
             // 获取显示器上的字符串
@@ -452,62 +472,62 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
             }
 
             //给按键增加声音
-            switch (command){
-                case  "π":
-                case  "√":
-                case  "^":
-                case  "n!":
-                case  "sin":
-                case  "cos":
-                case  "tan":
-                case  "ln":
-                case  "log":
+            switch (command) {
+                case "π":
+                case "√":
+                case "^":
+                case "n!":
+                case "sin":
+                case "cos":
+                case "tan":
+                case "ln":
+                case "log":
                 case "E":
                     playSound(R.id.pi);
                     break;
-                case  "0":
+                case "0":
                     playSound(R.id.zero);
                     break;
-                case  "1":
+                case "1":
                     playSound(R.id.one);
                     break;
-                case  "2":
+                case "2":
                     playSound(R.id.two);
                     break;
-                case  "3":
+                case "3":
                     playSound(R.id.three);
                     break;
-                case  "4":
+                case "4":
                     playSound(R.id.four);
                     break;
-                case  "5":
+                case "5":
                     playSound(R.id.five);
                     break;
-                case  "6":
+                case "6":
                     playSound(R.id.six);
                     break;
-                case  "7":
+                case "7":
                     playSound(R.id.seven);
                     break;
-                case  "8":
+                case "8":
                     playSound(R.id.eight);
                     break;
-                case  "9":
+                case "9":
                     playSound(R.id.nine);
                     break;
-                case  ".":
+                case ".":
                     playSound(R.id.point);
                     break;
-                case  "+":
+                case "+":
                     playSound(R.id.add);
                     break;
-                case  "-":
+                case "-":
                     playSound(R.id.Subtraction);
                     break;
-                case  "×":
+                case "×":
                     playSound(R.id.mutiply);
                     break;
-                case  "÷":
+                case "÷":
                     playSound(R.id.division);
                     break;
                 case "(":
@@ -638,7 +658,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                     ToastUtil.showToast(CalculatorActivity.this, "超出最大计算长度或输入有误");
                 }
                 //成功计算三次后提示应用市场评价
-                if(times<=2) {
+                if (times <= 2) {
                     if (times == 2) {
                         AppMarketUtil.goThirdApp(CalculatorActivity.this);
                     }
@@ -652,12 +672,12 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
 
 
     /*
-    * 检测函数，对str进行前后语法检测 为Tip的提示方式提供依据，与TipShow()配合使用 编号 字符 其后可以跟随的合法字符 1 （
-    * 数字|（|-|.|函数 2 ） 算符|）|√ ^ 3 . 数字|算符|）|√ ^ 4 数字 .|数字|算符|）|√ ^ 5 算符
-    * 数字|（|.|函数 6 √ ^ （ |. | 数字 7 函数 数字|（|.
-    *
-    * 小数点前后均可省略，表示0 数字第一位可以为0
-    */
+     * 检测函数，对str进行前后语法检测 为Tip的提示方式提供依据，与TipShow()配合使用 编号 字符 其后可以跟随的合法字符 1 （
+     * 数字|（|-|.|函数 2 ） 算符|）|√ ^ 3 . 数字|算符|）|√ ^ 4 数字 .|数字|算符|）|√ ^ 5 算符
+     * 数字|（|.|函数 6 √ ^ （ |. | 数字 7 函数 数字|（|.
+     *
+     * 小数点前后均可省略，表示0 数字第一位可以为0
+     */
     private void TipChecker(String tipcommand1, String tipcommand2) {
         // Tipcode1表示错误类型,0 表示没有错误类型
         int Tipcode1 = 0;
@@ -864,10 +884,10 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
 
 
     /*
-    * 检测函数，返回值为3、2、1 表示应当一次删除几个？ Three+Two+One = TTO 为←按钮的删除方式提供依据
-    * 返回3，表示str尾部为sin、cos、tan、log中的一个，应当一次删除3个 返回2，表示str尾部为ln、n!中的一个，应当一次删除2个
-    * 返回1，表示为除返回3、2外的所有情况，只需删除一个（包含非法字符时要另外考虑：应清屏）
-    */
+     * 检测函数，返回值为3、2、1 表示应当一次删除几个？ Three+Two+One = TTO 为←按钮的删除方式提供依据
+     * 返回3，表示str尾部为sin、cos、tan、log中的一个，应当一次删除3个 返回2，表示str尾部为ln、n!中的一个，应当一次删除2个
+     * 返回1，表示为除返回3、2外的所有情况，只需删除一个（包含非法字符时要另外考虑：应清屏）
+     */
     private int delChar(String str) {
         if ((str.charAt(str.length() - 1) == 'n'
                 && str.charAt(str.length() - 2) == 'i' && str.charAt(str
@@ -894,13 +914,13 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
 
 
     /*
-    * 判断一个str是否是合法的，返回值为true、false
-    * 只包含0123456789Eπ.()sincostanlnlogn!+-×÷√^的是合法的str，返回true
-    * 包含了除0123456789Eπ.()sincostanlnlogn!+-×÷√^以外的字符的str为非法的，返回false
-    */
+     * 判断一个str是否是合法的，返回值为true、false
+     * 只包含0123456789Eπ.()sincostanlnlogn!+-×÷√^的是合法的str，返回true
+     * 包含了除0123456789Eπ.()sincostanlnlogn!+-×÷√^以外的字符的str为非法的，返回false
+     */
     private boolean checkStr(String str) {
-        if (str.length()>18){
-            Toast.makeText(CalculatorActivity.this,"最大计算长度限制",Toast.LENGTH_SHORT).show();
+        if (str.length() > 18) {
+            Toast.makeText(CalculatorActivity.this, "最大计算长度限制", Toast.LENGTH_SHORT).show();
             return false;
         }
         int i = 0;
@@ -1256,21 +1276,21 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                 showError(3, str_old);
                 return;
             }
-            if(type.equals("1")) {
+            if (type.equals("1")) {
                 // 输出最终结果
                 prefix.setText(str_old);
                 AudioUtils.getInstance().speakText(String.valueOf(checkResult(number[0]))); //播放语音
                 tvShow.setText(" = " + String.valueOf(checkResult(number[0])));
-            }else{
-                result = checkResult(number[0])+"";
+            } else {
+                result = checkResult(number[0]) + "";
             }
         }
 
 
         /*
-      * FP = floating point 控制小数位数，达到精度 否则会出现
-      * 0.6-0.2=0.39999999999999997的情况，用FP即可解决，使得数为0.4 本格式精度为15位
-      */
+         * FP = floating point 控制小数位数，达到精度 否则会出现
+         * 0.6-0.2=0.39999999999999997的情况，用FP即可解决，使得数为0.4 本格式精度为15位
+         */
         public double checkResult(double n) {
             // NumberFormat format=NumberFormat.getInstance(); //创建一个格式化类f
             // format.setMaximumFractionDigits(18); //设置小数位的格式
@@ -1279,8 +1299,8 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
         }
 
         /*
-       * 阶乘算法
-       */
+         * 阶乘算法
+         */
         public double N(double n) {
             int i = 0;
             double sum = 1;
@@ -1293,8 +1313,8 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
 
 
         /*
-       * 错误提示，按了"="之后，若计算式在process()过程中，出现错误，则进行提示
-       */
+         * 错误提示，按了"="之后，若计算式在process()过程中，出现错误，则进行提示
+         */
         public void showError(int code, String str) {
             String message = "";
             switch (code) {
@@ -1316,7 +1336,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
      * 播放声音
      */
     protected void playSound(int id) {
-        if (isNoSound()){
+        if (isNoSound()) {
             //如果是静音就不播放
             return;
         }
@@ -1339,7 +1359,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
         if (mSoundResource.get(id) != null) {
 //            mSoundPool.stop(mSoundStreamId);
             Integer integer = mSoundResource.get(id);
-            Log.e("mSoundResource","播放"+mCurrentVolume);
+            Log.e("mSoundResource", "播放" + mCurrentVolume);
             mSoundStreamId = mSoundPool.play(integer, 1, 1, 0, 0, 1.0f);
         }
     }
@@ -1351,6 +1371,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     private void setOnClickListener() {
         music_icon.setOnClickListener(this);
         shake_icon.setOnClickListener(this);
+        shake_history.setOnClickListener(this);
         title_KX.setOnClickListener(this);
         title_jc.setOnClickListener(this);
         mCBtn.setOnClickListener(this);
@@ -1384,26 +1405,32 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
             //声音
             case R.id.music_icon:
                 if (isfalse_muisc) {
-                    SharedPUtils.setMusic(this,false);
+                    SharedPUtils.setMusic(this, false);
                     mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 4, 0);//tempVolume:音量绝对值
                     isfalse_muisc = false;
                     music_icon.setImageResource(R.drawable.music_icon);
                 } else {
-                    SharedPUtils.setMusic(this,true);
+                    SharedPUtils.setMusic(this, true);
                     mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
                     isfalse_muisc = true;
                     music_icon.setImageResource(R.drawable.nomusic_icon);
                 }
                 break;
+            //历史
+            case R.id.shake_history:
+                saveHistory();
+                clearAllScreen();
+                startActivityForResult(new Intent(this, HistoryActivity.class), 100);
+                break;
             //震动
             case R.id.shake_icon:
                 isFrist = true;
                 if (isfalse_shake) {
-                    SharedPUtils.setShake(this,false);
+                    SharedPUtils.setShake(this, false);
                     isfalse_shake = false;
                     shake_icon.setImageResource(R.drawable.shake_icon);
                 } else {
-                    SharedPUtils.setShake(this,true);
+                    SharedPUtils.setShake(this, true);
                     isfalse_shake = true;
                     shake_icon.setImageResource(R.drawable.noshake_icon);
                 }
@@ -1416,6 +1443,8 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                 jichu_menu.setVisibility(View.VISIBLE);
                 title_jc.setTextColor(getResources().getColor(R.color.white));
                 title_KX.setTextColor(getResources().getColor(R.color.darker_gray));
+
+                saveHistory();
                 break;
             //科学
             case R.id.title_kx:
@@ -1425,10 +1454,15 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                 kexue_menu.setVisibility(View.VISIBLE);
                 title_KX.setTextColor(getResources().getColor(R.color.white));
                 title_jc.setTextColor(getResources().getColor(R.color.darker_gray));
+
+
+                saveHistory();
                 break;
             case R.id.c_btn:
                 playSound(R.id.c_btn);
                 clearAllScreen();
+
+                saveHistory();
                 break;
             case R.id.ib_back:
                 finish();
@@ -1476,6 +1510,40 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == 100) {
+                String[] inputs = data.getStringArrayExtra("input");
+                for (int index = inputs.length - 1; index >= 0; index -= 2) {
+                    if (index == inputs.length - 1) {
+                        try {
+                            Integer.valueOf(inputs[index]);
+                            clearScreen(new InputItem(inputs[index], InputItem.INT_TYPE));
+                            mShowInputTv.setText(inputs[index]);
+                        } catch (NumberFormatException e) {
+                            Double.valueOf(inputs[index]);
+                            clearScreen(new InputItem(inputs[index], InputItem.DOUBLE_TYPE));
+                            mShowInputTv.setText(inputs[index]);
+                        }
+                        mShowResultTv.setText(inputs[index - 1]);
+                    } else if (index == inputs.length - 3) {
+                        mShowResultTvTwo.setText(inputs[index - 1]);
+                    }
+                }
+            }
+        }
+    }
+
+    private void saveHistory() {
+        if (mHistoryBean.getData().length == 0) {
+            return;
+        }
+        mHistoryBeanBox.put(mHistoryBean);
+        mHistoryBean = new HistoryBean();
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
     }
@@ -1484,23 +1552,23 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
      * ���=֮��ʼ����
      */
     private void operator() {
-        if (mLastInputstatus == END || mLastInputstatus == ERROR || mLastInputstatus == INPUT_OPERATOR ) {
+        if (mLastInputstatus == END || mLastInputstatus == ERROR || mLastInputstatus == INPUT_OPERATOR) {
             return;
 //            || mInputList.size() == 1
         }
-        Log.e("trim","operator");
+        Log.e("trim", "operator");
 //        mShowResultTv.setText("");
 //        mShowResultTvTwo.setText("");
         startAnim();
-        if(mShowInputTv.getText().toString().contains("×")){ //java中0.1问题 https://blog.csdn.net/weixin_44018338/article/details/91420963
+        if (mShowInputTv.getText().toString().contains("×")) { //java中0.1问题 https://blog.csdn.net/weixin_44018338/article/details/91420963
             String inputString = mShowInputTv.getText().toString();
-                new calc().process(inputString.substring(0, inputString.length()-1), "2");
+            new calc().process(inputString.substring(0, inputString.length() - 1), "2");
             findHighOperator(0);
             if (mLastInputstatus != ERROR) {
                 findLowOperator(0);
             }
             mHandler.sendMessageDelayed(mHandler.obtainMessage(SHOW_RESULT_DATA2), 300);
-        }else{
+        } else {
             findHighOperator(0);
             if (mLastInputstatus != ERROR) {
                 findLowOperator(0);
@@ -1509,7 +1577,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
         }
 
         //成功计算三次后提示应用市场评价
-        if(times<=2) {
+        if (times <= 2) {
             if (times == 2) {
                 AppMarketUtil.goThirdApp(CalculatorActivity.this);
             }
@@ -1551,8 +1619,8 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
      */
     private void inputNumber(View view) {
         String trim = mShowInputTv.getText().toString().trim();
-        if (trim.length()>28){
-            ToastUtil.showToastShort(CalculatorActivity.this,"最大计算长度限制");
+        if (trim.length() > 28) {
+            ToastUtil.showToastShort(CalculatorActivity.this, "最大计算长度限制");
             return;
         }
         if (mLastInputstatus == END || mLastInputstatus == ERROR) {
@@ -1593,22 +1661,22 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     /**
      * %操作
      */
-    public void inputPresentOperator(View view){
+    public void inputPresentOperator(View view) {
         if (mLastInputstatus == INPUT_OPERATOR || mLastInputstatus == ERROR) {
             return;
         }
         mLastInputstatus = END;
         String trim = mShowInputTv.getText().toString().trim();
-        Log.e("trim","百分号"+trim);
+        Log.e("trim", "百分号" + trim);
         if ("0".equals(mShowInputTv.getText().toString())) {
             mShowInputTv.setText("0");
             mInputList.set(0, new InputItem("0", InputItem.DOUBLE_TYPE));
         } else {
             try {
                 double v = Double.parseDouble(trim);
-                mShowInputTv.setText(v/100+"");
-                mInputList.set(0, new InputItem(v/100+"", InputItem.DOUBLE_TYPE));
-            }catch (Exception e){
+                mShowInputTv.setText(v / 100 + "");
+                mInputList.set(0, new InputItem(v / 100 + "", InputItem.DOUBLE_TYPE));
+            } catch (Exception e) {
 
             }
         }
@@ -1622,7 +1690,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
             clearInputScreen();
         }
         String str = mShowInputTv.getText().toString();
-        if (!TextUtils.isEmpty(str) && str.length()> 1) {
+        if (!TextUtils.isEmpty(str) && str.length() > 1) {
             mShowInputTv.setText(str.substring(0, str.length() - 1));
             backList();
         } else {
@@ -1738,7 +1806,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                         } else {
                             d = Double.parseDouble(mInputList.get(i + 1).getInput());
                             if (getResources().getString(R.string.multply).equals(item.getInput())) {
-                                Log.i("erictest", "a="+a + ",d="+d+"=="+a*d);
+                                Log.i("erictest", "a=" + a + ",d=" + d + "==" + a * d);
                                 mInputList.set(i - 1, new InputItem(String.valueOf(a * d), InputItem.DOUBLE_TYPE));
                             } else {
                                 if (d == 0) {
@@ -1914,12 +1982,17 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
         return b1.multiply(b2).doubleValue();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        saveHistory();
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mSoundPool !=null){
-            mSoundPool =null;
+        if (mSoundPool != null) {
+            mSoundPool = null;
         }
         if (mAudioManager != null) {
             mAudioManager = null;
@@ -1938,13 +2011,13 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     /**
      * 获取当前音量，判断是否是静音状态
      */
-    public boolean isNoSound(){
-        if (mAm == null){
+    public boolean isNoSound() {
+        if (mAm == null) {
             //得到音量
             mAm = (AudioManager) getSystemService(AUDIO_SERVICE);
         }
         int mode = mAm.getRingerMode();
-        switch (mode){
+        switch (mode) {
             case AudioManager.RINGER_MODE_NORMAL:
                 //普通模式
                 return false;

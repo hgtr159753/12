@@ -28,13 +28,15 @@
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
     <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
     <!-- 定位相关权限，建议添加，便于GG的定向  location group -->
-    <uses-permission android:name="android.permission.SET_DEBUG_APP"
+    <uses-permission
+        android:name="android.permission.SET_DEBUG_APP"
         tools:ignore="ProtectedPermissions" />
     <!-- 悬浮窗权限-->
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
-    <uses-permission android:name="android.permission.GET_TASKS"/>
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
 
     <application
@@ -46,11 +48,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppMainTheme"
         android:usesCleartextTraffic="true"
-        tools:replace="android:icon"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:replace="android:icon">
 
-        <activity android:name=".ui.home.SplashActivity"
-            >
+        <activity android:name=".ui.home.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -62,6 +63,7 @@
         <activity android:name=".ui.LoanActivity" />
         <activity android:name=".ui.CalculatorActivity" />
         <activity android:name=".ui.home.StartFlashActivity" />
+        <activity android:name=".ui.HistoryActivity" />
         <activity
             android:name=".ui.home.MainCalculateActivity"
             android:launchMode="singleTask" />
@@ -115,13 +117,13 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name="com.snmi.sdk.locker.LockerActivity"
-            android:taskAffinity="locker.ad">
-        </activity>
+        <activity
+            android:name="com.snmi.sdk.locker.LockerActivity"
+            android:taskAffinity="locker.ad"></activity>
 
-        <activity android:name="com.snmi.sdk.locker.LockerLinkActivity"
-            android:taskAffinity="locker.ad">
-        </activity>
+        <activity
+            android:name="com.snmi.sdk.locker.LockerLinkActivity"
+            android:taskAffinity="locker.ad"></activity>
         <!-- android:authorities="com.snmi.sdk.fileprovider" -->
         <!-- android:authorities="${applicationId}.fileprovider" -->
 
@@ -139,9 +141,11 @@
 
         <activity android:name=".ui.TaxActivity" />
         <activity android:name=".ui.TaxResultActivity" />
-        <activity android:name=".ui.home.TaxSelectActivity"/>
+        <activity android:name=".ui.home.TaxSelectActivity" />
 
-        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
 
 
         <!-- 穿山 -->

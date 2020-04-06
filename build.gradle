@@ -1,22 +1,26 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
+    ext.objectboxVersion = '2.5.1'
     repositories {
-      google()
+        google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.1.0'
+//        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath "io.objectbox:objectbox-gradle-plugin:$objectboxVersion"
     }
 }
 
 allprojects {
     repositories {
-	 google()
+        google()
         jcenter()
         mavenCentral()
-        maven {url 'https://dl.bintray.com/jetbrains/anko'} //这是你需要加入的，这个是解决这个问题的关键地方，我就是添加这个maven后不再报上面的错误了
-        maven {url "https://maven.google.com"}
-	    maven { url 'https://jitpack.io' }
+        maven { url 'https://dl.bintray.com/jetbrains/anko' }
+        //这是你需要加入的，这个是解决这个问题的关键地方，我就是添加这个maven后不再报上面的错误了
+        maven { url "https://maven.google.com" }
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -29,7 +33,7 @@ subprojects {
     project.configurations.all {
         resolutionStrategy.eachDependency { details ->
             if (details.requested.group == 'com.android.support'
-                    && !details.requested.name.contains('multidex') ) {
+                    && !details.requested.name.contains('multidex')) {
                 //统一版本号
                 details.useVersion "26.1.0"
             }

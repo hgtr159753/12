@@ -10,6 +10,7 @@ import com.bytedance.sdk.openadsdk.TTAdConstant;
 import com.bytedance.sdk.openadsdk.TTAdSdk;
 import com.iflytek.cloud.SpeechUtility;
 import com.shenmi.calculator.constant.ADConstant;
+import com.shenmi.calculator.db.ObjectBox;
 import com.shenmi.calculator.util.TTAdManagerHolder;
 import com.snmi.sdk.Ad;
 import com.snmi.sdk_3.Hs;
@@ -48,7 +49,7 @@ public class MyApplication extends MultiDexApplication {
         super.onCreate();
         mAppContext = this;
         //公共区域
-        UMConfigure.init(this,UMConfigure.DEVICE_TYPE_PHONE, "afd7439042e4225d6dcbda9a80a5ef4c");
+        UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, "afd7439042e4225d6dcbda9a80a5ef4c");
         MobclickAgent.setScenarioType(this, MobclickAgent.EScenarioType.E_UM_NORMAL);
 
         UMConfigure.setLogEnabled(true);
@@ -61,11 +62,12 @@ public class MyApplication extends MultiDexApplication {
             @Override
             public void onSuccess(String deviceToken) {
                 //注册成功会返回device token
-                Log.e("Token",deviceToken);
+                Log.e("Token", deviceToken);
             }
+
             @Override
             public void onFailure(String s, String s1) {
-                Log.e("Token",s + s1);
+                Log.e("Token", s + s1);
             }
         });
 //        //腾讯bugly初始化
@@ -82,7 +84,7 @@ public class MyApplication extends MultiDexApplication {
         SDKHelper.newInstance().register(this, ADConstant.DEEPLINK_ONE, ADConstant.DEEPLINK_ONE, new SDKHelper.SDKHelperListener() {
             @Override
             public void success() {
-                Log.e("SDKHelper","SDKHelper");
+                Log.e("SDKHelper", "SDKHelper");
             }
         });
         HsHelper.newInstance().register(this);
@@ -104,10 +106,8 @@ public class MyApplication extends MultiDexApplication {
         OkHttpUtils.initClient(okHttpClient);
 
         TTAdManagerHolder.init(this);
+        ObjectBox.init(this);
     }
-
-
-
 
 
     @Override
