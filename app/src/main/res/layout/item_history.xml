@@ -2,22 +2,49 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/history_space"
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/history_data_item1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:gravity="end"
+            android:textColor="#666"
+            tools:text="1+1" />
+
+        <TextView
+            android:id="@+id/history_data_item2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:gravity="end"
+            android:textColor="#333"
+            tools:text="2" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/history_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="end"
+        android:layout_marginLeft="50dp"
+        android:background="@color/gridview_bg" />
 
     <TextView
         android:id="@+id/history_time"
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:textColor="#FFF"
         android:layout_margin="8dp"
         android:background="@color/gridview_bg"
         android:gravity="center"
+        android:textColor="#FFF"
         tools:text="0000-00-00 00:00:00" />
 </LinearLayout>

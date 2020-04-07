@@ -13,16 +13,20 @@ import com.shenmi.calculator.adapter.HistoryAdapter;
 import com.shenmi.calculator.bean.HistoryBean;
 import com.shenmi.calculator.bean.HistoryBean_;
 import com.shenmi.calculator.db.ObjectBox;
+import com.shenmi.calculator.util.ToastUtil;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.objectbox.Box;
 
-public class HistoryActivity extends Activity implements View.OnClickListener, BaseQuickAdapter.OnItemChildClickListener {
+public class HistoryActivity extends Activity implements View.OnClickListener, BaseQuickAdapter.OnItemClickListener {
     private View mHistoryBack;
     private View mHistoryClean;
     private RecyclerView mListView;
     private Box<HistoryBean> mHistoryBeanBox;
+    private int mType;
 
     private HistoryAdapter mAdapter = new HistoryAdapter();
 
@@ -30,7 +34,7 @@ public class HistoryActivity extends Activity implements View.OnClickListener, B
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
-
+        mType = getIntent().getIntExtra("type", 0);
         mHistoryBeanBox = ObjectBox.get().boxFor(HistoryBean.class);
         initView();
     }
@@ -53,10 +57,23 @@ public class HistoryActivity extends Activity implements View.OnClickListener, B
         super.onDestroy();
     }
 
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
     private void loadData() {
         new Thread(() -> {
             List<HistoryBean> historyBeans = mHistoryBeanBox.query().order(HistoryBean_.time).build().find();
-            runOnUiThread(() -> mAdapter.setNewData(historyBeans));
+            ArrayList<HistoryAdapter.AdapterHistoryBean> beans = new ArrayList<>();
+            for (int ind = 0; ind < historyBeans.size() - 1; ind++) {
+                if (format.format(historyBeans.get(ind).getTime()).equals(format.format(historyBeans.get(ind + 1).getTime()))) {
+                    beans.add(new HistoryAdapter.AdapterHistoryBean(historyBeans.get(ind), false));
+                } else {
+                    beans.add(new HistoryAdapter.AdapterHistoryBean(historyBeans.get(ind), true));
+                }
+            }
+            if (historyBeans.size() > 0) {
+                beans.add(new HistoryAdapter.AdapterHistoryBean(historyBeans.get(historyBeans.size() - 1), true));
+            }
+            runOnUiThread(() -> mAdapter.setNewData(beans));
         }).start();
     }
 
@@ -64,7 +81,7 @@ public class HistoryActivity extends Activity implements View.OnClickListener, B
         mListView.setAdapter(mAdapter);
 
 
-        mAdapter.setOnItemChildClickListener(this);
+        mAdapter.setOnItemClickListener(this);
     }
 
     private void initListener() {
@@ -84,15 +101,19 @@ public class HistoryActivity extends Activity implements View.OnClickListener, B
         }
     }
 
-
     @Override
-    public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-        HistoryBean bean = (HistoryBean) adapter.getItem(position);
-        if (view.getId() == R.id.history_time) {
-            Intent data = new Intent();
-            data.putExtra("input", bean.getData());
-            setResult(Activity.RESULT_OK, data);
-            finish();
+    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+
+        HistoryAdapter.AdapterHistoryBean bean = (HistoryAdapter.AdapterHistoryBean) adapter.getItem(position);
+        Intent data = new Intent();
+        if (bean.getBean().getType() == 1) {
+            if (mType == 0) {
+                ToastUtil.showToast(this, "科学计算数据，不可回显入基础计算");
+                return;
+            }
         }
+        data.putExtra("input", bean.getBean().getData());
+        setResult(Activity.RESULT_OK, data);
+        finish();
     }
 }

@@ -63,8 +63,8 @@
 
         <ImageView
             android:id="@+id/shake_history"
-            android:layout_width="23dp"
-            android:layout_height="23dp"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
             android:layout_toLeftOf="@id/shake_icon"

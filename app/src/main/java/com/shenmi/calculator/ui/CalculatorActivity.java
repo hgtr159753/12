@@ -3,6 +3,8 @@ package com.shenmi.calculator.ui;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Service;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioAttributes;
@@ -136,6 +138,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                     AudioUtils.getInstance().speakText(mInputList.get(0).getInput()); //播放语音
                     clearScreen(mInputList.get(0));
 
+                    saveHistory();
                 }
             }
 
@@ -149,6 +152,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                     AudioUtils.getInstance().speakText(result); //播放语音
                     clearScreen(mInputList.get(0));
 
+                    saveHistory();
                 }
             }
 
@@ -259,6 +263,23 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
         mIb_back = this.findViewById(R.id.ib_back);
         setOnClickListener();
 
+        copyCard(prefix);
+        copyCard(tvShow);
+        copyCard(mShowInputTv);
+        copyCard(mShowResultTv);
+        copyCard(mShowResultTvTwo);
+    }
+
+    private void copyCard(TextView view) {
+        view.setOnClickListener(v -> {
+            String text = ((TextView) v).getText().toString();
+            if (TextUtils.isEmpty(text)) {
+                return;
+            }
+            ClipboardManager clipboardManager = (ClipboardManager) v.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+            clipboardManager.setPrimaryClip(ClipData.newPlainText("", text));
+            ToastUtil.showToast(v.getContext(), "复制成功");
+        });
     }
 
     /**
@@ -1280,6 +1301,9 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                 prefix.setText(str_old);
                 AudioUtils.getInstance().speakText(String.valueOf(checkResult(number[0]))); //播放语音
                 tvShow.setText(" = " + String.valueOf(checkResult(number[0])));
+                mHistoryBean.addData(str_old + "=:" + number[0]);
+                mHistoryBean.setType(1);
+                saveHistory();
             } else {
                 result = checkResult(number[0]) + "";
             }
@@ -1417,9 +1441,14 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                 break;
             //历史
             case R.id.shake_history:
-                saveHistory();
                 clearAllScreen();
-                startActivityForResult(new Intent(this, HistoryActivity.class), 100);
+                Intent intent = new Intent(this, HistoryActivity.class);
+                if (jichu_menu.getVisibility() == View.GONE) {
+                    intent.putExtra("type", 1);
+                } else {
+                    intent.putExtra("type", 0);
+                }
+                startActivityForResult(intent, 100);
                 break;
             //震动
             case R.id.shake_icon:
@@ -1443,7 +1472,6 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                 title_jc.setTextColor(getResources().getColor(R.color.white));
                 title_KX.setTextColor(getResources().getColor(R.color.darker_gray));
 
-                saveHistory();
                 break;
             //科学
             case R.id.title_kx:
@@ -1454,14 +1482,11 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                 title_KX.setTextColor(getResources().getColor(R.color.white));
                 title_jc.setTextColor(getResources().getColor(R.color.darker_gray));
 
-
-                saveHistory();
                 break;
             case R.id.c_btn:
                 playSound(R.id.c_btn);
                 clearAllScreen();
 
-                saveHistory();
                 break;
             case R.id.ib_back:
                 finish();
@@ -1514,20 +1539,28 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 100) {
                 String[] inputs = data.getStringArrayExtra("input");
-                for (int index = inputs.length - 1; index >= 0; index -= 2) {
-                    if (index == inputs.length - 1) {
-                        try {
-                            Integer.valueOf(inputs[index]);
-                            clearScreen(new InputItem(inputs[index], InputItem.INT_TYPE));
-                            mShowInputTv.setText(inputs[index]);
-                        } catch (NumberFormatException e) {
-                            Double.valueOf(inputs[index]);
-                            clearScreen(new InputItem(inputs[index], InputItem.DOUBLE_TYPE));
-                            mShowInputTv.setText(inputs[index]);
+
+                if (jichu_menu.getVisibility() == View.GONE) {
+                    if (inputs.length == 2) {
+                        prefix.setText(inputs[0]);
+                        tvShow.setText(inputs[1]);
+                    }
+                } else {
+                    for (int index = inputs.length - 1; index >= 0; index -= 2) {
+                        if (index == inputs.length - 1) {
+                            try {
+                                Integer.valueOf(inputs[index]);
+                                clearScreen(new InputItem(inputs[index], InputItem.INT_TYPE));
+                                mShowInputTv.setText(inputs[index]);
+                            } catch (NumberFormatException e) {
+                                Double.valueOf(inputs[index]);
+                                clearScreen(new InputItem(inputs[index], InputItem.DOUBLE_TYPE));
+                                mShowInputTv.setText(inputs[index]);
+                            }
+                            mShowResultTv.setText(inputs[index - 1]);
+                        } else if (index == inputs.length - 3) {
+                            mShowResultTvTwo.setText(inputs[index - 1]);
                         }
-                        mShowResultTv.setText(inputs[index - 1]);
-                    } else if (index == inputs.length - 3) {
-                        mShowResultTvTwo.setText(inputs[index - 1]);
                     }
                 }
             }
@@ -2003,7 +2036,6 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     @Override
     protected void onStop() {
         super.onStop();
-        saveHistory();
     }
 
     @Override
