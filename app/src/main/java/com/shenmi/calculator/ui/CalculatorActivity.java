@@ -52,9 +52,9 @@ import io.objectbox.Box;
 
 public class CalculatorActivity extends Activity implements View.OnClickListener {
 
-    private TextView mShowResultTvTwo;
-    private TextView mShowResultTv;
-    private TextView mShowInputTv;
+    private TextView mShowResultTvTwo;  //��ʾ���
+    private TextView mShowResultTv;  //��ʾ���
+    private TextView mShowInputTv;   //��ʾ������ַ�
     private Button mCBtn;
     private RelativeLayout mDelBtn;
     private Button mAddBtn;
@@ -74,9 +74,9 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     private Button mPointtn;
     private Button mEqualBtn;
     private Button mpercent;
-    private HashMap<View, String> map;
-    private List<InputItem> mInputList;
-    private int mLastInputstatus = INPUT_NUMBER;
+    private HashMap<View, String> map; //��View��Stringӳ������
+    private List<InputItem> mInputList; //�����¼ÿ���������
+    private int mLastInputstatus = INPUT_NUMBER; //��¼��һ������״̬
     public static final int INPUT_NUMBER = 1;
     public static final int INPUT_POINT = 0;
     public static final int INPUT_OPERATOR = -1;
@@ -128,9 +128,12 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
 
             if (msg.what == SHOW_RESULT_DATA) {
                 if (mInputList != null && mInputList.size() > 0) {
+<<<<<<< HEAD
 
                     mHistoryBean.addData(mShowInputTv.getText() + ":" + mInputList.get(0).getInput());
 
+=======
+>>>>>>> master
                     mShowResultTvTwo.setText(mShowResultTv.getText() + "");
                     mShowResultTv.setText(mShowInputTv.getText());
                     mShowInputTv.setText(mInputList.get(0).getInput());
@@ -142,8 +145,11 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
 
             if (msg.what == SHOW_RESULT_DATA2) {
                 if (mInputList != null && mInputList.size() > 0) {
+<<<<<<< HEAD
                     mHistoryBean.addData(mShowInputTv.getText() + ":" + result);
 
+=======
+>>>>>>> master
                     mShowResultTvTwo.setText(mShowResultTv.getText() + "");
                     mShowResultTv.setText(mShowInputTv.getText());
                     mShowInputTv.setText(result);
@@ -184,7 +190,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     }
 
     /**
-     * 初始化view
+     * ��ʼ��view
      */
     private void initView() {
 
@@ -1586,7 +1592,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     }
 
     private void startAnim() {
-        mShowInputTv.setText(mShowInputTv.getText() + getResources().getString(R.string.equal));
+        mShowInputTv.append("=");
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.screen_anim);
         mShowInputTv.startAnimation(anim);
     }
@@ -1872,43 +1878,62 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                 InputItem item = mInputList.get(i);
                 if (getResources().getString(R.string.sub).equals(item.getInput())
                         || getResources().getString(R.string.add).equals(item.getInput())) {
-                    int a, b;
-                    double c, d;
-                    if (mInputList.get(i - 1).getType() == InputItem.INT_TYPE) {
-                        a = Integer.parseInt(mInputList.get(i - 1).getInput());
-                        if (mInputList.get(i + 1).getType() == InputItem.INT_TYPE) {
-                            b = Integer.parseInt(mInputList.get(i + 1).getInput());
-                            if (getResources().getString(R.string.add).equals(item.getInput())) {
-                                mInputList.set(i - 1, new InputItem(String.valueOf(a + b), InputItem.INT_TYPE));
-                            } else {
-                                mInputList.set(i - 1, new InputItem(String.valueOf(a - b), InputItem.INT_TYPE));
-                            }
+
+                    Double a_ = Double.parseDouble(mInputList.get(i - 1).getInput());
+                    Double d_ = Double.parseDouble(mInputList.get(i + 1).getInput());
+
+                    if (getResources().getString(R.string.add).equals(item.getInput())) {
+                        Double add = add(a_, d_);
+                        if (add % 1 == 0) {
+                            mInputList.set(i - 1, new InputItem(String.valueOf(add.intValue()), InputItem.INT_TYPE));
                         } else {
-                            d = Double.parseDouble(mInputList.get(i + 1).getInput());
-                            if (getResources().getString(R.string.add).equals(item.getInput())) {
-                                mInputList.set(i - 1, new InputItem(String.valueOf(a + d), InputItem.DOUBLE_TYPE));
-                            } else {
-                                mInputList.set(i - 1, new InputItem(String.valueOf(a - d), InputItem.DOUBLE_TYPE));
-                            }
+                            mInputList.set(i - 1, new InputItem(String.valueOf(add), InputItem.DOUBLE_TYPE));
                         }
                     } else {
-                        c = Double.parseDouble(mInputList.get(i - 1).getInput());
-                        if (mInputList.get(i + 1).getType() == InputItem.INT_TYPE) {
-                            b = Integer.parseInt(mInputList.get(i + 1).getInput());
-                            if (getResources().getString(R.string.add).equals(item.getInput())) {
-                                mInputList.set(i - 1, new InputItem(String.valueOf(c + b), InputItem.DOUBLE_TYPE));
-                            } else {
-                                mInputList.set(i - 1, new InputItem(String.valueOf(c - b), InputItem.DOUBLE_TYPE));
-                            }
+                        Double sub = sub(a_, d_);
+                        if (sub % 1 == 0) {
+                            mInputList.set(i - 1, new InputItem(String.valueOf(sub.intValue()), InputItem.INT_TYPE));
                         } else {
-                            d = Double.parseDouble(mInputList.get(i + 1).getInput());
-                            if (getResources().getString(R.string.add).equals(item.getInput())) {
-                                mInputList.set(i - 1, new InputItem(String.valueOf(add(c, d)), InputItem.DOUBLE_TYPE));
-                            } else {
-                                mInputList.set(i - 1, new InputItem(String.valueOf(sub(c, d)), InputItem.DOUBLE_TYPE));
-                            }
+                            mInputList.set(i - 1, new InputItem(String.valueOf(sub), InputItem.DOUBLE_TYPE));
                         }
                     }
+//                    int a, b;
+//                    double c, d;
+//                    if (mInputList.get(i - 1).getType() == InputItem.INT_TYPE) {
+//                        a = Integer.parseInt(mInputList.get(i - 1).getInput());
+//                        if (mInputList.get(i + 1).getType() == InputItem.INT_TYPE) {
+//                            b = Integer.parseInt(mInputList.get(i + 1).getInput());
+//                            if (getResources().getString(R.string.add).equals(item.getInput())) {
+//                                mInputList.set(i - 1, new InputItem(String.valueOf(a + b), InputItem.INT_TYPE));
+//                            } else {
+//                                mInputList.set(i - 1, new InputItem(String.valueOf(a - b), InputItem.INT_TYPE));
+//                            }
+//                        } else {
+//                            d = Double.parseDouble(mInputList.get(i + 1).getInput());
+//                            if (getResources().getString(R.string.add).equals(item.getInput())) {
+//                                mInputList.set(i - 1, new InputItem(String.valueOf(a + d), InputItem.DOUBLE_TYPE));
+//                            } else {
+//                                mInputList.set(i - 1, new InputItem(String.valueOf(a - d), InputItem.DOUBLE_TYPE));
+//                            }
+//                        }
+//                    } else {
+//                        c = Double.parseDouble(mInputList.get(i - 1).getInput());
+//                        if (mInputList.get(i + 1).getType() == InputItem.INT_TYPE) {
+//                            b = Integer.parseInt(mInputList.get(i + 1).getInput());
+//                            if (getResources().getString(R.string.add).equals(item.getInput())) {
+//                                mInputList.set(i - 1, new InputItem(String.valueOf(c + b), InputItem.DOUBLE_TYPE));
+//                            } else {
+//                                mInputList.set(i - 1, new InputItem(String.valueOf(c - b), InputItem.DOUBLE_TYPE));
+//                            }
+//                        } else {
+//                            d = Double.parseDouble(mInputList.get(i + 1).getInput());
+//                            if (getResources().getString(R.string.add).equals(item.getInput())) {
+//                                mInputList.set(i - 1, new InputItem(String.valueOf(add(c, d)), InputItem.DOUBLE_TYPE));
+//                            } else {
+//                                mInputList.set(i - 1, new InputItem(String.valueOf(sub(c, d)), InputItem.DOUBLE_TYPE));
+//                            }
+//                        }
+//                    }
                     mInputList.remove(i + 1);
                     mInputList.remove(i);
                     return findLowOperator(i);
@@ -2031,4 +2056,3 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
         return false;
     }
 }
-

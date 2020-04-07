@@ -21,6 +21,7 @@ android {
     }
 
     productFlavors {
+<<<<<<< HEAD
         yingyongbao {}
         huawei_new {}
         huawei {}
@@ -31,16 +32,19 @@ android {
         xiaomi {}
         vivo {}
         meizu {}
+=======
+        meizu{}
+>>>>>>> master
         productFlavors.all {
             flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
         }
     }
 
-    android.applicationVariants.all { variant ->
+    /*android.applicationVariants.all { variant ->
         variant.outputs.all {
             outputFileName = "calculator_${variant.flavorName}_${defaultConfig.versionName}.${defaultConfig.versionCode}._${variant.buildType.name}.apk"
         }
-    }
+    }*/
 
     signingConfigs {
         debug {
