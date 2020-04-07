@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:4229795927772110702",
-      "lastPropertyId": "3:5277462304766470959",
+      "lastPropertyId": "4:884730991063906322",
       "name": "HistoryBean",
       "properties": [
         {
@@ -23,6 +23,12 @@
           "id": "3:5277462304766470959",
           "name": "time",
           "type": 10
+        },
+        {
+          "id": "4:884730991063906322",
+          "name": "type",
+          "type": 5,
+          "flags": 4
         }
       ],
       "relations": []

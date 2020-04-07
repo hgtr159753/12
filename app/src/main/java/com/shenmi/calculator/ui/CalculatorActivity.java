@@ -128,12 +128,8 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
 
             if (msg.what == SHOW_RESULT_DATA) {
                 if (mInputList != null && mInputList.size() > 0) {
-<<<<<<< HEAD
-
                     mHistoryBean.addData(mShowInputTv.getText() + ":" + mInputList.get(0).getInput());
 
-=======
->>>>>>> master
                     mShowResultTvTwo.setText(mShowResultTv.getText() + "");
                     mShowResultTv.setText(mShowInputTv.getText());
                     mShowInputTv.setText(mInputList.get(0).getInput());
@@ -145,11 +141,8 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
 
             if (msg.what == SHOW_RESULT_DATA2) {
                 if (mInputList != null && mInputList.size() > 0) {
-<<<<<<< HEAD
                     mHistoryBean.addData(mShowInputTv.getText() + ":" + result);
 
-=======
->>>>>>> master
                     mShowResultTvTwo.setText(mShowResultTv.getText() + "");
                     mShowResultTv.setText(mShowInputTv.getText());
                     mShowInputTv.setText(result);
