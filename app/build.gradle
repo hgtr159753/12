@@ -20,26 +20,17 @@ android {
     }
 
     productFlavors {
-        yingyongbao {}
-        huawei_new{}
-        huawei{}
-        xiaomi_new{}
-        sanxing{}
-        oppo{}
-        yahu{}
-        xiaomi{}
-        vivo{}
         meizu{}
         productFlavors.all {
             flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
         }
     }
 
-    android.applicationVariants.all { variant ->
+    /*android.applicationVariants.all { variant ->
         variant.outputs.all {
             outputFileName = "calculator_${variant.flavorName}_${defaultConfig.versionName}.${defaultConfig.versionCode}._${variant.buildType.name}.apk"
         }
-    }
+    }*/
 
     signingConfigs {
         debug {

@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: __local_aars__:C.\Users\86166\.gradle\caches\transforms-1\files-1.1\open_ad_sdk.aar\6a4a4d16ddb166dbfef9bf91dd0b75c5:unspecified@jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/open_ad_sdk.aar/6a4a4d16ddb166dbfef9bf91dd0b75c5/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/open_ad_sdk.aar/6a4a4d16ddb166dbfef9bf91dd0b75c5/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/open_ad_sdk.aar/6a4a4d16ddb166dbfef9bf91dd0b75c5/jars/libs/adhost.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/open_ad_sdk.aar/6a4a4d16ddb166dbfef9bf91dd0b75c5/jars/libs/threadpool-1.1.0-sources .jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
