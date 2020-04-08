@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:gravity="end"
-            android:textColor="#666"
+            android:textColor="#999"
             tools:text="1+1" />
 
         <TextView
@@ -26,17 +26,17 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:gravity="end"
-            android:textColor="#333"
+            android:textColor="#000"
             tools:text="2" />
     </LinearLayout>
 
     <View
         android:id="@+id/history_line"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="2dp"
         android:layout_gravity="end"
-        android:layout_marginLeft="50dp"
-        android:background="@color/gridview_bg" />
+        android:background="@drawable/dotted_line"
+        android:layerType="software" />
 
     <TextView
         android:id="@+id/history_time"

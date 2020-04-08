@@ -13,6 +13,7 @@ import com.shenmi.calculator.adapter.HistoryAdapter;
 import com.shenmi.calculator.bean.HistoryBean;
 import com.shenmi.calculator.bean.HistoryBean_;
 import com.shenmi.calculator.db.ObjectBox;
+import com.shenmi.calculator.util.TagUtils;
 import com.shenmi.calculator.util.ToastUtil;
 
 import java.text.SimpleDateFormat;
@@ -92,12 +93,14 @@ public class HistoryActivity extends Activity implements View.OnClickListener, B
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.history_back) {
+            TagUtils.tryUp("his_back_click");
             onBackPressed();
         } else if (v.getId() == R.id.history_clean) {
             new Thread(() -> {
                 mHistoryBeanBox.removeAll();
                 runOnUiThread(() -> loadData());
             }).start();
+            TagUtils.tryUp("his_empty_click");
         }
     }
 
@@ -115,5 +118,6 @@ public class HistoryActivity extends Activity implements View.OnClickListener, B
         data.putExtra("input", bean.getBean().getData());
         setResult(Activity.RESULT_OK, data);
         finish();
+        TagUtils.tryUp("his_data_click:" + bean);
     }
 }

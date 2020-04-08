@@ -38,5 +38,13 @@ public class HistoryAdapter extends BaseQuickAdapter<HistoryAdapter.AdapterHisto
         public HistoryBean getBean() {
             return bean;
         }
+
+        @Override
+        public String toString() {
+            return "AdapterHistoryBean{" +
+                    "bean=" + bean +
+                    ", showTime=" + showTime +
+                    '}';
+        }
     }
 }

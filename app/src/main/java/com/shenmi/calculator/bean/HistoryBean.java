@@ -71,4 +71,14 @@ public class HistoryBean {
         }
         return datas.split(":");
     }
+
+    @Override
+    public String toString() {
+        return "HistoryBean{" +
+                "id=" + id +
+                ", type=" + type +
+                ", datas='" + datas + '\'' +
+                ", time=" + time +
+                '}';
+    }
 }

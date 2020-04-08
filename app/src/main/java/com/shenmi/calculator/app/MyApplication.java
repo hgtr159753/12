@@ -9,6 +9,7 @@ import com.bytedance.sdk.openadsdk.TTAdConfig;
 import com.bytedance.sdk.openadsdk.TTAdConstant;
 import com.bytedance.sdk.openadsdk.TTAdSdk;
 import com.iflytek.cloud.SpeechUtility;
+import com.shenmi.calculator.BuildConfig;
 import com.shenmi.calculator.constant.ADConstant;
 import com.shenmi.calculator.db.ObjectBox;
 import com.shenmi.calculator.util.TTAdManagerHolder;
@@ -23,6 +24,8 @@ import com.umeng.commonsdk.UMConfigure;
 import com.umeng.message.IUmengRegisterCallback;
 import com.umeng.message.PushAgent;
 import com.umeng.message.UTrack;
+import com.zchu.rxcache.RxCache;
+import com.zchu.rxcache.utils.LogUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.https.HttpsUtils;
 import com.zhy.http.okhttp.log.LoggerInterceptor;
@@ -107,6 +110,8 @@ public class MyApplication extends MultiDexApplication {
 
         TTAdManagerHolder.init(this);
         ObjectBox.init(this);
+
+        LogUtils.DEBUG = BuildConfig.DEBUG;
     }
 
 

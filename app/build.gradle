@@ -9,11 +9,12 @@ android {
         applicationId "com.shenmi.calculator"
         minSdkVersion 15
         targetSdkVersion 28
-        versionCode 31
-        versionName "3.0"
+        versionCode 32
+        versionName "3.1"
         multiDexEnabled true
         flavorDimensions "versionCode"
         manifestPlaceholders = [UMENG_CHANNEL_VALUE: "umeng"] //默认名称
+        manifestPlaceholders = [APP_NAME: "全能计算助手"] //默认名称
         ndk {
             // 设置支持的SO库架构
             abiFilters 'armeabi', 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
@@ -21,9 +22,24 @@ android {
     }
 
     productFlavors {
-        meizu{}
+//        yingyongbao {
+//            manifestPlaceholders["APP_NAME"] = "计算机"
+//        }
+//        huawei {
+//            manifestPlaceholders["APP_NAME"] = "全能计算助手"
+//        }
+//        sanxing {}
+//        oppo {}
+//        xiaomi {}
+//        qihu {
+//            manifestPlaceholders["APP_NAME"] = "生活计算器"
+//        }
+//        vivo {
+//            manifestPlaceholders["APP_NAME"] = "计算机"
+//        }
+        meizu {}
         productFlavors.all {
-            flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+            flavor -> flavor.manifestPlaceholders["UMENG_CHANNEL_VALUE"] = name
         }
     }
 

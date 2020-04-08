@@ -37,6 +37,7 @@ import com.shenmi.calculator.util.AppMarketUtil;
 import com.shenmi.calculator.util.AudioUtils;
 import com.shenmi.calculator.util.SPUtil;
 import com.shenmi.calculator.util.SharedPUtils;
+import com.shenmi.calculator.util.TagUtils;
 import com.shenmi.calculator.util.ToastUtil;
 import com.umeng.analytics.MobclickAgent;
 import com.zchu.rxcache.utils.LogUtils;
@@ -1445,7 +1446,9 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                 Intent intent = new Intent(this, HistoryActivity.class);
                 if (jichu_menu.getVisibility() == View.GONE) {
                     intent.putExtra("type", 1);
+                    TagUtils.tryUp("sci_his_click");
                 } else {
+                    TagUtils.tryUp("basic_his_click");
                     intent.putExtra("type", 0);
                 }
                 startActivityForResult(intent, 100);
