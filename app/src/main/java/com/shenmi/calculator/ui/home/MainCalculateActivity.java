@@ -22,8 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import com.eric.commonlibrary.utils.ApiUtils;
-import com.eric.commonlibrary.utils.CommonUtils;
 import com.haibin.calendarview.calendar.calendar.fragment.CalendarFragment;
 import com.shenmi.calculator.R;
 import com.shenmi.calculator.constant.ADConstant;
@@ -31,6 +29,7 @@ import com.shenmi.calculator.util.AppMarketUtil;
 import com.shenmi.calculator.util.CustomApiUtils;
 import com.shenmi.calculator.util.DateUtil;
 import com.shenmi.calculator.util.SPUtil;
+import com.snmi.baselibrary.utils.CommonUtils;
 import com.snmi.sdk.Ad;
 import com.snmi.sdk.AdView;
 import com.snmi.sdk.SplashADInfo;

@@ -25,8 +25,6 @@ import com.bytedance.sdk.openadsdk.TTAdConstant;
 import com.bytedance.sdk.openadsdk.TTAdNative;
 import com.bytedance.sdk.openadsdk.TTAppDownloadListener;
 import com.bytedance.sdk.openadsdk.TTSplashAd;
-import com.eric.commonlibrary.activity.CommonWebViewActivity;
-import com.eric.commonlibrary.utils.AppUtils;
 import com.qq.e.ads.splash.SplashAD;
 import com.qq.e.ads.splash.SplashADListener;
 import com.qq.e.comm.util.AdError;
@@ -35,6 +33,8 @@ import com.shenmi.calculator.constant.ADConstant;
 import com.shenmi.calculator.util.DensityUtil;
 import com.shenmi.calculator.util.SPUtil;
 import com.shenmi.calculator.util.TTAdManagerHolder;
+import com.snmi.baselibrary.activity.CommonWebViewActivity;
+import com.snmi.baselibrary.utils.AppUtils;
 import com.snmi.sdk.Ad;
 import com.snmi.sdk.SplashADInfo;
 import com.snmi.sdk.SplashFullScreenAD;
@@ -43,7 +43,7 @@ import com.umeng.analytics.MobclickAgent;
 
 import java.lang.ref.WeakReference;
 
-public class SplashActivity extends AppCompatActivity implements SplashADListener{
+public class SplashActivity extends AppCompatActivity implements SplashADListener {
 
     private RelativeLayout container;
     private RelativeLayout adsRl;
@@ -69,15 +69,15 @@ public class SplashActivity extends AppCompatActivity implements SplashADListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e("mrs","onCreate");
+        Log.e("mrs", "onCreate");
         setContentView(R.layout.activity_splash);
         initView();
         handler = new SmHandler(this);
         isOpen = (Boolean) SPUtil.get(this, ADConstant.ISOPENAD, false);
-        Log.d("mrs","============isOpen=========="+isOpen);
+        Log.d("mrs", "============isOpen==========" + isOpen);
         if (isOpen) {
             initSplash();
-        }else{
+        } else {
             //没有GG的时候2秒跳过
             mTvSkip.setVisibility(View.GONE);
             //这是一个 Handler 里面的逻辑是从 Splash 界面跳转到 Main 界面，这里的逻辑每个公司基本上一致
@@ -137,7 +137,7 @@ public class SplashActivity extends AppCompatActivity implements SplashADListene
 
     //初始化SM SDK
     @SuppressLint("ClickableViewAccessibility")
-    public void initSMad(){
+    public void initSMad() {
         final SplashFullScreenAD splashFullScreenAD = new SplashFullScreenAD(this);
         final SplashADInfo splashAD = splashFullScreenAD.getSplashAD(ADConstant.START_SCREEN);
         if (splashAD == null) {
@@ -196,6 +196,7 @@ public class SplashActivity extends AppCompatActivity implements SplashADListene
         }
 
     }
+
     /**
      * *********************************广点通开屏***********************************************
      */
@@ -213,7 +214,7 @@ public class SplashActivity extends AppCompatActivity implements SplashADListene
      * @param fetchDelay    拉取广告的超时时长：即开屏广告从请求到展示所花的最大时长（并不是指广告曝光时长）取值范围[3000, 5000]，设为0表示使用广点通 SDK 默认的超时时长。
      */
     private void fetchSplashAD(Activity activity, ViewGroup adContainer, View skipContainer,
-                               String appId, String posId, SplashADListener adListener , int fetchDelay) {
+                               String appId, String posId, SplashADListener adListener, int fetchDelay) {
         MobclickAgent.onEvent(this, ADConstant.SPLASH_REQUEST);
         Log.e("AD_DEMO--", "SPLASH_REQUEST");
         splashADScreen = new SplashAD(activity, appId, posId, adListener, fetchDelay);
@@ -224,11 +225,11 @@ public class SplashActivity extends AppCompatActivity implements SplashADListene
 
     private void getExtraInfo() {
         Intent intent = getIntent();
-        if(intent == null) {
+        if (intent == null) {
             return;
         }
         String codeId = intent.getStringExtra("splash_rit");
-        if (!TextUtils.isEmpty(codeId)){
+        if (!TextUtils.isEmpty(codeId)) {
             mCodeId = codeId;
         }
         mIsExpress = intent.getBooleanExtra("is_express", false);
@@ -282,7 +283,7 @@ public class SplashActivity extends AppCompatActivity implements SplashADListene
             adSlot = new AdSlot.Builder()
                     .setCodeId(mCodeId)
                     .setSupportDeepLink(true)
-                    .setImageAcceptedSize(width, (int) (heigth -DensityUtil.dip2px(SplashActivity.this,80)))
+                    .setImageAcceptedSize(width, (int) (heigth - DensityUtil.dip2px(SplashActivity.this, 80)))
                     //模板广告需要设置期望个性化模板广告的大小,单位dp,代码位是否属于个性化模板广告，请在穿山甲平台查看
                     .setExpressViewAcceptedSize(expressViewWidth, expressViewHeight)
                     .build();
@@ -329,7 +330,7 @@ public class SplashActivity extends AppCompatActivity implements SplashADListene
                     adsRl.addView(view);
                     //设置不开启开屏广告倒计时功能以及不显示跳过按钮,如果这么设置，您需要自定义倒计时逻辑
                     //ad.setNotAllowSdkCountdown();
-                }else {
+                } else {
                     gotoMain();
                 }
 
@@ -366,7 +367,7 @@ public class SplashActivity extends AppCompatActivity implements SplashADListene
                         gotoMain();
                     }
                 });
-                if(ad.getInteractionType() == TTAdConstant.INTERACTION_TYPE_DOWNLOAD) {
+                if (ad.getInteractionType() == TTAdConstant.INTERACTION_TYPE_DOWNLOAD) {
                     ad.setDownloadListener(new TTAppDownloadListener() {
                         boolean hasShow = false;
 
@@ -415,10 +416,10 @@ public class SplashActivity extends AppCompatActivity implements SplashADListene
     @Override
     protected void onResume() {
         super.onResume();
-        if (splashAD == null){
+        if (splashAD == null) {
             return;
         }
-        if(splashAD.dplink != null && i > 0){
+        if (splashAD.dplink != null && i > 0) {
             handler.postDelayed(new Runnable() {
                 public void run() {
                     gotoMain();
@@ -470,14 +471,20 @@ public class SplashActivity extends AppCompatActivity implements SplashADListene
 
     @Override
     public void onADClicked() {
-        MobclickAgent.onEvent(this,"GDTADCLICK");
+        MobclickAgent.onEvent(this, "GDTADCLICK");
         Log.e("AD_DEMO--", "SplashADClicked");
-        Log.i("AD_DEMO", "SplashADClicked clickUrl: "
-                + (splashADScreen.getExt() != null ? splashADScreen.getExt().get("clickUrl") : ""));
-        if (splashADScreen.getExt() != null && !TextUtils.isEmpty(splashADScreen.getExt().get("clickUrl").toString())) {
+        String clickUrl = "";
+        if (splashADScreen.getExt() != null) {
+            if (splashADScreen.getExt().containsKey("clickUrl")) {
+                clickUrl = (String) splashADScreen.getExt().get("clickUrl");
+            }
+        }
+        Log.i("AD_DEMO", "SplashADClicked clickUrl: " + clickUrl);
+
+        if (!TextUtils.isEmpty(clickUrl)) {
             Intent intent = new Intent();
             intent.setClass(this, CommonWebViewActivity.class);
-            intent.putExtra("url", splashADScreen.getExt().get("clickUrl").toString());
+            intent.putExtra("url", clickUrl);
             startActivity(intent);
         }
     }
@@ -496,7 +503,7 @@ public class SplashActivity extends AppCompatActivity implements SplashADListene
         Log.i("AD_DEMO", "SplashADExposure");
     }
 
-    static class SmHandler extends Handler{
+    static class SmHandler extends Handler {
         private WeakReference<Activity> weakReference;
 
         public SmHandler(Activity activity) {
@@ -509,14 +516,10 @@ public class SplashActivity extends AppCompatActivity implements SplashADListene
      */
     class MyCountDownTimer extends CountDownTimer {
         /**
-         * @param millisInFuture
-         *      表示以「 毫秒 」为单位倒计时的总数
-         *      例如 millisInFuture = 1000 表示1秒
-         *
-         * @param countDownInterval
-         *      表示 间隔 多少微秒 调用一次 onTick()
-         *      例如: countDownInterval = 1000 ; 表示每 1000 毫秒调用一次 onTick()
-         *
+         * @param millisInFuture    表示以「 毫秒 」为单位倒计时的总数
+         *                          例如 millisInFuture = 1000 表示1秒
+         * @param countDownInterval 表示 间隔 多少微秒 调用一次 onTick()
+         *                          例如: countDownInterval = 1000 ; 表示每 1000 毫秒调用一次 onTick()
          */
         public MyCountDownTimer(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
@@ -527,7 +530,7 @@ public class SplashActivity extends AppCompatActivity implements SplashADListene
         }
 
         public void onTick(long millisUntilFinished) {
-            mTvSkip.setText( millisUntilFinished / 1000 + "s 跳过");
+            mTvSkip.setText(millisUntilFinished / 1000 + "s 跳过");
         }
     }
 
@@ -547,7 +550,7 @@ public class SplashActivity extends AppCompatActivity implements SplashADListene
     }
 
     private void showToast(String msg) {
-        Toast.makeText(this,msg,Toast.LENGTH_LONG).show();
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
 }

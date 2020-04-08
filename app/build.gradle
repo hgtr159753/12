@@ -186,10 +186,10 @@ dependencies {
     api 'com.contrarywind:Android-PickerView:3.2.6'
 
     api(name: 'calendar', ext: 'aar')
+    api(name: 'commonlibrary', ext: 'aar')
 //    implementation project(':calendarview')
 
     implementation project(':okhttputils')
-    implementation(name: 'commonlibrary', ext: 'aar')
     implementation files('libs/open_ad_sdk.aar')
     implementation files('libs/SFSDK.jar')
     implementation files('libs/SFSDK.jar')

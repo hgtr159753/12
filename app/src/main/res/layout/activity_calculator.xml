@@ -1,4 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/defult"
@@ -70,6 +72,19 @@
             android:layout_toLeftOf="@id/shake_icon"
             android:src="@drawable/shake_refresh" />
 
+        <android.support.v7.widget.CardView
+            android:id="@+id/shake_history_red_dot"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:layout_above="@id/shake_history"
+            android:layout_marginLeft="-13dp"
+            android:layout_marginBottom="-5dp"
+            android:layout_toRightOf="@id/shake_history"
+            android:visibility="gone"
+            app:cardBackgroundColor="#d00"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="0dp"
+            tools:visibility="visible" />
     </RelativeLayout>
 
     <View
@@ -294,9 +309,9 @@
         android:layout_width="match_parent"
         android:layout_height="216dp"
         android:gravity="right"
-        android:visibility="gone"
         android:orientation="vertical"
-        android:padding="12dip">
+        android:padding="12dip"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/prefix"

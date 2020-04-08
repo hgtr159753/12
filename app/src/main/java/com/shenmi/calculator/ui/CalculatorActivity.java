@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shenmi.calculator.R;
+import com.shenmi.calculator.app.MyApplication;
 import com.shenmi.calculator.bean.HistoryBean;
 import com.shenmi.calculator.bean.InputItem;
 import com.shenmi.calculator.db.ObjectBox;
@@ -55,9 +56,9 @@ import io.objectbox.Box;
 
 public class CalculatorActivity extends Activity implements View.OnClickListener {
 
-    private TextView mShowResultTvTwo;  //��ʾ���
-    private TextView mShowResultTv;  //��ʾ���
-    private TextView mShowInputTv;   //��ʾ������ַ�
+    private TextView mShowResultTvTwo;  //??????
+    private TextView mShowResultTv;  //??????
+    private TextView mShowInputTv;   //???????????
     private Button mCBtn;
     private RelativeLayout mDelBtn;
     private Button mAddBtn;
@@ -77,9 +78,9 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     private Button mPointtn;
     private Button mEqualBtn;
     private Button mpercent;
-    private HashMap<View, String> map; //��View��Stringӳ������
-    private List<InputItem> mInputList; //�����¼ÿ���������
-    private int mLastInputstatus = INPUT_NUMBER; //��¼��һ������״̬
+    private HashMap<View, String> map; //??View??String???????
+    private List<InputItem> mInputList; //????????????????
+    private int mLastInputstatus = INPUT_NUMBER; //??????????????
     public static final int INPUT_NUMBER = 1;
     public static final int INPUT_POINT = 0;
     public static final int INPUT_OPERATOR = -1;
@@ -88,12 +89,13 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     public static final int SHOW_RESULT_DATA = 1;
     public static final int SHOW_RESULT_DATA2 = 2;
     public static final String nan = "NaN";
-    public static final String infinite = "��";
+    public static final String infinite = "??";
 
     //基础，科学
     private TextView title_jc, title_KX;
     //震动,声音
     private ImageView music_icon, shake_icon, shake_history;
+    private View shake_history_dot;
     private boolean isfalse_muisc, isfalse_shake;
 
     private SoundPool mSoundPool;
@@ -174,6 +176,11 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
         MobclickAgent.onEvent(this, "Calculator_science");
 
         mHistoryBeanBox = ObjectBox.get().boxFor(HistoryBean.class);
+
+
+        if (SPUtil.get(MyApplication.getAppContext(), "history_dot_show", true).equals(true)) {
+            shake_history_dot.setVisibility(View.VISIBLE);
+        }
     }
 
     protected void onResume() {
@@ -188,7 +195,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     }
 
     /**
-     * ��ʼ��view
+     * ?????view
      */
     private void initView() {
 
@@ -237,6 +244,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
         music_icon = findViewById(R.id.music_icon);
         shake_icon = findViewById(R.id.shake_icon);
         shake_history = findViewById(R.id.shake_history);
+        shake_history_dot = findViewById(R.id.shake_history_red_dot);
         title_jc = findViewById(R.id.title_jc);
         title_KX = findViewById(R.id.title_kx);
         mShowResultTv = this.findViewById(R.id.show_result_tv);
@@ -474,13 +482,13 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
             // 检测输入是否合法
             if (equals_flag == false && "0123456789Eπ.()sincostanlnlogn!+-×÷√^".indexOf(command) != -1) {   //在按 = 之后输入，不是的话，直接跳过
                 // 检测显示器上的字符串是否合法
-                if (checkStr(str)) {  //——>检测显示器上的字符是否合法，true为合法
+                if (checkStr(str)) {  //??>检测显示器上的字符是否合法，true为合法
                     if ("+-×÷√^)".indexOf(command) != -1) {
                         for (int i = 0; i < str.length(); i++) {
                             TipCommand[tip_i] = String.valueOf(str.charAt(i));
                             tip_i++;  // TipCommand的指针
                         }
-                        vbegin = false;//控制输入 ——>false为接着输入
+                        vbegin = false;//控制输入 ??>false为接着输入
                     }
                 } else {
                     tvShow.setText("0");
@@ -1390,7 +1398,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
 
 
     /**
-     * ���ü����¼�
+     * ???ü??????
      */
     private void setOnClickListener() {
         music_icon.setOnClickListener(this);
@@ -1421,7 +1429,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     }
 
     /**
-     * ����¼�
+     * ??????
      */
     @Override
     public void onClick(View arg0) {
@@ -1452,6 +1460,9 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                     intent.putExtra("type", 0);
                 }
                 startActivityForResult(intent, 100);
+
+                SPUtil.put(MyApplication.getAppContext(), "history_dot_show", false);
+                shake_history_dot.setVisibility(View.GONE);
                 break;
             //震动
             case R.id.shake_icon:
@@ -1584,7 +1595,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     }
 
     /**
-     * ���=֮��ʼ����
+     * ???=????????
      */
     private void operator() {
         if (mLastInputstatus == END || mLastInputstatus == ERROR || mLastInputstatus == INPUT_OPERATOR) {
@@ -1627,7 +1638,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     }
 
     /**
-     * �����
+     * ?????
      *
      * @param view
      */
@@ -1648,7 +1659,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     }
 
     /**
-     * ��������
+     * ????????
      *
      * @param view
      */
@@ -1671,7 +1682,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     }
 
     /**
-     * ���������
+     * ?????????
      *
      * @param view
      */
@@ -1718,7 +1729,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     }
 
     /**
-     * ���˲���
+     * ???????
      */
     private void back() {
         if (mLastInputstatus == ERROR) {
@@ -1735,32 +1746,37 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
     }
 
     /**
-     * ����InputList����
+     * ????InputList????
      */
     private void backList() {
+        if (mInputList.size() == 0) {
+            return;
+        }
         InputItem item = mInputList.get(mInputList.size() - 1);
         if (item.getType() == InputItem.INT_TYPE) {
-            //��ȡ�����һ��item,��ȥ�����һ���ַ�
+            //???????????item,??????????????
             String input = item.getInput().substring(0,
                     item.getInput().length() - 1);
-            //��������ˣ����Ƴ����item��������ǰ״̬��Ϊ���������
+            //??????????????????item???????????????????????
             if ("".equals(input)) {
                 mInputList.remove(item);
                 mLastInputstatus = INPUT_OPERATOR;
             } else {
-                //��������itemΪ��ȡ����ַ�����������ǰ״̬��Ϊnumber
+                //????????item??????????????????????????number
                 item.setInput(input);
                 mLastInputstatus = INPUT_NUMBER;
             }
-            //���item����������� ���Ƴ���
+            //???item??????????? ???????
         } else if (item.getType() == InputItem.OPERATOR_TYPE) {
             mInputList.remove(item);
-            if (mInputList.get(mInputList.size() - 1).getType() == InputItem.INT_TYPE) {
-                mLastInputstatus = INPUT_NUMBER;
-            } else {
-                mLastInputstatus = INPUT_POINT;
+            if (mInputList.size() != 0) {
+                if (mInputList.get(mInputList.size() - 1).getType() == InputItem.INT_TYPE) {
+                    mLastInputstatus = INPUT_NUMBER;
+                } else {
+                    mLastInputstatus = INPUT_POINT;
+                }
             }
-            //�����ǰitem��С��
+            //??????item??С??
         } else {
             String input = item.getInput().substring(0,
                     item.getInput().length() - 1);
@@ -1779,7 +1795,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
         }
     }
 
-    //������
+    //??????
     private void clearAllScreen() {
 
         clearResultScreen();
@@ -1799,7 +1815,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
         mInputList.add(new InputItem("", InputItem.INT_TYPE));
     }
 
-    //�������
+    //???????
     private void clearScreen(InputItem item) {
         if (mLastInputstatus != ERROR) {
             mLastInputstatus = END;
@@ -1808,90 +1824,118 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
         mInputList.add(item);
     }
 
-    //ʵ�ָ߼�����
+    //?????????
     public int findHighOperator(int index) {
         if (mInputList.size() > 1 && index >= 0 && index < mInputList.size())
             for (int i = index; i < mInputList.size(); i++) {
                 InputItem item = mInputList.get(i);
                 if (getResources().getString(R.string.divide).equals(item.getInput())
                         || getResources().getString(R.string.multply).equals(item.getInput())) {
-                    int a, b;
-                    double c, d;
-                    if (mInputList.get(i - 1).getType() == InputItem.INT_TYPE) {
-                        a = Integer.parseInt(mInputList.get(i - 1).getInput());
-                        if (mInputList.get(i + 1).getType() == InputItem.INT_TYPE) {
-                            b = Integer.parseInt(mInputList.get(i + 1).getInput());
-                            if (getResources().getString(R.string.multply).equals(item.getInput())) {
-                                mInputList.set(i - 1, new InputItem(String.valueOf(a * b), InputItem.INT_TYPE));
+
+                    Double a_ = Double.parseDouble(mInputList.get(i - 1).getInput());
+                    Double d_ = Double.parseDouble(mInputList.get(i + 1).getInput());
+
+                    if (getResources().getString(R.string.divide).equals(item.getInput())) {
+                        Double div = div(a_, d_);
+                        if (div % 1 == 0) {
+                            if (div > Integer.MAX_VALUE) {
+                                mInputList.set(i - 1, new InputItem(String.valueOf(div), InputItem.DOUBLE_TYPE));
                             } else {
-                                if (b == 0) {
-                                    mLastInputstatus = ERROR;
-                                    if (a == 0) {
-                                        clearScreen(new InputItem(nan, InputItem.ERROR));
-                                    } else {
-                                        clearScreen(new InputItem(infinite, InputItem.ERROR));
-                                    }
-                                    return -1;
-                                } else if (a % b != 0) {
-                                    mInputList.set(i - 1, new InputItem(String.valueOf((double) a / b), InputItem.DOUBLE_TYPE));
-                                } else {
-                                    mInputList.set(i - 1, new InputItem(String.valueOf((Integer) a / b), InputItem.INT_TYPE));
-                                }
+                                mInputList.set(i - 1, new InputItem(String.valueOf(div.intValue()), InputItem.INT_TYPE));
                             }
                         } else {
-                            d = Double.parseDouble(mInputList.get(i + 1).getInput());
-                            if (getResources().getString(R.string.multply).equals(item.getInput())) {
-                                Log.i("erictest", "a=" + a + ",d=" + d + "==" + a * d);
-                                mInputList.set(i - 1, new InputItem(String.valueOf(a * d), InputItem.DOUBLE_TYPE));
-                            } else {
-                                if (d == 0) {
-                                    mLastInputstatus = ERROR;
-                                    if (a == 0) {
-                                        clearScreen(new InputItem(nan, InputItem.ERROR));
-                                    } else {
-                                        clearScreen(new InputItem(infinite, InputItem.ERROR));
-                                    }
-                                    return -1;
-                                }
-                                mInputList.set(i - 1, new InputItem(String.valueOf(a / d), InputItem.DOUBLE_TYPE));
-                            }
+                            mInputList.set(i - 1, new InputItem(String.valueOf(div), InputItem.DOUBLE_TYPE));
                         }
                     } else {
-                        c = Double.parseDouble(mInputList.get(i - 1).getInput());
-                        if (mInputList.get(i + 1).getType() == InputItem.INT_TYPE) {
-                            b = Integer.parseInt(mInputList.get(i + 1).getInput());
-                            if (getResources().getString(R.string.multply).equals(item.getInput())) {
-                                mInputList.set(i - 1, new InputItem(String.valueOf(c * b), InputItem.DOUBLE_TYPE));
+                        Double mul = mul(a_, d_);
+                        if (mul % 1 == 0) {
+                            if (mul < Integer.MAX_VALUE) {
+                                mInputList.set(i - 1, new InputItem(String.valueOf(mul), InputItem.DOUBLE_TYPE));
                             } else {
-                                if (b == 0) {
-                                    mLastInputstatus = ERROR;
-                                    if (c == 0) {
-                                        clearScreen(new InputItem(nan, InputItem.ERROR));
-                                    } else {
-                                        clearScreen(new InputItem(infinite, InputItem.ERROR));
-                                    }
-                                    return -1;
-                                }
-                                mInputList.set(i - 1, new InputItem(String.valueOf(c / b), InputItem.DOUBLE_TYPE));
+                                mInputList.set(i - 1, new InputItem(String.valueOf(mul.intValue()), InputItem.INT_TYPE));
                             }
                         } else {
-                            d = Double.parseDouble(mInputList.get(i + 1).getInput());
-                            if (getResources().getString(R.string.multply).equals(item.getInput())) {
-                                mInputList.set(i - 1, new InputItem(String.valueOf(mul(c, d)), InputItem.DOUBLE_TYPE));
-                            } else {
-                                if (d == 0) {
-                                    mLastInputstatus = ERROR;
-                                    if (c == 0) {
-                                        clearScreen(new InputItem(nan, InputItem.ERROR));
-                                    } else {
-                                        clearScreen(new InputItem(infinite, InputItem.ERROR));
-                                    }
-                                    return -1;
-                                }
-                                mInputList.set(i - 1, new InputItem(String.valueOf(div(c, d)), InputItem.DOUBLE_TYPE));
-                            }
+                            mInputList.set(i - 1, new InputItem(String.valueOf(mul), InputItem.DOUBLE_TYPE));
                         }
                     }
+
+//                    int a, b;
+//                    double c, d;
+//                    if (mInputList.get(i - 1).getType() == InputItem.INT_TYPE) {
+//                        a = Integer.parseInt(mInputList.get(i - 1).getInput());
+//                        if (mInputList.get(i + 1).getType() == InputItem.INT_TYPE) {
+//                            b = Integer.parseInt(mInputList.get(i + 1).getInput());
+//                            if (getResources().getString(R.string.multply).equals(item.getInput())) {
+//                                mInputList.set(i - 1, new InputItem(String.valueOf(a * b), InputItem.INT_TYPE));
+//                            } else {
+//                                if (b == 0) {
+//                                    mLastInputstatus = ERROR;
+//                                    if (a == 0) {
+//                                        clearScreen(new InputItem(nan, InputItem.ERROR));
+//                                    } else {
+//                                        clearScreen(new InputItem(infinite, InputItem.ERROR));
+//                                    }
+//                                    return -1;
+//                                } else if (a % b != 0) {
+//                                    mInputList.set(i - 1, new InputItem(String.valueOf((double) a / b), InputItem.DOUBLE_TYPE));
+//                                } else {
+//                                    mInputList.set(i - 1, new InputItem(String.valueOf((Integer) a / b), InputItem.INT_TYPE));
+//                                }
+//                            }
+//                        } else {
+//                            d = Double.parseDouble(mInputList.get(i + 1).getInput());
+//                            if (getResources().getString(R.string.multply).equals(item.getInput())) {
+//                                Log.i("erictest", "a=" + a + ",d=" + d + "==" + a * d);
+//                                mInputList.set(i - 1, new InputItem(String.valueOf(a * d), InputItem.DOUBLE_TYPE));
+//                            } else {
+//                                if (d == 0) {
+//                                    mLastInputstatus = ERROR;
+//                                    if (a == 0) {
+//                                        clearScreen(new InputItem(nan, InputItem.ERROR));
+//                                    } else {
+//                                        clearScreen(new InputItem(infinite, InputItem.ERROR));
+//                                    }
+//                                    return -1;
+//                                }
+//                                mInputList.set(i - 1, new InputItem(String.valueOf(a / d), InputItem.DOUBLE_TYPE));
+//                            }
+//                        }
+//                    } else {
+//                        c = Double.parseDouble(mInputList.get(i - 1).getInput());
+//                        if (mInputList.get(i + 1).getType() == InputItem.INT_TYPE) {
+//                            b = Integer.parseInt(mInputList.get(i + 1).getInput());
+//                            if (getResources().getString(R.string.multply).equals(item.getInput())) {
+//                                mInputList.set(i - 1, new InputItem(String.valueOf(c * b), InputItem.DOUBLE_TYPE));
+//                            } else {
+//                                if (b == 0) {
+//                                    mLastInputstatus = ERROR;
+//                                    if (c == 0) {
+//                                        clearScreen(new InputItem(nan, InputItem.ERROR));
+//                                    } else {
+//                                        clearScreen(new InputItem(infinite, InputItem.ERROR));
+//                                    }
+//                                    return -1;
+//                                }
+//                                mInputList.set(i - 1, new InputItem(String.valueOf(c / b), InputItem.DOUBLE_TYPE));
+//                            }
+//                        } else {
+//                            d = Double.parseDouble(mInputList.get(i + 1).getInput());
+//                            if (getResources().getString(R.string.multply).equals(item.getInput())) {
+//                                mInputList.set(i - 1, new InputItem(String.valueOf(mul(c, d)), InputItem.DOUBLE_TYPE));
+//                            } else {
+//                                if (d == 0) {
+//                                    mLastInputstatus = ERROR;
+//                                    if (c == 0) {
+//                                        clearScreen(new InputItem(nan, InputItem.ERROR));
+//                                    } else {
+//                                        clearScreen(new InputItem(infinite, InputItem.ERROR));
+//                                    }
+//                                    return -1;
+//                                }
+//                                mInputList.set(i - 1, new InputItem(String.valueOf(div(c, d)), InputItem.DOUBLE_TYPE));
+//                            }
+//                        }
+//                    }
                     mInputList.remove(i + 1);
                     mInputList.remove(i);
                     return findHighOperator(i);
@@ -1914,14 +1958,22 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
                     if (getResources().getString(R.string.add).equals(item.getInput())) {
                         Double add = add(a_, d_);
                         if (add % 1 == 0) {
-                            mInputList.set(i - 1, new InputItem(String.valueOf(add.intValue()), InputItem.INT_TYPE));
+                            if (add > Integer.MAX_VALUE) {
+                                mInputList.set(i - 1, new InputItem(String.valueOf(add), InputItem.DOUBLE_TYPE));
+                            } else {
+                                mInputList.set(i - 1, new InputItem(String.valueOf(add.intValue()), InputItem.INT_TYPE));
+                            }
                         } else {
                             mInputList.set(i - 1, new InputItem(String.valueOf(add), InputItem.DOUBLE_TYPE));
                         }
                     } else {
                         Double sub = sub(a_, d_);
                         if (sub % 1 == 0) {
-                            mInputList.set(i - 1, new InputItem(String.valueOf(sub.intValue()), InputItem.INT_TYPE));
+                            if (sub < Integer.MAX_VALUE) {
+                                mInputList.set(i - 1, new InputItem(String.valueOf(sub), InputItem.DOUBLE_TYPE));
+                            } else {
+                                mInputList.set(i - 1, new InputItem(String.valueOf(sub.intValue()), InputItem.INT_TYPE));
+                            }
                         } else {
                             mInputList.set(i - 1, new InputItem(String.valueOf(sub), InputItem.DOUBLE_TYPE));
                         }
@@ -1972,7 +2024,7 @@ public class CalculatorActivity extends Activity implements View.OnClickListener
 
     }
 
-    //currentStatus ��ǰ״̬  9  "9" "+"
+    //currentStatus ?????  9  "9" "+"
     void addInputList(int currentStatus, String inputChar) {
         switch (currentStatus) {
             case INPUT_NUMBER:

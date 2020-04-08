@@ -344,7 +344,7 @@ public static final int *;
     rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
 #commonlibrary  GG接口
--keep class com.eric.commonlibrary.bean.** { *; }
+-keep class com.snmi.baselibrary.bean.** { *; }
 
 #网盟
 -keep class com.bytedance.sdk.openadsdk.** { *; }

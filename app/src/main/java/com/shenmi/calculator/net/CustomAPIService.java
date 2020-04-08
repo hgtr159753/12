@@ -1,7 +1,7 @@
 package com.shenmi.calculator.net;
 
-import com.eric.commonlibrary.bean.WebRequest;
 import com.shenmi.calculator.bean.AppSwitchConfigInfoBean;
+import com.snmi.baselibrary.bean.WebRequest;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

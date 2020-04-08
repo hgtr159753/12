@@ -2,8 +2,8 @@ package com.shenmi.calculator.util;
 
 import android.app.Activity;
 
-import com.eric.commonlibrary.utils.AppUtils;
 import com.shenmi.calculator.app.MyApplication;
+import com.snmi.baselibrary.utils.AppUtils;
 import com.zchu.rxcache.utils.LogUtils;
 
 import java.io.IOException;
