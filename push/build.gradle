@@ -14,10 +14,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
-        debug {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-        }
+        mj.initWith(buildTypes.release)
     }
 
     sourceSets {

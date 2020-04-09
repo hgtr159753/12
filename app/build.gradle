@@ -22,33 +22,30 @@ android {
     }
 
     productFlavors {
-//        yingyongbao {
-//            manifestPlaceholders["APP_NAME"] = "计算机"
-//        }
-//        huawei {
-//            manifestPlaceholders["APP_NAME"] = "全能计算助手"
-//        }
-//        sanxing {}
-//        oppo {}
-//        xiaomi {}
-//        qihu {
-//            manifestPlaceholders["APP_NAME"] = "生活计算器"
-//        }
-//        vivo {
-//            manifestPlaceholders["APP_NAME"] = "计算机"
-//        }
+        yingyongbao {
+            manifestPlaceholders["APP_NAME"] = "计算机"
+        }
+        huawei {
+            manifestPlaceholders["APP_NAME"] = "全能计算助手"
+        }
+        sanxing {}
+        oppo {
+            //马甲包这里不可定制化
+//            applicationId "com.sfsm.newcalculator"
+        }
+        xiaomi {}
+        qihu {
+            manifestPlaceholders["APP_NAME"] = "生活计算器"
+        }
+        vivo {
+            manifestPlaceholders["APP_NAME"] = "计算机"
+        }
         meizu {}
+        baidu {}
         productFlavors.all {
             flavor -> flavor.manifestPlaceholders["UMENG_CHANNEL_VALUE"] = name
         }
     }
-
-    /*android.applicationVariants.all { variant ->
-        variant.outputs.all {
-            outputFileName = "calculator_${variant.flavorName}_${defaultConfig.versionName}.${defaultConfig.versionCode}._${variant.buildType.name}.apk"
-        }
-    }*/
-
     signingConfigs {
         debug {
             storeFile file("calculator.jks")
@@ -79,6 +76,19 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             //签名配置
             signingConfig signingConfigs.release
+        }
+        mj.initWith(buildTypes.release)
+//        mj {
+//            minifyEnabled false //不启用混淆
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            //签名配置
+//            signingConfig signingConfigs.release
+//        }
+
+        mj {
+//            applicationIdSuffix ""
+            defaultConfig.applicationId "com.qingcheng.fdjsq"
+            manifestPlaceholders["APP_NAME"] = "房贷计算器"
         }
     }
 
