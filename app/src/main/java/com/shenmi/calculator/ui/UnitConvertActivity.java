@@ -875,7 +875,7 @@ public class UnitConvertActivity extends Activity implements OnClickListener {
 			mResultText.setText(String.valueOf(result));
 		} catch (Exception e) {
 			// TODO: handle exception
-			mResultText.setText("Error");
+			mResultText.setText("0");
 		}
 
 	}
