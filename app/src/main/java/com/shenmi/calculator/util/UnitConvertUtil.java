@@ -1270,7 +1270,8 @@ public class UnitConvertUtil {
 					break;
 				//1:美元
 				case 1:
-					result= ArithUtil.mul(inputNum, "6.8839");
+//					result= ArithUtil.mul(inputNum, "6.8839");
+					result= ArithUtil.mul(inputNum, String.valueOf(NetWorkInfoObtain.usdToCny()));
 					break;
 				//2:欧元
 				case 2:

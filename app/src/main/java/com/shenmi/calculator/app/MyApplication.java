@@ -12,6 +12,7 @@ import com.iflytek.cloud.SpeechUtility;
 import com.shenmi.calculator.BuildConfig;
 import com.shenmi.calculator.constant.ADConstant;
 import com.shenmi.calculator.db.ObjectBox;
+import com.shenmi.calculator.util.NetWorkInfoObtain;
 import com.shenmi.calculator.util.TTAdManagerHolder;
 import com.snmi.sdk.Ad;
 import com.snmi.sdk_3.Hs;
@@ -112,6 +113,7 @@ public class MyApplication extends MultiDexApplication {
         ObjectBox.init(this);
 
         LogUtils.DEBUG = BuildConfig.DEBUG;
+        new Thread(() -> NetWorkInfoObtain.loadNumber()).start();
     }
 
 
