@@ -39,7 +39,7 @@ public class NetWorkInfoObtain {
             if (codeFind.find()) {
                 String number = codeFind.group();
                 String group = number.substring(15, number.length() - 5);
-                return Double.valueOf(group) * 100;
+                return Double.valueOf(group) / 100;
             }
         } catch (Exception e) {
             e.printStackTrace();
