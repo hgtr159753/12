@@ -9,8 +9,8 @@ android {
         applicationId "com.shenmi.calculator"
         minSdkVersion 15
         targetSdkVersion 28
-        versionCode 32
-        versionName "3.1"
+        versionCode 33
+        versionName "3.2"
         multiDexEnabled true
         flavorDimensions "versionCode"
         manifestPlaceholders = [UMENG_CHANNEL_VALUE: "umeng"] //默认名称
@@ -33,7 +33,9 @@ android {
             //马甲包这里不可定制化
 //            applicationId "com.sfsm.newcalculator"
         }
-        xiaomi {}
+        xiaomi {
+            manifestPlaceholders["APP_NAME"] = "全能计算助手"
+        }
         qihu {
             manifestPlaceholders["APP_NAME"] = "生活计算器"
         }

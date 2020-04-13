@@ -51,7 +51,9 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:icon,android:label">
 
-        <activity android:name=".ui.home.SplashActivity">
+        <activity
+            android:name=".ui.home.SplashActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

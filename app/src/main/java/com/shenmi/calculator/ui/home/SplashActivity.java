@@ -30,6 +30,7 @@ import com.qq.e.ads.splash.SplashADListener;
 import com.qq.e.comm.util.AdError;
 import com.shenmi.calculator.R;
 import com.shenmi.calculator.constant.ADConstant;
+import com.shenmi.calculator.util.CustomApiUtils;
 import com.shenmi.calculator.util.DensityUtil;
 import com.shenmi.calculator.util.SPUtil;
 import com.shenmi.calculator.util.TTAdManagerHolder;
@@ -40,6 +41,7 @@ import com.snmi.sdk.SplashADInfo;
 import com.snmi.sdk.SplashFullScreenAD;
 import com.snmi.sdk_3.Hs;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.message.PushAgent;
 
 import java.lang.ref.WeakReference;
 
@@ -73,16 +75,8 @@ public class SplashActivity extends AppCompatActivity implements SplashADListene
         setContentView(R.layout.activity_splash);
         initView();
         handler = new SmHandler(this);
-        isOpen = (Boolean) SPUtil.get(this, ADConstant.ISOPENAD, false);
-        Log.d("mrs", "============isOpen==========" + isOpen);
-        if (isOpen) {
-            initSplash();
-        } else {
-            //没有GG的时候2秒跳过
-            mTvSkip.setVisibility(View.GONE);
-            //这是一个 Handler 里面的逻辑是从 Splash 界面跳转到 Main 界面，这里的逻辑每个公司基本上一致
-            handler.postDelayed(callbacks, 600);
-        }
+        initHttp();
+
     }
 
     private void initView() {
@@ -93,6 +87,24 @@ public class SplashActivity extends AppCompatActivity implements SplashADListene
         js_text = findViewById(R.id.js_text);
         js_text.setText(AppUtils.getAppName(this));
         mTvSkip.setOnClickListener(mTvSkipOnClickListener);
+    }
+
+    private void initHttp() {
+        CustomApiUtils.getAppSwitchConfig(this, PushAgent.getInstance(this).getMessageChannel(), "news", new CustomApiUtils.OnApiResult() {
+            @Override
+            public void onResponse(boolean var1, int var2) {
+                SPUtil.put(SplashActivity.this,ADConstant.ISOPENAD,var1);
+                // 保存展示顺序
+                SPUtil.put(SplashActivity.this,ADConstant.ISADODDER,var2);
+                initSplash();
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                SPUtil.put(SplashActivity.this,ADConstant.ISOPENAD,true);
+                initSplash();
+            }
+        });
     }
 
 
@@ -118,7 +130,7 @@ public class SplashActivity extends AppCompatActivity implements SplashADListene
         }
         // 判断优先展示那个GG
         int isOrder = (int) SPUtil.get(this, ADConstant.ISADODDER, 1);
-        //isOrder = 1;
+        //isOrder = 2;
         if (isOrder == 1) {
             // SM
             initSMad();

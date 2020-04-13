@@ -29,6 +29,7 @@ import com.shenmi.calculator.util.AppMarketUtil;
 import com.shenmi.calculator.util.CustomApiUtils;
 import com.shenmi.calculator.util.DateUtil;
 import com.shenmi.calculator.util.SPUtil;
+import com.shenmi.calculator.util.TTAdManagerHolder;
 import com.snmi.baselibrary.utils.CommonUtils;
 import com.snmi.sdk.Ad;
 import com.snmi.sdk.AdView;
@@ -73,7 +74,6 @@ public class MainCalculateActivity extends AppCompatActivity{
 
         setContentView(R.layout.activity_main);
         isOpen = (Boolean) SPUtil.get(this, ADConstant.ISOPENAD, false);
-
         initAD();
         initTime();
         initView();
@@ -138,7 +138,7 @@ public class MainCalculateActivity extends AppCompatActivity{
         }else{
             Log.e("config","initPermission");
             // 说明权限都已经通过，可以做你想做的事情去
-            initHttp();
+            //initHttp();
         }
     }
 
@@ -163,26 +163,12 @@ public class MainCalculateActivity extends AppCompatActivity{
             }else{
                 Log.e("config","onRequestPermissionsResult");
                 //全部权限通过，可以进行下一步操作
-                initHttp();
+                //initHttp();
             }
         }
     }
 
-    private void initHttp() {
-        CustomApiUtils.getAppSwitchConfig(this, PushAgent.getInstance(this).getMessageChannel(), "news", new CustomApiUtils.OnApiResult() {
-            @Override
-            public void onResponse(boolean var1, int var2) {
-                SPUtil.put(MainCalculateActivity.this,ADConstant.ISOPENAD,var1);
-                // 保存展示顺序
-                SPUtil.put(MainCalculateActivity.this,ADConstant.ISADODDER,var2);
-            }
 
-            @Override
-            public void onFailure(String msg) {
-                SPUtil.put(MainCalculateActivity.this,ADConstant.ISOPENAD,true);
-            }
-        });
-    }
 
     private void initView() {
         radioGroupMain = findViewById(R.id.rg_main);
@@ -208,8 +194,8 @@ public class MainCalculateActivity extends AppCompatActivity{
         activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         packageName = this.getPackageName();
         //检测APP处于前台还是后台
-       /* if (isOpen)
-        new Thread(new AppStatus()).start();*/
+        if (isOpen)
+        new Thread(new AppStatus()).start();
     }
 
     private RadioGroup.OnCheckedChangeListener onChangedListener = new RadioGroup.OnCheckedChangeListener() {
@@ -292,7 +278,7 @@ public class MainCalculateActivity extends AppCompatActivity{
                     if (appOnForeground()) {
                         // Log.e("mrs", "-----------------前台--------------");
                         isAppFrondesk = false;
-                        if (isStartSplash && ADConstant.IS_SCREEN){
+                        if (isStartSplash){
                             showSplash();
                         }
                         currentTimes = System.currentTimeMillis();
@@ -331,11 +317,7 @@ public class MainCalculateActivity extends AppCompatActivity{
         if (!isStartSplash)
             return;
         isStartSplash = false;
-        //Log.e("mrs", "-----------------前台--------------"+currentTimes);
-        if (System.currentTimeMillis()-currentTimes>(25*1000)){
-            Log.e("mrs", "----------------开启开屏--------------");
-            handler.sendEmptyMessageDelayed(2, 10);
-        }
+        handler.sendEmptyMessageDelayed(2, 10);
     }
 
 
@@ -348,15 +330,8 @@ public class MainCalculateActivity extends AppCompatActivity{
                 case 2:
                     synchronized(this) {
                         isStartSplash = false;
-                        Log.e("mrs", "==========showSplash===========");
-                        if (!ADConstant.IS_SCREEN) {
-                            //没有开屏，就不打开
-                            Log.e("mrs", "==========没有开屏===========");
-                        } else {
-                            Log.e("mrs", "==========有开屏===========");
-                            Intent intent = new Intent(MainCalculateActivity.this, SplashActivity.class);
-                            startActivity(intent);
-                        }
+                        Intent intent = new Intent(MainCalculateActivity.this, SplashActivity.class);
+                        startActivity(intent);
                     }
                     break;
             }

@@ -109,9 +109,9 @@ public class MyApplication extends MultiDexApplication {
                 .build();
         OkHttpUtils.initClient(okHttpClient);
 
-        TTAdManagerHolder.init(this);
-        ObjectBox.init(this);
 
+        ObjectBox.init(this);
+        TTAdManagerHolder.init(this);
         LogUtils.DEBUG = BuildConfig.DEBUG;
         new Thread(() -> NetWorkInfoObtain.loadNumber()).start();
     }
@@ -125,11 +125,6 @@ public class MyApplication extends MultiDexApplication {
 //        SDKHelper.newInstance().unRegister();
     }
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        MultiDex.install(this);
-    }
 
 
     public static MyApplication getAppContext() {
