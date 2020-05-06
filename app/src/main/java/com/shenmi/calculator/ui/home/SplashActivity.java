@@ -130,7 +130,6 @@ public class SplashActivity extends AppCompatActivity implements SplashADListene
         }
         // 判断优先展示那个GG
         int isOrder = (int) SPUtil.get(this, ADConstant.ISADODDER, 1);
-        //isOrder = 2;
         if (isOrder == 1) {
             // SM
             initSMad();
@@ -209,30 +208,30 @@ public class SplashActivity extends AppCompatActivity implements SplashADListene
 
     }
 
-    /**
-     * *********************************广点通开屏***********************************************
-     */
-    private SplashAD splashADScreen;
+        /**
+         * *********************************广点通开屏***********************************************
+         */
+        private SplashAD splashADScreen;
 
-    /**
-     * 拉取开屏广告，开屏广告的构造方法有3种，详细说明请参考开发者文档。
-     *
-     * @param activity      展示广告的 activity
-     * @param adContainer   展示广告的大容器
-     * @param skipContainer 自定义的跳过按钮：传入该 view 给 SDK 后，SDK 会自动给它绑定点击跳过事件。SkipView 的样式可以由开发者自由定制，其尺寸限制请参考 activity_splash.xml 或下面的注意事项。
-     * @param appId         应用 ID
-     * @param posId         广告位 ID
-     * @param adListener    广告状态监听器
-     * @param fetchDelay    拉取广告的超时时长：即开屏广告从请求到展示所花的最大时长（并不是指广告曝光时长）取值范围[3000, 5000]，设为0表示使用广点通 SDK 默认的超时时长。
-     */
-    private void fetchSplashAD(Activity activity, ViewGroup adContainer, View skipContainer,
-                               String appId, String posId, SplashADListener adListener, int fetchDelay) {
-        MobclickAgent.onEvent(this, ADConstant.SPLASH_REQUEST);
-        Log.e("AD_DEMO--", "SPLASH_REQUEST");
-        splashADScreen = new SplashAD(activity, appId, posId, adListener, fetchDelay);
-        splashADScreen.fetchAndShowIn(adContainer);
+        /**
+         * 拉取开屏广告，开屏广告的构造方法有3种，详细说明请参考开发者文档。
+         *
+         * @param activity      展示广告的 activity
+         * @param adContainer   展示广告的大容器
+         * @param skipContainer 自定义的跳过按钮：传入该 view 给 SDK 后，SDK 会自动给它绑定点击跳过事件。SkipView 的样式可以由开发者自由定制，其尺寸限制请参考 activity_splash.xml 或下面的注意事项。
+         * @param appId         应用 ID
+         * @param posId         广告位 ID
+         * @param adListener    广告状态监听器
+         * @param fetchDelay    拉取广告的超时时长：即开屏广告从请求到展示所花的最大时长（并不是指广告曝光时长）取值范围[3000, 5000]，设为0表示使用广点通 SDK 默认的超时时长。
+         */
+        private void fetchSplashAD(Activity activity, ViewGroup adContainer, View skipContainer,
+                                   String appId, String posId, SplashADListener adListener, int fetchDelay) {
+            MobclickAgent.onEvent(this, ADConstant.SPLASH_REQUEST);
+            Log.e("AD_DEMO--", "SPLASH_REQUEST");
+            splashADScreen = new SplashAD(activity, appId, posId, adListener, fetchDelay);
+            splashADScreen.fetchAndShowIn(adContainer);
 
-    }
+        }
 
 
     private void getExtraInfo() {

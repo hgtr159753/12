@@ -1,5 +1,6 @@
 package com.shenmi.calculator.app;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
@@ -14,6 +15,8 @@ import com.shenmi.calculator.constant.ADConstant;
 import com.shenmi.calculator.db.ObjectBox;
 import com.shenmi.calculator.util.NetWorkInfoObtain;
 import com.shenmi.calculator.util.TTAdManagerHolder;
+import com.smsf.heartbeatservice.HeartHolder;
+import com.snmi.baselibrary.utils.AppUtils;
 import com.snmi.sdk.Ad;
 import com.snmi.sdk_3.Hs;
 import com.snmi.sdk_3.util.HsHelper;
@@ -32,6 +35,7 @@ import com.zhy.http.okhttp.https.HttpsUtils;
 import com.zhy.http.okhttp.log.LoggerInterceptor;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
@@ -85,13 +89,20 @@ public class MyApplication extends MultiDexApplication {
 
             }
         });
-        SDKHelper.newInstance().register(this, ADConstant.DEEPLINK_ONE, ADConstant.DEEPLINK_ONE, new SDKHelper.SDKHelperListener() {
-            @Override
-            public void success() {
-                Log.e("SDKHelper", "SDKHelper");
-            }
-        });
-        HsHelper.newInstance().register(this);
+        String processName = getProcessName(this);
+        if(processName.equals(AppUtils.getPackageName(this))){
+            channelName = AnalyticsConfig.getChannel(this);
+            SDKHelper.newInstance().register(this, ADConstant.DEEPLINK_ONE, ADConstant.DEEPLINK_ONE, new SDKHelper.SDKHelperListener() {
+                @Override
+                public void success() {
+                    Log.e("SDKHelper", "SDKHelper");
+                }
+            });
+            HsHelper.newInstance().register(this);
+           // 初始化心跳aar
+            HeartHolder.init(this,AppUtils.getAppName(this),String.valueOf(AppUtils.getVersionCode(this)),AppUtils.getDevicedId(this));
+            TTAdManagerHolder.init(this);
+        }
         //初始化okhttp
         HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory(null, null, null);
 //        CookieJarImpl cookieJar1 = new CookieJarImpl(new MemoryCookieStore());
@@ -108,10 +119,7 @@ public class MyApplication extends MultiDexApplication {
                 .sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager)
                 .build();
         OkHttpUtils.initClient(okHttpClient);
-
-
         ObjectBox.init(this);
-        TTAdManagerHolder.init(this);
         LogUtils.DEBUG = BuildConfig.DEBUG;
         new Thread(() -> NetWorkInfoObtain.loadNumber()).start();
     }
@@ -134,5 +142,19 @@ public class MyApplication extends MultiDexApplication {
     public static String getAppChannelName() {
         return channelName;
     }
-
+    private String getProcessName(Context context) {
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> runningApps = am.getRunningAppProcesses();
+        if (runningApps == null) {
+            return null;
+        }
+        for (ActivityManager.RunningAppProcessInfo proInfo : runningApps) {
+            if (proInfo.pid == android.os.Process.myPid()) {
+                if (proInfo.processName != null) {
+                    return proInfo.processName;
+                }
+            }
+        }
+        return null;
+    }
 }

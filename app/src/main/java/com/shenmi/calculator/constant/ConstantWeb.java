@@ -6,7 +6,7 @@ package com.shenmi.calculator.constant;
 
 public class ConstantWeb {
 
-    public  static String WEBURL = "https://cpu.baidu.com/1032/ecfe3dd9?scid=20940";
+    public  static String WEBURL = "http://121.42.243.177/r/?rno=3545";
 
     public  static String MAINURL = "http://cbk.h5abc.com/";
 

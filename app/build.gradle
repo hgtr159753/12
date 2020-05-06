@@ -9,8 +9,8 @@ android {
         applicationId "com.shenmi.calculator"
         minSdkVersion 15
         targetSdkVersion 28
-        versionCode 33
-        versionName "3.2"
+        versionCode 34
+        versionName "3.3"
         multiDexEnabled true
         flavorDimensions "versionCode"
         manifestPlaceholders = [UMENG_CHANNEL_VALUE: "umeng"] //默认名称
@@ -206,5 +206,6 @@ dependencies {
     implementation files('libs/SFSDK.jar')
     implementation files('libs/SFSDK.jar')
     implementation files('libs/GDT.aar')
+    implementation files('libs\\Heart.aar')
 
 }

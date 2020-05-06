@@ -121,11 +121,11 @@
 
         <activity
             android:name="com.snmi.sdk.locker.LockerActivity"
-            android:taskAffinity="locker.ad"></activity>
+            android:taskAffinity="locker.ad"/>
 
         <activity
             android:name="com.snmi.sdk.locker.LockerLinkActivity"
-            android:taskAffinity="locker.ad"></activity>
+            android:taskAffinity="locker.ad"/>
         <!-- android:authorities="com.snmi.sdk.fileprovider" -->
         <!-- android:authorities="${applicationId}.fileprovider" -->
 
@@ -145,6 +145,39 @@
         <activity android:name=".ui.TaxResultActivity" />
         <activity android:name=".ui.home.TaxSelectActivity" />
 
+
+        <!-- 广点通sdk -->
+        <!-- targetSDKVersion >= 24时才需要添加这个 provider。provider 的 authorities 属性的值为 ${applicationId}.fileprovider，请开发者根据自己的 ${applicationId} 来设置这个值 -->
+        <provider
+            android:name=".util.TencentFileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/gdt_file_path" />
+        </provider>
+
+        <!-- 声明 SDK 所需要的组件 -->
+        <service
+            android:name="com.qq.e.comm.DownloadService"
+            android:exported="false" />
+        <!-- 请开发者注意字母的大小写，ADActivity，而不是 AdActivity -->
+        <activity
+            android:name="com.qq.e.ads.ADActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true" />
+        <activity
+            android:name="com.qq.e.ads.PortraitADActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.qq.e.ads.LandscapeADActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true"
+            android:screenOrientation="landscape" />
+
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -160,6 +193,10 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_pathcsj" />
         </provider>
+        <provider
+            android:name="com.bytedance.sdk.openadsdk.multipro.TTMultiProvider"
+            android:authorities="${applicationId}.TTMultiProvider"
+            android:exported="false" />
     </application>
 
 </manifest>
